@@ -1,4 +1,4 @@
-package com.android.stuckintraffic;
+package in.fastr.apps.stuck;
 
 import java.util.Date;
 
