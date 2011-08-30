@@ -4,6 +4,7 @@ import java.util.Date;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -48,8 +49,13 @@ public class StuckInTrafficActivity extends Activity {
         
     }
 
+    /**
+     * 
+     * OnCLick Listener for the StuckInTraffic Button
+     */
     public void recordGPS(View view){
-      setContentView(R.layout.stuckscreen);
+      Intent intent = new Intent().setClass(this, TabPage.class);
+      startActivity(intent);
       locationManager = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
       LocationListener mlocListener = new MyLocationListener();
       //TODO need to review getProvider() method
