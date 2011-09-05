@@ -6,6 +6,7 @@ import java.util.Date;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -46,16 +47,19 @@ public class StuckInTrafficActivity extends Activity {
         }
     }
 
-    // This is invoked from main.xml
-    public void recordGPS(View view) {
-        setContentView(R.layout.stuckscreen);
-        locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-        // TODO: Does it really need to create a new Listener each time?
-        LocationListener mlocListener = new MyLocationListener();
-        // TODO need to review getProvider() method
-        String provider = getProvider(this, locationManager);
-        locationManager.requestLocationUpdates(provider, 0, 0, mlocListener);
-        UploadRecords.callRest();
+    /**
+     * OnCLick Listener for the StuckInTraffic Button
+     * Invoked from main.xml
+     */
+    public void recordGPS(View view){
+      Intent intent = new Intent().setClass(this, TabPage.class);
+      startActivity(intent);
+      locationManager = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
+      // TODO: Does it really need to create a new Listener each time?
+      LocationListener mlocListener = new MyLocationListener();
+      //TODO need to review getProvider() method
+      String provider = getProvider(this, locationManager);
+      locationManager.requestLocationUpdates( provider, 0, 0, mlocListener);
     }
 
     // TODO: Make this a regular class, not an inner class
