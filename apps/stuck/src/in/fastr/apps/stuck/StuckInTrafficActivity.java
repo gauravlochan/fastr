@@ -1,5 +1,7 @@
 package in.fastr.apps.stuck;
 
+import in.fastr.apps.common.UploadRecords;
+
 import java.util.Date;
 
 import android.app.Activity;
@@ -34,32 +36,32 @@ public class StuckInTrafficActivity extends Activity {
             myDB.execSQL("CREATE TABLE IF NOT EXISTS " + TableName
                     + " (Latitude Double, Longitude Double, Timestamp Double);");
         }
-
         catch (Exception e) {
             Log.d("Traffix", "DB error", e);
         }
-
         finally {
             if (myDB != null) {
-                // myDB.close();
+                myDB.close();
             }
         }
-
     }
 
+    // This is invoked from main.xml
     public void recordGPS(View view) {
         setContentView(R.layout.stuckscreen);
         locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        // TODO: Does it really need to create a new Listener each time?
         LocationListener mlocListener = new MyLocationListener();
         // TODO need to review getProvider() method
         String provider = getProvider(this, locationManager);
         locationManager.requestLocationUpdates(provider, 0, 0, mlocListener);
+        UploadRecords.callRest();
     }
 
+    // TODO: Make this a regular class, not an inner class
     public class MyLocationListener implements LocationListener {
         @Override
         public void onLocationChanged(Location loc) {
-
             double longitude = loc.getLatitude();
             double latitude = loc.getLongitude();
             float speed = loc.getSpeed();
@@ -72,11 +74,16 @@ public class StuckInTrafficActivity extends Activity {
 
             /* Insert data to a Table */
             if (speed < 5) {
-                Log.d("trafficx", "entering");
+                Log.d("fastr", "Attempting write to SQL");
+
                 myDB = openOrCreateDatabase("Traffix", MODE_PRIVATE, null);
+
+                // TODO: Need to handle the potential case where DB is full
                 myDB.execSQL("INSERT INTO " + TableName
                         + " (Latitude, Longitude, Timestamp)" + " VALUES ("
                         + latitude + ", " + longitude + ", " + epochtime + ");");
+
+                Log.d("fastr", "Succesful write to SQL");
             }
 
             // TODO decide below which speed should the congestion point.
@@ -127,6 +134,7 @@ public class StuckInTrafficActivity extends Activity {
     @Override
     public void onDestroy() {
         super.onDestroy();
+        Log.d("DB", "KILL");
 
         Cursor c = myDB.rawQuery("SELECT * FROM " + TableName, null);
 
@@ -137,11 +145,10 @@ public class StuckInTrafficActivity extends Activity {
         if (c != null) {
             // Loop through all Results
             do {
-                Log.d("DB", "KILL");
                 double lat = c.getDouble(Column1);
                 double lon = c.getDouble(Column2);
-                Log.d("DB", Double.toString(lat));
-                Log.d("DB", Double.toString(lon));
+                String coordinate = String.format("%d %d", lat, lon);
+                Log.d("DB", coordinate);
             } while (c.moveToNext());
         }
     }
