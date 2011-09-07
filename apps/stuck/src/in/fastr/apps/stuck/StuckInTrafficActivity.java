@@ -60,6 +60,8 @@ public class StuckInTrafficActivity extends Activity {
       //TODO need to review getProvider() method
       String provider = getProvider(this, locationManager);
       locationManager.requestLocationUpdates( provider, 0, 0, mlocListener);
+      
+      UploadRecords.upload();
     }
 
     // TODO: Make this a regular class, not an inner class
@@ -139,7 +141,10 @@ public class StuckInTrafficActivity extends Activity {
     public void onDestroy() {
         super.onDestroy();
         Log.d("DB", "KILL");
-
+        PrintDatabase();
+    }
+    
+    private void PrintDatabase() {
         Cursor c = myDB.rawQuery("SELECT * FROM " + TableName, null);
 
         int Column1 = c.getColumnIndex("Latitude");
@@ -156,4 +161,5 @@ public class StuckInTrafficActivity extends Activity {
             } while (c.moveToNext());
         }
     }
+
 }
