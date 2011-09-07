@@ -20,7 +20,6 @@ import android.util.Log;
  *
  */
 public class UploadRecords {
-
     // This is the dummy node server i've been testing with
     // private String nodeServer = "http://127.0.0.1:8124";
     private static String nodeServer = 
@@ -31,9 +30,14 @@ public class UploadRecords {
         callRest(nodeServer);
     }
     
-    
+    /**
+     * A simple method to make a REST call to the specified server.  Good for 
+     * testing
+     * 
+     * @param server
+     */
     public static void callRest(String server) {
-        Log.d("fastr", "Attempting call to REST");
+        Log.d(Global.Company, "Attempting call to REST");
 
         HttpClient httpClient = new DefaultHttpClient();
         HttpGet httpGet = new HttpGet(server);
@@ -41,21 +45,20 @@ public class UploadRecords {
         try {
             response = httpClient.execute(httpGet);
             if (response != null) {
-                Log.d("fastr", "Successful call to REST");
-                Log.d("fastr", response.getStatusLine().toString());
+                Log.d(Global.Company, "Successful call to REST");
+                Log.d(Global.Company, response.getStatusLine().toString());
                 
                 HttpEntity entity = response.getEntity();
                 if (entity != null) {
                     InputStream instream = entity.getContent();
-                    int l;
                     byte[] tmp = new byte[2048];
-                    while ((l = instream.read(tmp)) != -1) {
-                        Log.d("fastr", String.format("%s", tmp));
+                    while (instream.read(tmp) != -1) {
+                        Log.d(Global.Company, String.format("%s", tmp));
                     }
                 }
                 
             } else {
-                Log.d("fastr", "Unsuccessful call to REST");
+                Log.d(Global.Company, "Unsuccessful call to REST");
             }
         } catch (ClientProtocolException e) {
             // TODO Auto-generated catch block
@@ -64,7 +67,6 @@ public class UploadRecords {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
-
     }
     
 }

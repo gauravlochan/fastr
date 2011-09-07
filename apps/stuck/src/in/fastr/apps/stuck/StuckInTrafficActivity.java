@@ -2,14 +2,10 @@ package in.fastr.apps.stuck;
 
 import in.fastr.apps.common.UploadRecords;
 
-import java.util.Date;
-
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationListener;
@@ -21,30 +17,14 @@ import android.view.View;
 public class StuckInTrafficActivity extends Activity {
 
     private LocationManager locationManager;
-    private final String TableName = "congestionPoints";
-    private SQLiteDatabase myDB = null;
-
+    private DbWrapper dbWrapper;
+    
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
-
-        /* Create a Database. */
-        try {
-            myDB = this.openOrCreateDatabase("Traffix", MODE_PRIVATE, null);
-
-            /* Create a Table in the Database. */
-            myDB.execSQL("CREATE TABLE IF NOT EXISTS " + TableName
-                    + " (Latitude Double, Longitude Double, Timestamp Double);");
-        }
-        catch (Exception e) {
-            Log.d("Traffix", "DB error", e);
-        }
-        finally {
-            if (myDB != null) {
-                myDB.close();
-            }
-        }
+        dbWrapper = new DbWrapper(this);
+        dbWrapper.createDatabase();
     }
 
     /**
@@ -71,48 +51,32 @@ public class StuckInTrafficActivity extends Activity {
             double longitude = loc.getLatitude();
             double latitude = loc.getLongitude();
             float speed = loc.getSpeed();
-            Log.d("GPS Latitude", Double.toString(latitude));
-            Log.d("GPS Longitude", Double.toString(longitude));
-            Date d = new Date();
-            long epochtime = d.getTime();
+            Log.d(App.Name, "GPS Latitude" + Double.toString(latitude));
+            Log.d(App.Name, "GPS Longitude" + Double.toString(longitude));
 
             StuckInTrafficActivity.this.locationManager.removeUpdates(this);
 
             /* Insert data to a Table */
-            if (speed < 5) {
-                Log.d("fastr", "Attempting write to SQL");
-
-                myDB = openOrCreateDatabase("Traffix", MODE_PRIVATE, null);
-
-                // TODO: Need to handle the potential case where DB is full
-                myDB.execSQL("INSERT INTO " + TableName
-                        + " (Latitude, Longitude, Timestamp)" + " VALUES ("
-                        + latitude + ", " + longitude + ", " + epochtime + ");");
-
-                Log.d("fastr", "Succesful write to SQL");
-            }
-
             // TODO decide below which speed should the congestion point.
             // Currently setting in to 5
-
+            if (speed < 5) {
+                dbWrapper.insertPoint(latitude, longitude);
+            }            
         }
 
         @Override
         public void onProviderDisabled(String provider) {
             // TODO Auto-generated method stub
-
         }
 
         @Override
         public void onProviderEnabled(String provider) {
             // TODO Auto-generated method stub
-
         }
 
         @Override
         public void onStatusChanged(String provider, int status, Bundle extras) {
             // TODO Auto-generated method stub
-
         }
 
     }
@@ -140,26 +104,9 @@ public class StuckInTrafficActivity extends Activity {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        Log.d("DB", "KILL");
-        PrintDatabase();
+        Log.d(App.Name, "KILL");
+        dbWrapper.logDatabase();
     }
-    
-    private void PrintDatabase() {
-        Cursor c = myDB.rawQuery("SELECT * FROM " + TableName, null);
-
-        int Column1 = c.getColumnIndex("Latitude");
-        int Column2 = c.getColumnIndex("Longitude");
-
-        c.moveToFirst();
-        if (c != null) {
-            // Loop through all Results
-            do {
-                double lat = c.getDouble(Column1);
-                double lon = c.getDouble(Column2);
-                String coordinate = String.format("%d %d", lat, lon);
-                Log.d("DB", coordinate);
-            } while (c.moveToNext());
-        }
-    }
+   
 
 }
