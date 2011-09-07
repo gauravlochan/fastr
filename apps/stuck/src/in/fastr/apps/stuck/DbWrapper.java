@@ -13,30 +13,50 @@ import android.app.Activity;
 
 public class DbWrapper {
     private final String TableName = "congestionPoints";
+    private static final String COL_LATITUDE = "Latitude";
+    private static final String COL_LONGITUDE = "Longitude";
+    private static final String COL_TIMESTAMP = "Timestamp";
+    private static final String COL_STATUS = "Status";
+
     private Activity activity;
     
     public DbWrapper(Activity _activity) {
         activity = _activity;
     }
     
+    
     /** 
      * Create a Database 
      */
     public void createDatabase() {
-        SQLiteDatabase myDB = 
+        Log.d(Global.Company, "Attempting to create DB");
+
+        SQLiteDatabase db = 
             activity.openOrCreateDatabase("Traffix", Context.MODE_PRIVATE, null);
         try {
+            // Using this for debugging for schema changes
+            // db.execSQL("DROP TABLE "+TableName);
+            
+            String Schema = 
+                COL_LATITUDE + " Double, " +
+                COL_LONGITUDE + " Double, " +
+                COL_TIMESTAMP + " Double, " +
+                COL_STATUS + " Text";
+            
             /* Create a Table in the Database. */
-            myDB.execSQL("CREATE TABLE IF NOT EXISTS " + TableName
-                    + " (Latitude Double, Longitude Double, Timestamp Double);");
+            db.execSQL("CREATE TABLE IF NOT EXISTS " + TableName + 
+                    "(" + Schema + ");");
+
+            Log.d(Global.Company, "Successfully created DB");
         }
         catch (Exception e) {
             Log.d(Global.Company, "DB error", e);
         }
         finally {
-            myDB.close();
+            db.close();
         }
     }
+    
     
     /**
      * Insert a single reported congestion point
@@ -47,17 +67,21 @@ public class DbWrapper {
 
         Log.d(Global.Company, "Attempting write to SQL");
 
-        SQLiteDatabase myDB = 
+        SQLiteDatabase db = 
             activity.openOrCreateDatabase("Traffix", Context.MODE_PRIVATE, null);
         try {
-            // TODO: Need to handle the potential case where DB is full
-            myDB.execSQL("INSERT INTO " + TableName
-                    + " (Latitude, Longitude, Timestamp)" + " VALUES ("
-                    + latitude + ", " + longitude + ", " + epochtime + ");");
-    
+            String columns = " (Latitude, Longitude, Timestamp, Status) ";
+
+            db.execSQL("INSERT INTO " + TableName + columns + "VALUES ("
+                    + latitude + ", " 
+                    + longitude + ", " 
+                    + epochtime + ", " 
+                    + "'New'" + 
+                    ");");
+            
             Log.d(Global.Company, "Succesful write to SQL");
         } finally {
-            myDB.close();
+            db.close();
         }
         
     }
@@ -66,14 +90,14 @@ public class DbWrapper {
      * Print out the database contents
      */
     public void logDatabase() {
-        SQLiteDatabase myDB = 
+        SQLiteDatabase db = 
             activity.openOrCreateDatabase("Traffix", Context.MODE_PRIVATE, null);
 
         try {
-            Cursor c = myDB.rawQuery("SELECT * FROM " + TableName, null);
+            Cursor c = db.rawQuery("SELECT * FROM " + TableName, null);
     
-            int Column1 = c.getColumnIndex("Latitude");
-            int Column2 = c.getColumnIndex("Longitude");
+            int Column1 = c.getColumnIndex(COL_LATITUDE);
+            int Column2 = c.getColumnIndex(COL_LONGITUDE);
     
             c.moveToFirst();
             if (c != null) {
@@ -86,8 +110,43 @@ public class DbWrapper {
                 } while (c.moveToNext());
             }
         } finally {
-            myDB.close();
+            db.close();
+        }
+    }
+    
+    public int countRecordsForUpload() {
+        SQLiteDatabase db = 
+            activity.openOrCreateDatabase("Traffix", Context.MODE_PRIVATE, null);
+        try {
+            final String SQL_STATEMENT = "SELECT COUNT(*) FROM " + TableName + 
+                " WHERE Status='New'";
+            
+            Cursor c = db.rawQuery(SQL_STATEMENT, null);
+            
+            // TODO: THIS IS BUGGY
+            int count = c.getInt(0);
+            return count;
+            // db.execSQL("SELECT COUNT(*) FROM " + TableName + " WHERE Status='New'");
+        } finally {
+            db.close();
         }
     }
 
+    public Object getDbContext() {
+        SQLiteDatabase db = 
+            activity.openOrCreateDatabase("Traffix", Context.MODE_PRIVATE, null);
+        return db;
+    }
+
+    public void closeDbContext(Object dbContext) {
+        ((SQLiteDatabase) dbContext).close();
+    }
+    
+    
+    public void startUpload(Object dbContext) {
+    }
+
+    public void stopUpload(Object dbContext) {
+        
+    }
 }

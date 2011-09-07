@@ -1,5 +1,7 @@
 package in.fastr.apps.common;
 
+import in.fastr.apps.stuck.DbWrapper;
+
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -26,7 +28,15 @@ public class UploadRecords {
         "http://7310.basicserver.gauravlochan.test.jsapp.us/";
     private static String btis = "http://www.btis.in/trafficstatus_cache.txt";
 
-    public static void upload() {
+    public static void upload(DbWrapper dbWrapper) { 
+        // int count = dbWrapper.countRecordsForUpload();
+        
+        // Are there any new records? If not, quit
+        
+        // Try to upload all the new records, newest ones first 
+        // (newest because they are most relevant for real-time traffic)
+        // TODO: Batch records if there are too many to upload at once
+        
         callRest(nodeServer);
     }
     

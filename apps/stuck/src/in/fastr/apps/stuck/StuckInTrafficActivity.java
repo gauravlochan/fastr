@@ -41,7 +41,7 @@ public class StuckInTrafficActivity extends Activity {
       String provider = getProvider(this, locationManager);
       locationManager.requestLocationUpdates( provider, 0, 0, mlocListener);
       
-      UploadRecords.upload();
+      UploadRecords.upload(dbWrapper);
     }
 
     // TODO: Make this a regular class, not an inner class
