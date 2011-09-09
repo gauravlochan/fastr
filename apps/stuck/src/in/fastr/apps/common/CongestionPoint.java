@@ -1,7 +1,5 @@
 package in.fastr.apps.common;
 
-import android.util.Log;
-
 /** Data class for each congestion point.
  * 
  * @author gaurav

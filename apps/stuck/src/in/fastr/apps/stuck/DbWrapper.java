@@ -4,7 +4,6 @@ import in.fastr.apps.common.CongestionPoint;
 import in.fastr.apps.common.Global;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import android.database.Cursor;
