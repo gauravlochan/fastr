@@ -2,8 +2,11 @@ package in.fastr.apps.common;
 
 import in.fastr.apps.stuck.DbWrapper;
 
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.util.List;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -17,6 +20,8 @@ import android.util.Log;
 /**
  * Class needs to upload datapoints to the server.  On successfully uploading,
  * remove those datapoints from the local DB.
+ *
+ * TODO: Batch records if there are too many to upload at once
  * 
  * @author gaurav
  *
@@ -29,13 +34,19 @@ public class UploadRecords {
     private static String btis = "http://www.btis.in/trafficstatus_cache.txt";
 
     public static void upload(DbWrapper dbWrapper) { 
-        // int count = dbWrapper.countRecordsForUpload();
-        
         // Are there any new records? If not, quit
+        if (dbWrapper.countUnsyncedCongestionPoints() == 0) {
+            Log.d(Global.Company, "No records for upload");
+            return;
+        }
         
-        // Try to upload all the new records, newest ones first 
-        // (newest because they are most relevant for real-time traffic)
-        // TODO: Batch records if there are too many to upload at once
+        // Try to upload all the new records
+        List<CongestionPoint> congestionPoints = 
+            dbWrapper.getUnsyncedCongestionPoints();
+        
+        // Convert records into JSON for REST
+
+        // Mark records as uploaded in the DB
         
         callRest(nodeServer);
     }
@@ -61,22 +72,40 @@ public class UploadRecords {
                 HttpEntity entity = response.getEntity();
                 if (entity != null) {
                     InputStream instream = entity.getContent();
-                    byte[] tmp = new byte[2048];
-                    while (instream.read(tmp) != -1) {
-                        Log.d(Global.Company, String.format("%s", tmp));
-                    }
+                    String result = convertStreamToString(instream);
+                    Log.i(Global.Company, "Result of converstion: [" + result + "]");
+                    instream.close();
+                } else {
+                    Log.d(Global.Company, "Empty Http response");
                 }
-                
             } else {
                 Log.d(Global.Company, "Unsuccessful call to REST");
             }
         } catch (ClientProtocolException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         } catch (IOException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
     }
-    
+
+    private static String convertStreamToString(InputStream is) {
+        BufferedReader reader = new BufferedReader(new InputStreamReader(is));
+        StringBuilder sb = new StringBuilder();
+        String line = null;
+        try {
+            while ((line = reader.readLine()) != null) {
+                sb.append(line + "\n");
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                is.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        return sb.toString();
+    }
+   
 }

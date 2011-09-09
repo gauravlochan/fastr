@@ -1,5 +1,8 @@
 package in.fastr.apps.stuck;
 
+import java.util.Date;
+
+import in.fastr.apps.common.CongestionPoint;
 import in.fastr.apps.common.UploadRecords;
 
 import android.app.Activity;
@@ -31,36 +34,44 @@ public class StuckInTrafficActivity extends Activity {
      * OnCLick Listener for the StuckInTraffic Button
      * Invoked from main.xml
      */
-    public void recordGPS(View view){
-      Intent intent = new Intent().setClass(this, TabPage.class);
-      startActivity(intent);
-      locationManager = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
-      // TODO: Does it really need to create a new Listener each time?
-      LocationListener mlocListener = new MyLocationListener();
-      //TODO need to review getProvider() method
-      String provider = getProvider(this, locationManager);
-      locationManager.requestLocationUpdates( provider, 0, 0, mlocListener);
-      
-      UploadRecords.upload(dbWrapper);
+    public void onStuckButtonClicked(View view) {
+        boolean testing = true;
+
+        // TODO: Needed a way to test the upload api so abusing this button
+        // Please forgive me ...
+        if (testing) {
+            UploadRecords.upload(dbWrapper);
+        } else {
+            Intent intent = new Intent().setClass(this, TabPage.class);
+            startActivity(intent);
+            locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+            // TODO: Does it really need to create a new Listener each time?
+            LocationListener mlocListener = new MyLocationListener();
+            // TODO need to review getProvider() method
+            String provider = getProvider(this, locationManager);
+            locationManager.requestLocationUpdates(provider, 0, 0, mlocListener);
+        }
     }
 
     // TODO: Make this a regular class, not an inner class
     public class MyLocationListener implements LocationListener {
         @Override
         public void onLocationChanged(Location loc) {
-            double longitude = loc.getLatitude();
-            double latitude = loc.getLongitude();
-            float speed = loc.getSpeed();
-            Log.d(App.Name, "GPS Latitude" + Double.toString(latitude));
-            Log.d(App.Name, "GPS Longitude" + Double.toString(longitude));
+            CongestionPoint point = new CongestionPoint(
+                    new Date().getTime(),
+                    loc.getLatitude(), 
+                    loc.getLongitude(),
+                    loc.getSpeed(),
+                    loc.getAccuracy());
+            
+            Log.d(App.Name, "GPS reports " + point.toString());
 
             StuckInTrafficActivity.this.locationManager.removeUpdates(this);
 
-            /* Insert data to a Table */
             // TODO decide below which speed should the congestion point.
             // Currently setting in to 5
-            if (speed < 5) {
-                dbWrapper.insertPoint(latitude, longitude);
+            if (point.getSpeed() < 5) {
+                dbWrapper.insertPoint(point);
             }            
         }
 

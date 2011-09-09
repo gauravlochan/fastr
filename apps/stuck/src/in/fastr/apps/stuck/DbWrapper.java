@@ -1,14 +1,18 @@
 package in.fastr.apps.stuck;
 
+import in.fastr.apps.common.CongestionPoint;
 import in.fastr.apps.common.Global;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 import android.content.Context;
 import android.app.Activity;
+import android.database.sqlite.*;
 
 
 public class DbWrapper {
@@ -18,6 +22,8 @@ public class DbWrapper {
     private static final String COL_TIMESTAMP = "Timestamp";
     private static final String COL_STATUS = "Status";
 
+    // TODO: Change this so that it doesn't need the activity passed in
+    // instead, use the android.database.sqlite.SQLiteDatabase class
     private Activity activity;
     
     public DbWrapper(Activity _activity) {
@@ -56,26 +62,23 @@ public class DbWrapper {
             db.close();
         }
     }
-    
+
     
     /**
      * Insert a single reported congestion point
      */
-    public void insertPoint(double latitude, double longitude) {
-        Date d = new Date();
-        long epochtime = d.getTime();
-
-        Log.d(Global.Company, "Attempting write to SQL");
-
+    public void insertPoint(CongestionPoint point) {
+        Log.d(Global.Company, "Attempting write point to SQL");
         SQLiteDatabase db = 
             activity.openOrCreateDatabase("Traffix", Context.MODE_PRIVATE, null);
+
         try {
             String columns = " (Latitude, Longitude, Timestamp, Status) ";
 
             db.execSQL("INSERT INTO " + TableName + columns + "VALUES ("
-                    + latitude + ", " 
-                    + longitude + ", " 
-                    + epochtime + ", " 
+                    + point.getLatitude() + ", " 
+                    + point.getLongitude() + ", " 
+                    + point.getEpochTime() + ", " 
                     + "'New'" + 
                     ");");
             
@@ -83,8 +86,9 @@ public class DbWrapper {
         } finally {
             db.close();
         }
-        
+
     }
+    
     
     /**
      * Print out the database contents
@@ -92,7 +96,7 @@ public class DbWrapper {
     public void logDatabase() {
         SQLiteDatabase db = 
             activity.openOrCreateDatabase("Traffix", Context.MODE_PRIVATE, null);
-
+        
         try {
             Cursor c = db.rawQuery("SELECT * FROM " + TableName, null);
     
@@ -114,39 +118,80 @@ public class DbWrapper {
         }
     }
     
-    public int countRecordsForUpload() {
-        SQLiteDatabase db = 
-            activity.openOrCreateDatabase("Traffix", Context.MODE_PRIVATE, null);
+    /**
+     * Return count of congestion points that have not been uploaded.
+     * 
+     * @return count of congestion points that have not been uploaded
+     */
+    public long countUnsyncedCongestionPoints() {
+        SQLiteDatabase db = activity.openOrCreateDatabase("Traffix", Context.MODE_PRIVATE, null);
+        
         try {
-            final String SQL_STATEMENT = "SELECT COUNT(*) FROM " + TableName + 
-                " WHERE Status='New'";
-            
-            Cursor c = db.rawQuery(SQL_STATEMENT, null);
-            
-            // TODO: THIS IS BUGGY
-            int count = c.getInt(0);
+            SQLiteStatement stmt = db.compileStatement("SELECT COUNT(*) FROM " + 
+                    TableName + " WHERE Status='New'");
+            long count = stmt.simpleQueryForLong();
             return count;
-            // db.execSQL("SELECT COUNT(*) FROM " + TableName + " WHERE Status='New'");
         } finally {
             db.close();
         }
     }
-
-    public Object getDbContext() {
+    
+    /**
+     * Loads a list of unsynced congestion points from the database.  
+     * User can specify a limit to the number of points to load (chunkSize)
+     * 
+     * @param chunkSize the max number of points to get.  0 implies there
+     *        is no limit
+     *        
+     * @return
+     */
+    @Deprecated
+    public List<CongestionPoint> getUnsyncedCongestionPoints(long chunkSize) {
+        // TODO: SqlLite doesnt seem to support "SELECT TOP n"
+        return null;
+    }
+    
+    /**
+     * Loads a list of all unsynced congestion points from the database.  
+     *        
+     * @return
+     */
+    public List<CongestionPoint> getUnsyncedCongestionPoints() {
         SQLiteDatabase db = 
             activity.openOrCreateDatabase("Traffix", Context.MODE_PRIVATE, null);
-        return db;
-    }
-
-    public void closeDbContext(Object dbContext) {
-        ((SQLiteDatabase) dbContext).close();
-    }
-    
-    
-    public void startUpload(Object dbContext) {
-    }
-
-    public void stopUpload(Object dbContext) {
         
+        try {
+            String query = "SELECT * FROM " + TableName + " WHERE " + 
+                COL_STATUS + "=='New';";
+            Cursor c = db.rawQuery(query, null);
+
+            if (c != null) {
+                int latIndex = c.getColumnIndex(COL_LATITUDE);
+                int longIndex = c.getColumnIndex(COL_LONGITUDE);
+                int timestamp = c.getColumnIndex(COL_TIMESTAMP);
+        
+                int count = c.getCount();
+                List<CongestionPoint> points = new ArrayList<CongestionPoint>(count);
+
+                c.moveToFirst();
+                // Loop through all Results
+                do {
+                    CongestionPoint point = new CongestionPoint(
+                                    c.getDouble(latIndex),
+                                    c.getDouble(longIndex),
+                                    c.getLong(timestamp) );
+                    points.add(point);
+                    Log.d(Global.Company, point.toString());
+                } while (c.moveToNext());
+                return points;
+            } else {
+                Log.d(Global.Company, "Cursor is null");
+                return null;
+            }
+        } finally {
+            db.close();
+        }
     }
+    
+    
 }
