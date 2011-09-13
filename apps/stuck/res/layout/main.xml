@@ -8,5 +8,12 @@
     		android:layout_height="wrap_content" 
     		android:text="Stuck in Traffic!" 
     		android:id="@+id/stuckintraffic"
-    		android:onClick="onStuckButtonClicked"></Button>
+    		android:onClick="onStuckButtonClicked">
+    </Button>
+    <Button android:layout_width="fill_parent"
+            android:layout_height="wrap_content" 
+            android:text="Upload" 
+            android:id="@+id/upload" 
+            android:onClick="onUploadButtonClicked">
+    </Button>
 </LinearLayout>

@@ -69,6 +69,7 @@ public class RESTHelper {
         
     }
     
+    
     /**
      * A simple get call to the specified server.  Good for testing the 
      * server connectivity
@@ -105,6 +106,7 @@ public class RESTHelper {
             e.printStackTrace();
         }
     }
+    
 
     private static String convertStreamToString(InputStream is) {
         BufferedReader reader = new BufferedReader(new InputStreamReader(is));
