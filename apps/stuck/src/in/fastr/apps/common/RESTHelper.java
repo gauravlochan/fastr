@@ -76,7 +76,8 @@ public class RESTHelper {
      * 
      * @param server
      */
-    public static void simpleGet(String server) {
+    public static String simpleGet(String server) {
+        String result = null;
         Log.d(Global.Company, "Attempting call to REST");
 
         HttpClient httpClient = new DefaultHttpClient();
@@ -91,7 +92,7 @@ public class RESTHelper {
                 HttpEntity entity = response.getEntity();
                 if (entity != null) {
                     InputStream instream = entity.getContent();
-                    String result = convertStreamToString(instream);
+                    result = convertStreamToString(instream);
                     Log.i(Global.Company, "Result of converstion: [" + result + "]");
                     instream.close();
                 } else {
@@ -105,6 +106,7 @@ public class RESTHelper {
         } catch (IOException e) {
             e.printStackTrace();
         }
+        return result;
     }
     
 
