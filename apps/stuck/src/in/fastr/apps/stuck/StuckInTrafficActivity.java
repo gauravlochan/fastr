@@ -1,17 +1,10 @@
 package in.fastr.apps.stuck;
 
-import java.util.Date;
-
-import in.fastr.apps.common.CongestionPoint;
 import in.fastr.apps.common.UploadRecords;
 
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.location.Criteria;
-import android.location.Location;
-import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.util.Log;
@@ -57,7 +50,6 @@ public class StuckInTrafficActivity extends Activity {
     public void onDestroy() {
         super.onDestroy();
         Log.d(App.Name, "KILL");
-        dbWrapper.logDatabase();
     }
    
 }

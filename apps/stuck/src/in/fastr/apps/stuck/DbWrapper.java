@@ -108,7 +108,7 @@ public class DbWrapper {
                 do {
                     double lat = c.getDouble(Column1);
                     double lon = c.getDouble(Column2);
-                    String coordinate = String.format("%d %d", lat, lon);
+                    String coordinate = String.format("%f %f", lat, lon);
                     Log.d(Global.Company, coordinate);
                 } while (c.moveToNext());
             }

@@ -24,5 +24,6 @@
         <activity android:name="Tweets"></activity>
         <activity android:name="TabPage"></activity>
     </application>
+    <uses-sdk android:minSdkVersion="7"/>
     
 </manifest>
