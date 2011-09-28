@@ -19,22 +19,22 @@ body { height: 100%; margin: 0; padding: 0 }
         var latlng;
         var startAddr = "Bangalore, Karnataka, India";
         var geocoder = new google.maps.Geocoder();
-        geocoder.geocode({
-            'address' : startAddr
-        }, function(startResults, status) {
-            if(status == google.maps.GeocoderStatus.OK) {
-                latlng = startResults[0].geometry.location;
-            } else {
-                alert("Incorrect address");
+        geocoder.geocode({ 'address' : startAddr }, 
+            function(startResults, status) {
+                if(status == google.maps.GeocoderStatus.OK) {
+                    latlng = startResults[0].geometry.location;
+                } else {
+                    alert("Incorrect address");
+                }
+                var myOptions = {
+                    zoom : 12,
+                    center : latlng,
+                    mapTypeId : google.maps.MapTypeId.ROADMAP
+                };
+                map = new google.maps.Map(document.getElementById("map_canvas"), myOptions);
+                return map;
             }
-            var myOptions = {
-                zoom : 12,
-                center : latlng,
-                mapTypeId : google.maps.MapTypeId.ROADMAP
-            };
-            map = new google.maps.Map(document.getElementById("map_canvas"), myOptions);
-            return map;
-        });
+        );
     }
 
     function readInput() {
@@ -48,20 +48,20 @@ body { height: 100%; margin: 0; padding: 0 }
         var geocoder = new google.maps.Geocoder();
 
         for(var i = 0; i < congestionPoints.length; ++i) {
-            geocoder.geocode({
-                'address' : congestionPoints[i]
-            }, function(results, status) {
-                if(status == google.maps.GeocoderStatus.OK) {
-                    map.setCenter(results[0].geometry.location);
-                    var marker = new google.maps.Marker({
-                        map : map,
-                        position : results[0].geometry.location,
-                        title : "fastr marker"
-                    });
-                } else {
-                    alert("Unsuccessful geoCode: " + status);
+            geocoder.geocode({ 'address' : congestionPoints[i] }, 
+                function(results, status) {
+                    if(status == google.maps.GeocoderStatus.OK) {
+                        map.setCenter(results[0].geometry.location);
+                        var marker = new google.maps.Marker({
+                            map : map,
+                            position : results[0].geometry.location,
+                            title : "fastr marker"
+                        });
+                    } else {
+                        alert("Unsuccessful geoCode: " + status);
+                    }
                 }
-            });
+            );
         }
     }
 </script>
