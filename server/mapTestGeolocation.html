@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+        <style type="text/css">
+html { height: 100% }
+body { height: 100%; margin: 0; padding: 0 }
+#map_canvas { height: 100% }        </style>
+
+<script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?sensor=false"></script>
+<script type="text/javascript">/**
+     * Usage - Load this file. Click on the submit button to see the markers.
+     * To change values - add or modify strings in the array congestionPoints in the constructMarkers method
+     */
+
+    var map;
+
+    function success(position) {
+        var latlng;
+        latlng = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
+
+        var myOptions = {
+            zoom : 12,
+            center : latlng,
+            mapTypeId : google.maps.MapTypeId.ROADMAP
+        };
+        map = new google.maps.Map(document.getElementById("map_canvas"), myOptions);
+    }
+    
+    function handle_error(err) {
+        console.log("Error "+err.code + ":" + err.message);
+        geocodeFixed();
+    }
+    
+    function geocodeFixed() {
+        console.log("Enter geocodeFixed");
+        var startAddr = "Bangalore, Karnataka, India";
+        var geocoder = new google.maps.Geocoder();
+        var latlng;
+
+        geocoder.geocode({ 'address' : startAddr }, 
+            // geocoder callback function
+            function(startResults, status) {
+                if (status == google.maps.GeocoderStatus.OK) {
+                    latlng = startResults[0].geometry.location;
+                    console.log("latLng = " + latlng);
+                } else {
+                    alert("Incorrect address");
+                }
+                var myOptions = {
+                    zoom : 12,
+                    center : latlng,
+                    mapTypeId : google.maps.MapTypeId.ROADMAP
+                };
+                map = new google.maps.Map(document.getElementById("map_canvas"), myOptions);
+            }
+        );
+        
+        console.log("Exit geocodeFixed");
+    }    
+
+    
+    function geolocation() {
+        navigator.geolocation.getCurrentPosition(success, handle_error, 
+            {
+                timeout: (5 * 1000),
+                maximumAge: (1000 * 60 * 15),
+                enableHighAccuracy: false
+            }
+        );
+    }
+    
+    function initialize() {
+        console.log("Enter initialize");
+        // try to use html5 geolocation if browser supports it
+        if (navigator.geolocation) {
+            console.log("Try geolocation");
+            geolocation();
+        } else {
+            console.log("Resort to geocode");
+            geocodeFixed();
+        }
+        
+        console.log("Exit initialize");
+    }
+
+    function readInput() {
+        var inputString = document.getElementById("textBox").value;
+        return inputString.split(",");
+    }
+
+    function constructMarkers() {
+        //var congestionPoints = new Array ("MG Road, Bengaluru, India", "Hebbal, Bengaluru, India", "Indiranagar, Bengaluru, India");
+        var congestionPoints = readInput();
+        var geocoder = new google.maps.Geocoder();
+
+        for(var i = 0; i < congestionPoints.length; ++i) {
+            geocoder.geocode({ 'address' : congestionPoints[i] }, 
+                function(results, status) {
+                    if(status == google.maps.GeocoderStatus.OK) {
+                        map.setCenter(results[0].geometry.location);
+                        var marker = new google.maps.Marker({
+                            map : map,
+                            position : results[0].geometry.location,
+                            title : "fastr marker"
+                        });
+                    } else {
+                        alert("Unsuccessful geoCode: " + status);
+                    }
+                }
+            );
+        }
+    }
+</script>
+    </head>
+    <body onload="initialize()">
+        <input type ="submit" value = "submit" onClick = "constructMarkers()" />
+        <input type ="text" id = "textBox" />
+        <div id="map_canvas" style="width:100%; height:100%"></div>
+    </body>
+</html>
