@@ -9,7 +9,8 @@ import android.util.Log;
 
 public class MyLocationListener implements LocationListener {
 	public String routeData = new String();
-	
+  public Location lastLocation;
+
 	public void onLocationChanged(Location location) {
 		// Called when a new location is found by the network location
 		// provider.
@@ -26,6 +27,9 @@ public class MyLocationListener implements LocationListener {
 	}
 	
 	private void makeUseOfNewLocation(Location location) {
+	  // cache the last location
+	  lastLocation = location;
+	  
 		double lat=location.getLatitude();
 		double longitude=location.getLongitude();
 		long timestamp=location.getTime();
@@ -33,7 +37,8 @@ public class MyLocationListener implements LocationListener {
 		Date expiry = new Date(Long.parseLong(stimestamp));
 		float currentSpeed=location.getSpeed();
 		routeData+= String.format("%f,%f,%d,%f\n", lat, longitude, timestamp, currentSpeed);
-		String details="Latitidue "+Double.toString(lat)+"Longitude "+Double.toString(longitude)+"Time "+expiry.toString()+"Speed"+String.format("%.2f",currentSpeed);
+		String details="Latitude "+Double.toString(lat)+"Longitude "+Double.toString(longitude)+"Time "+expiry.toString()+"Speed"+String.format("%.2f",currentSpeed);
 		Log.d("FASTTRIP", details);
 	}
+	
 }

@@ -23,16 +23,19 @@ public class MapItemOverlay extends ItemizedOverlay<OverlayItem>
      mOverlays.add(overlay);
      populate();
    }
+   
    @Override
    protected OverlayItem createItem(int i)
    {
      return mOverlays.get(i);
    }
+   
    @Override
    public int size()
    {
      return mOverlays.size();
    }
+   
    @Override
    protected boolean onTap(int index)
    {

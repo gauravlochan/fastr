@@ -2,83 +2,86 @@
 	android:layout_width="fill_parent" 
 	android:layout_height="fill_parent" 
 	xmlns:android="http://schemas.android.com/apk/res/android">
-	<RelativeLayout 
-	android:id="@+id/rl01"
-	android:layout_width="fill_parent" 
-	android:layout_height="wrap_content" 
-	xmlns:android="http://schemas.android.com/apk/res/android">
 
-	<Button 
- 		android:id="@+id/enablegps"
- 		android:text="Tap To Enable GPS"
- 		android:layout_centerHorizontal="true"
- 		android:layout_width="wrap_content"
- 		android:layout_height="wrap_content"
- 		 /> 	
-	<TextView
-   		android:id="@+id/helloworld"
-   		android:text="Click Start when you begin your journey and at the end of your journey click Stop.\n"
-   		android:layout_centerHorizontal="true"
-   		android:layout_width="wrap_content"
-   		android:layout_height="wrap_content"
-   		android:layout_below="@+id/enablegps" />
- 	<TextView
-   		android:id="@+id/onTStart"
-   		android:text=""
-   		android:layout_centerInParent="true"
-   		android:layout_width="wrap_content"
-   		android:layout_height="wrap_content"
-   		android:layout_below="@+id/helloworld" />	
-	<Button 
- 		android:id="@+id/onBStart"
- 		android:text="Start"
- 		android:layout_centerHorizontal="true"
- 		android:layout_width="fill_parent"
- 		android:layout_height="wrap_content"
- 		android:layout_below="@+id/onTStart"
- 		android:onClick="selfService" /> 	
+	<RelativeLayout 
+		android:id="@+id/rl01"
+		android:layout_width="fill_parent" 
+		android:layout_height="wrap_content" 
+		xmlns:android="http://schemas.android.com/apk/res/android">
+	
+		<Button 
+	 		android:id="@+id/enablegps"
+	 		android:text="Tap To Enable GPS"
+	 		android:layout_centerHorizontal="true"
+	 		android:layout_width="wrap_content"
+	 		android:layout_height="wrap_content"
+	 		 /> 	
+		<TextView
+	   		android:id="@+id/helloworld"
+	   		android:text="Click Start when you begin your journey and at the end of your journey click Stop.\n"
+	   		android:layout_centerHorizontal="true"
+	   		android:layout_width="wrap_content"
+	   		android:layout_height="wrap_content"
+	   		android:layout_below="@+id/enablegps" />
+	 	<TextView
+	   		android:id="@+id/onTStart"
+	   		android:text=""
+	   		android:layout_centerInParent="true"
+	   		android:layout_width="wrap_content"
+	   		android:layout_height="wrap_content"
+	   		android:layout_below="@+id/helloworld" />	
+		<Button 
+	 		android:id="@+id/onBStart"
+	 		android:text="Start"
+	 		android:layout_centerHorizontal="true"
+	 		android:layout_width="fill_parent"
+	 		android:layout_height="wrap_content"
+	 		android:layout_below="@+id/onTStart"
+	 		android:onClick="selfService" /> 	
 	</RelativeLayout>
 
 	<RelativeLayout
-	android:id="@+id/rl02"
-	android:layout_width="fill_parent" 
-	android:layout_height="wrap_content" 
-	android:layout_below="@id/rl01"
-	android:gravity="center_vertical"
-	xmlns:android="http://schemas.android.com/apk/res/android" >
-	<Button 
- 		android:id="@+id/pissed"
- 		android:text="Stuck in traffic!"
- 		android:layout_below="@+id/onBStart"
- 		android:layout_width="fill_parent"
- 		android:layout_height="wrap_content"/>
-	<Button 
- 		android:id="@+id/mapView"
- 		android:text="Go to Map"
- 		android:layout_below="@+id/pissed"
- 		android:layout_width="fill_parent"
- 		android:layout_height="wrap_content"
- 		/>
+		android:id="@+id/rl02"
+		android:layout_width="fill_parent" 
+		android:layout_height="wrap_content" 
+		android:layout_below="@id/rl01"
+		android:gravity="center_vertical"
+		xmlns:android="http://schemas.android.com/apk/res/android" >
+
+		<Button 
+	 		android:id="@+id/pissed"
+	 		android:text="Stuck in traffic!"
+	 		android:layout_below="@+id/onBStart"
+	 		android:layout_width="fill_parent"
+	 		android:layout_height="wrap_content"/>
+		<Button 
+	 		android:id="@+id/mapView"
+	 		android:text="Go to Map"
+	 		android:layout_below="@+id/pissed"
+	 		android:layout_width="fill_parent"
+	 		android:layout_height="wrap_content"
+	 		/>
  	</RelativeLayout>
 
  	<RelativeLayout
-	android:id="@+id/rl03"
-	android:layout_width="fill_parent" 
-	android:layout_height="fill_parent" 
-	android:layout_below="@id/rl02"
-	android:gravity="bottom"
-	xmlns:android="http://schemas.android.com/apk/res/android" >
-    <ImageView
-        android:id="@+id/icon"        
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content" 
-		android:layout_centerVertical="true"
-        android:layout_alignParentBottom="true"
-        android:layout_marginBottom="0dip"
-        android:layout_marginRight="6dip"        
-        android:src="@drawable/icon" />
+		android:id="@+id/rl03"
+		android:layout_width="fill_parent" 
+		android:layout_height="fill_parent" 
+		android:layout_below="@id/rl02"
+		android:gravity="bottom"
+		xmlns:android="http://schemas.android.com/apk/res/android" >
+	    <ImageView
+	        android:id="@+id/icon"        
+	        android:layout_width="fill_parent"
+	        android:layout_height="wrap_content" 
+			android:layout_centerVertical="true"
+	        android:layout_alignParentBottom="true"
+	        android:layout_marginBottom="0dip"
+	        android:layout_marginRight="6dip"        
+	        android:src="@drawable/icon" />
  	</RelativeLayout>
- </RelativeLayout>
+
+</RelativeLayout>
  
 
 
