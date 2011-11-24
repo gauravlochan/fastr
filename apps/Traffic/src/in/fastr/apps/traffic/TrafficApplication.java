@@ -14,7 +14,7 @@ public class TrafficApplication extends GDApplication {
     
     @Override
     public Intent getMainApplicationIntent() {
-        return new Intent(Intent.ACTION_VIEW, Uri.parse("http://github.com/cyrilmottier/GreenDroid"));
+        return new Intent(Intent.ACTION_VIEW, Uri.parse("http://www.fastr.in"));
     }
 
 }

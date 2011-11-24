@@ -1,12 +1,9 @@
 package in.fastr.apps.traffic;
 
-import com.google.android.maps.GeoPoint;
-
 import android.content.Context;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
-import android.util.Log;
 import android.os.Bundle;
 
 public class LocationRetriever {

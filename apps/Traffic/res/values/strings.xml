@@ -2,4 +2,5 @@
 <resources>
     <string name="hello">Hello World, TrafficActivity!</string>
     <string name="app_name">Traffic</string>
+    <string name="clicked_on_direction">You have clicked on the directions button</string>
 </resources>
