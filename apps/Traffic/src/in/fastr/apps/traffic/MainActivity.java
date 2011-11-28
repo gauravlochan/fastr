@@ -2,7 +2,7 @@ package in.fastr.apps.traffic;
 
 import greendroid.app.GDMapActivity;
 import greendroid.widget.ActionBarItem;
-import greendroid.widget.NormalActionBarItem;
+import greendroid.widget.ActionBarItem.Type;
 
 import java.util.List;
 
@@ -34,12 +34,9 @@ public class MainActivity extends GDMapActivity {
         setActionBarContentView(R.layout.map);
 
         // Add the direction button
-        addActionBarItem(getActionBar()
-                .newActionBarItem(NormalActionBarItem.class)
-                .setDrawable(R.drawable.ic_title_export)
-                .setContentDescription(R.string.gd_export), 
-                R.id.action_bar_export);
+        addActionBarItem(Type.Export, R.id.action_bar_directions);
 
+        
 		mapView = (MapView) findViewById(R.id.mapview);
 		mapView.setBuiltInZoomControls(true);
 
@@ -60,7 +57,7 @@ public class MainActivity extends GDMapActivity {
     public boolean onHandleActionBarItemClick(ActionBarItem item, int position) {
 
         switch (item.getItemId()) {
-            case R.id.action_bar_export:
+            case R.id.action_bar_directions:
                 Toast.makeText(this, R.string.clicked_on_direction, Toast.LENGTH_SHORT).show();
                 break;
 
@@ -71,10 +68,6 @@ public class MainActivity extends GDMapActivity {
         return true;
     }
 
-	
-	
-	
-	
 	private GeoPoint getCurrentLocation() {
 		// Acquire a reference to the system Location Manager
 		LocationManager locationManager = (LocationManager) this
