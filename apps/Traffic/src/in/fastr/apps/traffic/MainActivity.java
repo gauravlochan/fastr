@@ -7,6 +7,7 @@ import greendroid.widget.ActionBarItem.Type;
 import java.util.List;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.location.LocationManager;
@@ -36,7 +37,6 @@ public class MainActivity extends GDMapActivity {
         // Add the direction button
         addActionBarItem(Type.Export, R.id.action_bar_directions);
 
-        
 		mapView = (MapView) findViewById(R.id.mapview);
 		mapView.setBuiltInZoomControls(true);
 
@@ -58,7 +58,7 @@ public class MainActivity extends GDMapActivity {
 
         switch (item.getItemId()) {
             case R.id.action_bar_directions:
-                Toast.makeText(this, R.string.clicked_on_direction, Toast.LENGTH_SHORT).show();
+                startActivity(new Intent(this, EnterAddressActivity.class));
                 break;
 
             default:

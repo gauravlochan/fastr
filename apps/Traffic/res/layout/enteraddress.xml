@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical" >
+
+    <TextView
+        android:id="@+id/textView1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/EnterAddress"
+        android:textAppearance="?android:attr/textAppearanceLarge" android:layout_marginTop="10dp" android:layout_gravity="center_horizontal"/>
+
+    <EditText
+        android:id="@+id/destAddressEditText"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/DestinationAddress"
+        android:inputType="textPostalAddress" android:layout_marginTop="10dp"/>
+
+    <TextView
+        android:id="@+id/textView2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/NameOfPlace"
+        android:textAppearance="?android:attr/textAppearanceLarge" android:layout_gravity="center_horizontal" android:layout_marginTop="10dp"/>
+
+    <EditText
+        android:id="@+id/placeEditText"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:inputType="textPostalAddress" android:hint="Name of Place" android:layout_marginTop="10dp">
+
+        <requestFocus />
+    </EditText>
+
+    <Button
+        android:id="@+id/getDirectionsButton"
+        android:layout_width="150dp"
+        android:layout_height="wrap_content"
+        android:text="@string/GetDirections" android:layout_gravity="center_horizontal" android:layout_marginTop="50dp"/>
+        
+</LinearLayout>
