@@ -1,6 +1,7 @@
 package in.fastr.apps.traffic;
 
 import greendroid.app.GDActivity;
+import android.app.Activity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -17,7 +18,7 @@ import android.widget.Toast;
  * 
  * @author gauravlochan
  */
-public class EnterAddressActivity extends GDActivity {
+public class EnterAddressActivity extends Activity {
 	
 	private EditText _destinationAddress;
 	private EditText _nameOfPlace;
@@ -27,7 +28,7 @@ public class EnterAddressActivity extends GDActivity {
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-        setActionBarContentView(R.layout.enteraddress);
+        setContentView(R.layout.enteraddress);
         
         _button = ( Button ) findViewById( R.id.getDirectionsButton );
         _button.setOnClickListener( new GetDirectionsClickHandler() );
