@@ -35,7 +35,7 @@ public class LocationRetriever {
         locationManager.requestLocationUpdates(provider, 0, 0, locationListener);
     }
     
-    
+  
     public class SingleLocationListener implements LocationListener {
         @Override
         public void onLocationChanged(Location loc) {
