@@ -1,12 +1,14 @@
 package in.fastr.apps.traffic.activities;
 
-import in.fastr.apps.traffic.R;
-import in.fastr.apps.traffic.R.id;
-import in.fastr.apps.traffic.R.layout;
-import in.fastr.apps.traffic.R.string;
 import greendroid.app.GDActivity;
-import android.app.Activity;
+import in.fastr.apps.traffic.R;
+import in.fastr.apps.traffic.services.GeocodingService;
+import in.fastr.apps.traffic.services.GoogleGeocodingService;
+import in.fastr.apps.traffic.services.LatlongPointOfInterestService;
+import in.fastr.apps.traffic.services.PointOfInterestService;
+import in.fastr.library.Global;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -53,10 +55,13 @@ public class EnterAddressActivity extends GDActivity {
     			    Toast.makeText(EnterAddressActivity.this, R.string.emptyaddresserror, Toast.LENGTH_SHORT).show();
     			} else {
         			Toast.makeText(EnterAddressActivity.this, nameOfPlace, Toast.LENGTH_SHORT).show();
+        			getPlace(nameOfPlace);
+        			
     			}
     		} else {
     			if (nameOfPlace.length() == 0) {
     			    Toast.makeText(EnterAddressActivity.this, destinationAddress, Toast.LENGTH_SHORT).show();
+    			    getAddress(destinationAddress);
     			} else {
     			    Toast.makeText(EnterAddressActivity.this, R.string.bothspecifiederror, Toast.LENGTH_SHORT).show();
     			}
@@ -64,9 +69,22 @@ public class EnterAddressActivity extends GDActivity {
     	}
     }
 
-	
-	// User can type something and select 'done'
-	
-	// If not entered anything, error toast
+    private void getPlace(String place) {
+        Log.d(Global.Company, "Calling poiService");
+
+    	PointOfInterestService poiService = new LatlongPointOfInterestService();
+    	poiService.getPoints(place);
+
+        Log.d(Global.Company, "Called poiService");
+    }
+    
+    private void getAddress(String address) {
+        Log.d(Global.Company, "Calling geoService");
+        
+    	GeocodingService geoService = new GoogleGeocodingService();
+    	geoService.resolveAddress(address);
+    	
+        Log.d(Global.Company, "Called geoService");
+    }
 	
 }

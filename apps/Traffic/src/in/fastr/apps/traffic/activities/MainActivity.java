@@ -3,12 +3,10 @@ package in.fastr.apps.traffic.activities;
 import greendroid.app.GDMapActivity;
 import greendroid.widget.ActionBarItem;
 import greendroid.widget.ActionBarItem.Type;
-
 import in.fastr.apps.traffic.R;
-import in.fastr.apps.traffic.R.id;
-import in.fastr.apps.traffic.R.layout;
 import in.fastr.apps.traffic.location.LocationHelper;
 import in.fastr.apps.traffic.location.LocationRetriever;
+import in.fastr.library.Global;
 
 import java.util.List;
 
@@ -18,8 +16,8 @@ import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MotionEvent;
-import android.widget.Toast;
 
 import com.google.android.maps.GeoPoint;
 import com.google.android.maps.MapView;
@@ -37,6 +35,8 @@ public class MainActivity extends GDMapActivity {
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
+        Log.d(Global.Company, "Creating MainActivity");
+
 		super.onCreate(savedInstanceState);
         setActionBarContentView(R.layout.map);
 
