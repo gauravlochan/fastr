@@ -25,7 +25,6 @@ public class PissedButtonListener implements OnClickListener {
 			globals.pissedButton.setText(CHILL);
     	} else {
     		globals.pissedButton.getBackground().setColorFilter(Color.RED, PorterDuff.Mode.MULTIPLY);
-    		//globals.pissedButton.setText(PISSED);
     		globals.pissedButton.setText(PISSED);
     		
     	}

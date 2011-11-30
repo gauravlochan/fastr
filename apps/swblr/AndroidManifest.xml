@@ -1,33 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-      package="com.swblr"
-      android:versionCode="1"
-      android:versionName="1.0"
-      android:screenOrientation="portrait"
-      >
-      
-<uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"></uses-permission><uses-permission android:name="android.permission.READ_PHONE_STATE"></uses-permission>
-<uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"></uses-permission>
-<uses-library android:name="com.google.android.maps" />
-<uses-permission android:name="android.permission.INTERNET" />
-
-    <application android:icon="@drawable/icon" android:label="@string/app_name">
-	<uses-library android:name="com.google.android.maps" />
-        <activity android:name=".Test"
-        		  android:configChanges="orientation|keyboardHidden"
-                  android:label="@string/app_name">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
-        <activity android:name=".MyMapActivity"
-        		  android:configChanges="orientation|keyboardHidden"
-                  >
-        </activity>
-        
-	<service android:enabled="true" android:name=".GpsService"
-			 android:exported="false"/>
+	package="com.swblr" android:versionCode="1" android:versionName="1.0"
+	android:screenOrientation="portrait">
 	
-    </application>
+	<uses-sdk android:minSdkVersion="7" />
+    
+	<uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"></uses-permission>
+	<uses-permission android:name="android.permission.READ_PHONE_STATE"></uses-permission>
+	<uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"></uses-permission>
+	<uses-library android:name="com.google.android.maps" />
+	<uses-permission android:name="android.permission.INTERNET" />
+
+	<application android:icon="@drawable/icon" android:label="@string/app_name">
+		<uses-library android:name="com.google.android.maps" />
+		
+		<activity android:name=".Main" android:configChanges="orientation|keyboardHidden"
+			android:label="@string/app_name">
+			<intent-filter>
+				<action android:name="android.intent.action.MAIN" />
+				<category android:name="android.intent.category.LAUNCHER" />
+			</intent-filter>
+		</activity>
+		
+		<activity android:name=".MyMapActivity"
+			android:configChanges="orientation|keyboardHidden">
+		</activity>
+
+		<service android:enabled="true" android:name=".GpsService"
+			android:exported="false" />
+
+	</application>
 </manifest>

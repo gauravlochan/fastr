@@ -18,12 +18,11 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
-public class Test extends Activity {
+public class Main extends Activity {
 	private GlobalContext globals = new GlobalContext();
 	private PissedButtonListener pissedButttonListner;
 	String curState="Start";
 	private Button enablegps;
-//	private MyLocationListener locationListener;
 	
     /** Called when the activity is first created. */
     @Override
