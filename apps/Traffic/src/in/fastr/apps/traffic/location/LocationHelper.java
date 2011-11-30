@@ -1,4 +1,4 @@
-package in.fastr.apps.traffic;
+package in.fastr.apps.traffic.location;
 
 import com.google.android.maps.GeoPoint;
 

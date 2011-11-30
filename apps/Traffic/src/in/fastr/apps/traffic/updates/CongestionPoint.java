@@ -1,4 +1,4 @@
-package in.fastr.apps.traffic;
+package in.fastr.apps.traffic.updates;
 
 /** Data class for each congestion point.
  * 

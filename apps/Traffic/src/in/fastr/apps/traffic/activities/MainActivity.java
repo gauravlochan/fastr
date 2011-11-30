@@ -1,8 +1,14 @@
-package in.fastr.apps.traffic;
+package in.fastr.apps.traffic.activities;
 
 import greendroid.app.GDMapActivity;
 import greendroid.widget.ActionBarItem;
 import greendroid.widget.ActionBarItem.Type;
+
+import in.fastr.apps.traffic.R;
+import in.fastr.apps.traffic.R.id;
+import in.fastr.apps.traffic.R.layout;
+import in.fastr.apps.traffic.location.LocationHelper;
+import in.fastr.apps.traffic.location.LocationRetriever;
 
 import java.util.List;
 

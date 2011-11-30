@@ -1,4 +1,4 @@
-package in.fastr.apps.traffic;
+package in.fastr.apps.traffic.location;
 
 import android.content.Context;
 import android.location.Location;

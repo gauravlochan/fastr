@@ -1,5 +1,6 @@
 package in.fastr.apps.traffic;
 
+import in.fastr.apps.traffic.activities.MainActivity;
 import android.content.Intent;
 import android.net.Uri;
 
