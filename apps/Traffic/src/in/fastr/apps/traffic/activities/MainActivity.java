@@ -3,9 +3,11 @@ package in.fastr.apps.traffic.activities;
 import greendroid.app.GDMapActivity;
 import greendroid.widget.ActionBarItem;
 import greendroid.widget.ActionBarItem.Type;
+import in.fastr.apps.traffic.AppGlobal;
 import in.fastr.apps.traffic.R;
 import in.fastr.apps.traffic.location.LocationHelper;
 import in.fastr.apps.traffic.location.LocationRetriever;
+import in.fastr.apps.traffic.services.PointOfInterest;
 import in.fastr.library.Global;
 
 import java.util.List;
@@ -22,11 +24,14 @@ import android.view.MotionEvent;
 import com.google.android.maps.GeoPoint;
 import com.google.android.maps.MapView;
 import com.google.android.maps.Overlay;
+import com.google.android.maps.OverlayItem;
 
 public class MainActivity extends GDMapActivity {
+	// Define a request code for the destination activity
+	private static final int ENTER_DESTINATION_REQUEST_CODE = 100;
+	
 	MapView mapView;
 	List<Overlay> mapOverlays;
-	Drawable drawable;
 
 	@Override
 	protected boolean isRouteDisplayed() {
@@ -64,7 +69,8 @@ public class MainActivity extends GDMapActivity {
 
         switch (item.getItemId()) {
             case R.id.action_bar_directions:
-                startActivity(new Intent(this, EnterAddressActivity.class));
+                startActivityForResult(new Intent(this, EnterAddressActivity.class), 
+                		ENTER_DESTINATION_REQUEST_CODE);
                 break;
 
             default:
@@ -74,6 +80,40 @@ public class MainActivity extends GDMapActivity {
         return true;
     }
 
+    
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) 
+    {	
+    	if (resultCode == RESULT_OK && requestCode == ENTER_DESTINATION_REQUEST_CODE) {
+            Log.i( Global.Company, "resultCode: " + resultCode );
+
+            
+            if (data.hasExtra(AppGlobal.destPointOfInterest)) {
+            	PointOfInterest point = (PointOfInterest) 
+            			data.getExtras().getSerializable(AppGlobal.destPointOfInterest);
+            	drawPointOfInterest(point);            		 
+            } else {
+            	Log.e(Global.Company, "Did not find point of interest in intent");
+            	// ERROR
+            }
+    	}
+    }
+    
+    private void drawPointOfInterest(PointOfInterest point) {
+    	Drawable drawable = this.getResources().getDrawable(R.drawable.gd_map_pin_pin);
+        MapItemOverlay itemizedOverlay = new MapItemOverlay(drawable, this);
+
+        OverlayItem overlayitem = new OverlayItem(point.getGeoPoint(), point.getName(), point.getDescription());
+        itemizedOverlay.addOverlay(overlayitem);
+        
+        List<Overlay> listOfOverlays = mapView.getOverlays();
+        listOfOverlays.add(itemizedOverlay);
+        
+        mapView.getController().animateTo(point.getGeoPoint());
+    }
+ 
+    
+    
 	private GeoPoint getCurrentLocation() {
 		// Acquire a reference to the system Location Manager
 		LocationManager locationManager = (LocationManager) this

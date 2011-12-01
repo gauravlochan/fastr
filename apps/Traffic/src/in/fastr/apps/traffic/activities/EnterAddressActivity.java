@@ -1,12 +1,18 @@
 package in.fastr.apps.traffic.activities;
 
 import greendroid.app.GDActivity;
+import in.fastr.apps.traffic.AppGlobal;
 import in.fastr.apps.traffic.R;
 import in.fastr.apps.traffic.services.GeocodingService;
 import in.fastr.apps.traffic.services.GoogleGeocodingService;
 import in.fastr.apps.traffic.services.LatlongPointOfInterestService;
+import in.fastr.apps.traffic.services.PointOfInterest;
 import in.fastr.apps.traffic.services.PointOfInterestService;
 import in.fastr.library.Global;
+
+import java.util.List;
+
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -73,9 +79,14 @@ public class EnterAddressActivity extends GDActivity {
         Log.d(Global.Company, "Calling poiService");
 
     	PointOfInterestService poiService = new LatlongPointOfInterestService();
-    	poiService.getPoints(place);
+    	List<PointOfInterest> points = poiService.getPoints(place);
 
         Log.d(Global.Company, "Called poiService");
+        
+		Intent data = new Intent();
+		data.putExtra(AppGlobal.destPointOfInterest, points.get(0));
+		setResult(RESULT_OK, data);
+		finish();
     }
     
     private void getAddress(String address) {
@@ -85,6 +96,13 @@ public class EnterAddressActivity extends GDActivity {
     	geoService.resolveAddress(address);
     	
         Log.d(Global.Company, "Called geoService");
+        
+        //prepareFinish();
     }
 	
+    @Override
+	public void finish() {
+		super.finish();
+	}
+    
 }

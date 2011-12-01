@@ -3,7 +3,8 @@
  */
 package in.fastr.apps.traffic.services;
 
-import in.fastr.library.rest.RESTHelper;
+import in.fastr.library.RESTHelper;
+import android.location.Geocoder;
 
 import com.google.android.maps.GeoPoint;
 
@@ -28,7 +29,9 @@ public class GoogleGeocodingService implements GeocodingService {
 		request = appendSensor(request, false);
 
 		String result = RESTHelper.simpleGet(request);
-	
+
+		Geocoder g;
+		
 		// TODO convert response json to GeoPoint
 		return null;
 	}

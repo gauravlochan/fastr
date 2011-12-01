@@ -1,6 +1,5 @@
-package in.fastr.library.rest;
+package in.fastr.library;
 
-import in.fastr.library.Global;
 
 import java.io.BufferedReader;
 import java.io.IOException;
