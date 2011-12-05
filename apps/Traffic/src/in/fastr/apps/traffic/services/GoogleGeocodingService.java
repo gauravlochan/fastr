@@ -4,7 +4,6 @@
 package in.fastr.apps.traffic.services;
 
 import in.fastr.library.RESTHelper;
-import android.location.Geocoder;
 
 import com.google.android.maps.GeoPoint;
 
@@ -16,7 +15,7 @@ import com.google.android.maps.GeoPoint;
  */
 public class GoogleGeocodingService implements GeocodingService {
 
-	private static final String xmlServiceUrl = "http://maps.googleapis.com/maps/api/geocode/json?";
+	//private static final String xmlServiceUrl = "http://maps.googleapis.com/maps/api/geocode/json?";
 	private static final String jsonServiceUrl = "http://maps.googleapis.com/maps/api/geocode/xml?";
 
 	
@@ -30,8 +29,6 @@ public class GoogleGeocodingService implements GeocodingService {
 
 		String result = RESTHelper.simpleGet(request);
 
-		Geocoder g;
-		
 		// TODO convert response json to GeoPoint
 		return null;
 	}

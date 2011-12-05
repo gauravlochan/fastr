@@ -11,9 +11,6 @@ import com.google.android.maps.GeoPoint;
  *
  */
 public class PointOfInterest implements Serializable {
-	public static final int LATLONG = 1;
-	public static final int GOOGLE = 1;
-
 	/**
 	 * Identifies which service this Point of Interest came from. 
 	 */
@@ -24,6 +21,7 @@ public class PointOfInterest implements Serializable {
 	 */
 	private String identifier;
 
+	// TODO: Convert to use SimpleGeoPoint
 	private double latitude;
 	private double longitude;
 	

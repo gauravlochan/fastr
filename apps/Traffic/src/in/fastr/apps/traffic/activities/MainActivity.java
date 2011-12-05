@@ -5,9 +5,13 @@ import greendroid.widget.ActionBarItem;
 import greendroid.widget.ActionBarItem.Type;
 import in.fastr.apps.traffic.AppGlobal;
 import in.fastr.apps.traffic.R;
+import in.fastr.apps.traffic.SimpleGeoPoint;
 import in.fastr.apps.traffic.location.LocationHelper;
 import in.fastr.apps.traffic.location.LocationRetriever;
+import in.fastr.apps.traffic.services.DirectionsService;
+import in.fastr.apps.traffic.services.GoogleDirectionsService;
 import in.fastr.apps.traffic.services.PointOfInterest;
+import in.fastr.apps.traffic.services.Route;
 import in.fastr.library.Global;
 
 import java.util.List;
@@ -91,7 +95,14 @@ public class MainActivity extends GDMapActivity {
             if (data.hasExtra(AppGlobal.destPointOfInterest)) {
             	PointOfInterest point = (PointOfInterest) 
             			data.getExtras().getSerializable(AppGlobal.destPointOfInterest);
-            	drawPointOfInterest(point);            		 
+            	drawPointOfInterest(point);     
+            	
+            	// HACK
+            	GeoPoint sourcePoint = getCurrentLocation();
+            	GeoPoint destination = point.getGeoPoint();
+            	DirectionsService dir = new GoogleDirectionsService();
+            	Route r = dir.getRoute(new SimpleGeoPoint(sourcePoint), new SimpleGeoPoint(destination));
+            	
             } else {
             	Log.e(Global.Company, "Did not find point of interest in intent");
             	// ERROR
