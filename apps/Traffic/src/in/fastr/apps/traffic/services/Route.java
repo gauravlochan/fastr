@@ -3,6 +3,7 @@ package in.fastr.apps.traffic.services;
 import in.fastr.apps.traffic.SimpleGeoPoint;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * A simple data object representing the directions for a route
@@ -32,5 +33,9 @@ public class Route {
 	// TODO: Think about how to store the associated directions text
 	public void addPoint(SimpleGeoPoint point) {
 		points.add(point);
+	}
+	
+	public List<SimpleGeoPoint> getPoints() {
+		return this.points;
 	}
 }

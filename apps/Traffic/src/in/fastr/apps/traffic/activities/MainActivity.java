@@ -8,6 +8,7 @@ import in.fastr.apps.traffic.R;
 import in.fastr.apps.traffic.SimpleGeoPoint;
 import in.fastr.apps.traffic.location.LocationHelper;
 import in.fastr.apps.traffic.location.LocationRetriever;
+import in.fastr.apps.traffic.server.ServerClient;
 import in.fastr.apps.traffic.services.DirectionsService;
 import in.fastr.apps.traffic.services.GoogleDirectionsService;
 import in.fastr.apps.traffic.services.PointOfInterest;
@@ -24,6 +25,7 @@ import android.location.LocationManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MotionEvent;
+import android.widget.Toast;
 
 import com.google.android.maps.GeoPoint;
 import com.google.android.maps.MapView;
@@ -56,15 +58,19 @@ public class MainActivity extends GDMapActivity {
 		mapView.setBuiltInZoomControls(true);
 
 		// Center the map
-		GeoPoint geoPoint = getCurrentLocation();
+		GeoPoint geoPoint = getLastKnownLocation();
 		mapView.getController().setCenter(geoPoint);
 		mapView.getController().setZoom(15);
+		
+        OverlayItem overlayItem = new OverlayItem(geoPoint, "Current Location", "");
+        drawSinglePoint(R.drawable.gd_map_pin_base, overlayItem);
+		Toast.makeText(this, "You are here", Toast.LENGTH_SHORT).show();
 
-		// Add overlays
-		MapOverlay mapOverlay = new MapOverlay();
-		List<Overlay> listOfOverlays = mapView.getOverlays();
-		// listOfOverlays.clear();
-		listOfOverlays.add(mapOverlay);
+
+		// Add overlay to handle user touch
+//		MapOverlay mapOverlay = new MapOverlay();
+//		List<Overlay> listOfOverlays = mapView.getOverlays();
+//		listOfOverlays.add(mapOverlay);
 	}
 	
 	
@@ -90,42 +96,57 @@ public class MainActivity extends GDMapActivity {
     {	
     	if (resultCode == RESULT_OK && requestCode == ENTER_DESTINATION_REQUEST_CODE) {
             Log.i( Global.Company, "resultCode: " + resultCode );
-
             
             if (data.hasExtra(AppGlobal.destPointOfInterest)) {
             	PointOfInterest point = (PointOfInterest) 
             			data.getExtras().getSerializable(AppGlobal.destPointOfInterest);
             	drawPointOfInterest(point);     
             	
-            	// HACK
-            	GeoPoint sourcePoint = getCurrentLocation();
+            	// Get the route from here to the destination
+            	GeoPoint sourcePoint = getLastKnownLocation();
             	GeoPoint destination = point.getGeoPoint();
             	DirectionsService dir = new GoogleDirectionsService();
             	Route r = dir.getRoute(new SimpleGeoPoint(sourcePoint), new SimpleGeoPoint(destination));
             	
+            	// Call the server to get the congestion points for that route
+            	ServerClient serverclient = new ServerClient();
+            	serverclient.sendRoute(r);
+            	
             } else {
+            	// TODO: Add support for destination addresses
             	Log.e(Global.Company, "Did not find point of interest in intent");
-            	// ERROR
             }
     	}
     }
-    
-    private void drawPointOfInterest(PointOfInterest point) {
-    	Drawable drawable = this.getResources().getDrawable(R.drawable.gd_map_pin_pin);
-        MapItemOverlay itemizedOverlay = new MapItemOverlay(drawable, this);
 
-        OverlayItem overlayitem = new OverlayItem(point.getGeoPoint(), point.getName(), point.getDescription());
-        itemizedOverlay.addOverlay(overlayitem);
-        
-        List<Overlay> listOfOverlays = mapView.getOverlays();
-        listOfOverlays.add(itemizedOverlay);
+    /**
+     * Draws a point of interest
+     * 
+     * @param point
+     */
+    private void drawPointOfInterest(PointOfInterest point) {
+        OverlayItem overlayItem = new OverlayItem(point.getGeoPoint(), point.getName(), point.getDescription());
+        drawSinglePoint(R.drawable.gd_map_pin_pin, overlayItem);
         
         mapView.getController().animateTo(point.getGeoPoint());
+		Toast.makeText(this, point.getName(), Toast.LENGTH_LONG).show();
     }
- 
     
+    /**
+     * A generic method for drawing a point on the map
+     * 
+     * @param drawableId
+     * @param overlayItem
+     */
+    private void drawSinglePoint(int drawableId, OverlayItem overlayItem) {
+    	Drawable drawable = this.getResources().getDrawable(R.drawable.gd_map_pin_pin);
+        MapItemOverlay itemizedOverlay = new MapItemOverlay(drawable, this);
+        itemizedOverlay.addOverlay(overlayItem);
+        List<Overlay> listOfOverlays = mapView.getOverlays();
+        listOfOverlays.add(itemizedOverlay);
+    }
     
-	private GeoPoint getCurrentLocation() {
+ 	private GeoPoint getLastKnownLocation() {
 		// Acquire a reference to the system Location Manager
 		LocationManager locationManager = (LocationManager) this
 				.getSystemService(Context.LOCATION_SERVICE);

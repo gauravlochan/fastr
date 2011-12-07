@@ -60,13 +60,11 @@ public class EnterAddressActivity extends GDActivity {
     			if (nameOfPlace.length() == 0) {
     			    Toast.makeText(EnterAddressActivity.this, R.string.emptyaddresserror, Toast.LENGTH_SHORT).show();
     			} else {
-        			Toast.makeText(EnterAddressActivity.this, nameOfPlace, Toast.LENGTH_SHORT).show();
         			getPlace(nameOfPlace);
         			
     			}
     		} else {
     			if (nameOfPlace.length() == 0) {
-    			    Toast.makeText(EnterAddressActivity.this, destinationAddress, Toast.LENGTH_SHORT).show();
     			    getAddress(destinationAddress);
     			} else {
     			    Toast.makeText(EnterAddressActivity.this, R.string.bothspecifiederror, Toast.LENGTH_SHORT).show();
@@ -84,6 +82,8 @@ public class EnterAddressActivity extends GDActivity {
         Log.d(Global.Company, "Called poiService");
         
 		Intent data = new Intent();
+		
+		// TODO: Populate all points of interest and ask user to pick
 		data.putExtra(AppGlobal.destPointOfInterest, points.get(0));
 		setResult(RESULT_OK, data);
 		finish();
@@ -97,12 +97,7 @@ public class EnterAddressActivity extends GDActivity {
     	
         Log.d(Global.Company, "Called geoService");
         
-        //prepareFinish();
+        finish();
     }
 	
-    @Override
-	public void finish() {
-		super.finish();
-	}
-    
-}
+ }

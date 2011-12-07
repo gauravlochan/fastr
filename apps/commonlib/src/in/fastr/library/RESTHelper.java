@@ -21,22 +21,26 @@ import android.util.Log;
 
 public class RESTHelper {
 	
-
     /**
      * A simple method to make a REST call to the specified server.  Good for 
      * testing
      * 
      * @param server
      */
-    public static void simplePost(String server, JSONArray payload) { 
-        Log.d(Global.Company, "Attempting call to REST");
+    public static String simplePost(String server, JSONArray payload) {
+    	return simplePost(server, payload.toString());
+    }
+    
+	public static String simplePost(String server, String payload) {
+		String result = null;
+    	Log.d(Global.Company, "Attempting call to REST");
 
         HttpClient httpClient = new DefaultHttpClient();
         HttpPost httpPost = new HttpPost(server);
         
         HttpEntity requestEntity = null;
         try {
-            requestEntity = new StringEntity(payload.toString());
+            requestEntity = new StringEntity(payload);
         } catch (UnsupportedEncodingException e1) {
             // TODO Auto-generated catch block
             e1.printStackTrace();
@@ -54,7 +58,7 @@ public class RESTHelper {
                 HttpEntity entity = response.getEntity();
                 if (entity != null) {
                     InputStream instream = entity.getContent();
-                    String result = convertStreamToString(instream);
+                    result = convertStreamToString(instream);
                     Log.i(Global.Company, "Result of converstion: [" + result + "]");
                     instream.close();
                 } else {
@@ -68,6 +72,7 @@ public class RESTHelper {
         } catch (IOException e) {
             e.printStackTrace();
         }
+        return result;
         
     }
     
