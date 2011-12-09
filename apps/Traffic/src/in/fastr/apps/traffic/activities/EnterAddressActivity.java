@@ -12,7 +12,9 @@ import in.fastr.library.Global;
 
 import java.util.List;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -35,6 +37,8 @@ public class EnterAddressActivity extends GDActivity {
 	private EditText _destinationAddress;
 	private EditText _nameOfPlace;
 	private Button _button;
+	
+	List<PointOfInterest> retrieved_points;
 	
 	
 	@Override
@@ -60,8 +64,7 @@ public class EnterAddressActivity extends GDActivity {
     			if (nameOfPlace.length() == 0) {
     			    Toast.makeText(EnterAddressActivity.this, R.string.emptyaddresserror, Toast.LENGTH_SHORT).show();
     			} else {
-        			getPlace(nameOfPlace);
-        			
+    				new PlaceLookupTask().execute(nameOfPlace);
     			}
     		} else {
     			if (nameOfPlace.length() == 0) {
@@ -72,22 +75,46 @@ public class EnterAddressActivity extends GDActivity {
     		}
     	}
     }
+    
 
-    private void getPlace(String place) {
-        Log.d(Global.Company, "Calling poiService");
+	public class PlaceLookupTask extends AsyncTask<String, Void, List<PointOfInterest>> {
+		private ProgressDialog progressDialog;
 
-    	PointOfInterestService poiService = new LatlongPointOfInterestService();
-    	List<PointOfInterest> points = poiService.getPoints(place);
+		@Override
+		protected void onPreExecute() {
+			this.progressDialog = ProgressDialog.show(
+					EnterAddressActivity.this,
+					"Please wait...locating place", // title
+					"Requesting latitude and latitude for this place", // message
+					true // indeterminate
+					);
+		}
 
-        Log.d(Global.Company, "Called poiService");
-        
-		Intent data = new Intent();
-		
-		// TODO: Populate all points of interest and ask user to pick
-		data.putExtra(AppGlobal.destPointOfInterest, points.get(0));
-		setResult(RESULT_OK, data);
-		finish();
-    }
+		@Override
+		protected List<PointOfInterest> doInBackground(String... params) {
+	        Log.d(Global.Company, "Calling poiService");
+	        PointOfInterestService poiService = new LatlongPointOfInterestService();
+	    	List<PointOfInterest> points = poiService.getPoints(params[0]);
+
+	        Log.d(Global.Company, "Called poiService");
+
+			return points;
+		}
+
+		@Override
+		protected void onPostExecute(List<PointOfInterest> points) {
+			this.progressDialog.cancel();
+			retrieved_points = points;
+			
+			Intent data = new Intent();
+			
+			// TODO: Populate all points of interest and ask user to pick
+			data.putExtra(AppGlobal.destPointOfInterest, retrieved_points.get(0));
+			setResult(RESULT_OK, data);
+			finish();
+		}
+	}
+
     
     private void getAddress(String address) {
         Log.d(Global.Company, "Calling geoService");
