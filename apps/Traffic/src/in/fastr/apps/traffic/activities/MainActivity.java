@@ -32,6 +32,10 @@ import com.google.android.maps.MapView;
 import com.google.android.maps.Overlay;
 import com.google.android.maps.OverlayItem;
 
+// From http://code.google.com/p/j2memaprouteprovider/ which i found from
+// http://stackoverflow.com/questions/2023669/j2me-android-blackberry-driving-directions-route-between-two-locations
+//
+// Also check out http://stackoverflow.com/questions/1612533/android-drivingdirections-removed-since-api-1-0-how-to-do-it-in-1-5-1-6
 public class MainActivity extends GDMapActivity {
 	// Define a request code for the destination activity
 	private static final int ENTER_DESTINATION_REQUEST_CODE = 100;
@@ -62,15 +66,11 @@ public class MainActivity extends GDMapActivity {
 		mapView.getController().setCenter(geoPoint);
 		mapView.getController().setZoom(15);
 		
-        OverlayItem overlayItem = new OverlayItem(geoPoint, "Current Location", "");
+        OverlayItem overlayItem = new OverlayItem(geoPoint, "Current Location", 
+        		"This is your last saved location. Turn the GPS on for more accuracy.");
         drawSinglePoint(R.drawable.gd_map_pin_base, overlayItem);
 		Toast.makeText(this, "You are here", Toast.LENGTH_SHORT).show();
 
-
-		// Add overlay to handle user touch
-//		MapOverlay mapOverlay = new MapOverlay();
-//		List<Overlay> listOfOverlays = mapView.getOverlays();
-//		listOfOverlays.add(mapOverlay);
 	}
 	
 	
@@ -98,6 +98,7 @@ public class MainActivity extends GDMapActivity {
             Log.i( Global.Company, "resultCode: " + resultCode );
             
             if (data.hasExtra(AppGlobal.destPointOfInterest)) {
+            	// Draw the point of interest
             	PointOfInterest point = (PointOfInterest) 
             			data.getExtras().getSerializable(AppGlobal.destPointOfInterest);
             	drawPointOfInterest(point);     
@@ -107,8 +108,9 @@ public class MainActivity extends GDMapActivity {
             	GeoPoint destination = point.getGeoPoint();
             	DirectionsService dir = new GoogleDirectionsService();
             	Route r = dir.getRoute(new SimpleGeoPoint(sourcePoint), new SimpleGeoPoint(destination));
+            	drawRoute(r);
             	
-            	// Call the server to get the congestion points for that route
+            	// Call the server to get the congestion points for this route
             	ServerClient serverclient = new ServerClient();
             	serverclient.sendRoute(r);
             	
@@ -144,7 +146,17 @@ public class MainActivity extends GDMapActivity {
         itemizedOverlay.addOverlay(overlayItem);
         List<Overlay> listOfOverlays = mapView.getOverlays();
         listOfOverlays.add(itemizedOverlay);
+        mapView.invalidate();
     }
+    
+    private void drawRoute(Route r) {
+    	MapRouteOverlay mapOverlay = new MapRouteOverlay(r, mapView);
+    	
+        List<Overlay> listOfOverlays = mapView.getOverlays();
+        listOfOverlays.add(mapOverlay);
+        mapView.invalidate();
+    }
+    
     
  	private GeoPoint getLastKnownLocation() {
 		// Acquire a reference to the system Location Manager
@@ -155,6 +167,7 @@ public class MainActivity extends GDMapActivity {
 		return LocationHelper.locationToGeoPoint(location);
 	}
 
+ 	
 	class MapOverlay extends Overlay {
 		@Override
         public boolean onTouchEvent(MotionEvent e, MapView mapView) 
@@ -163,6 +176,7 @@ public class MainActivity extends GDMapActivity {
                 GeoPoint p = mapView.getProjection().fromPixels(
                     (int) e.getX(),
                     (int) e.getY());
+                Log.d(Global.Company, "User clicked on "+p.toString());
                 // MainActivity.this.startActivityForResult(intent, requestCode);
             }                            
             return false;
