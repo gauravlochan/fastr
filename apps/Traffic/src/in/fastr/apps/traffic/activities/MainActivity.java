@@ -32,10 +32,6 @@ import com.google.android.maps.MapView;
 import com.google.android.maps.Overlay;
 import com.google.android.maps.OverlayItem;
 
-// From http://code.google.com/p/j2memaprouteprovider/ which i found from
-// http://stackoverflow.com/questions/2023669/j2me-android-blackberry-driving-directions-route-between-two-locations
-//
-// Also check out http://stackoverflow.com/questions/1612533/android-drivingdirections-removed-since-api-1-0-how-to-do-it-in-1-5-1-6
 public class MainActivity extends GDMapActivity {
 	// Define a request code for the destination activity
 	private static final int ENTER_DESTINATION_REQUEST_CODE = 100;
