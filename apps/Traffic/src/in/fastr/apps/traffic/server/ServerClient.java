@@ -13,7 +13,8 @@ import com.google.gson.Gson;
  * 
  */
 public class ServerClient {
-	public static String serverIP = "http://192.168.2.107:8080/upload";
+	// This is the address of pradeeps server.  Need to use a public server soon!
+	public static String serverIP = "http://192.168.1.4:8888/upload";
 	
 	public void sendRoute(Route route) {
 		new SendRouteTask().execute(route);

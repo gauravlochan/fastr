@@ -113,7 +113,7 @@ public class EnterAddressActivity extends GDActivity {
 
 	        case ADDRESS:
 	        	GeocodingService geoService = new AndroidGeocodingService(EnterAddressActivity.this);
-	          	geoService.resolveAddress(params[0].destination);
+	          	points = geoService.resolveAddress(params[0].destination);
 	            break;      	
 	        	
 	        }
