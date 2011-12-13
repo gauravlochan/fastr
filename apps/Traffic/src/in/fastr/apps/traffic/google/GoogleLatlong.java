@@ -1,4 +1,4 @@
-package in.fastr.apps.traffic.json.google;
+package in.fastr.apps.traffic.google;
 
 import in.fastr.apps.traffic.SimpleGeoPoint;
 

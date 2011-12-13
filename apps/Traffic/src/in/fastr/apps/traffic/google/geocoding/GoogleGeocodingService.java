@@ -1,8 +1,10 @@
 /**
  * 
  */
-package in.fastr.apps.traffic.services;
+package in.fastr.apps.traffic.google.geocoding;
 
+import in.fastr.apps.traffic.MapPoint;
+import in.fastr.apps.traffic.services.GeocodingService;
 import in.fastr.library.RESTHelper;
 
 import java.util.List;

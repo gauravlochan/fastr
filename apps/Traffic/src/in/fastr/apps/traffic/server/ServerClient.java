@@ -1,6 +1,6 @@
 package in.fastr.apps.traffic.server;
 
-import in.fastr.apps.traffic.services.Route;
+import in.fastr.apps.traffic.Route;
 import in.fastr.library.RESTHelper;
 import android.os.AsyncTask;
 

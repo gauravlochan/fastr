@@ -1,4 +1,4 @@
-package in.fastr.apps.traffic.services;
+package in.fastr.apps.traffic;
 
 public enum ServiceProviders {
 	ANDROID,

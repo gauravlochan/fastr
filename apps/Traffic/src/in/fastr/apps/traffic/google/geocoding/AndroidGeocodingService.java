@@ -1,4 +1,8 @@
-package in.fastr.apps.traffic.services;
+package in.fastr.apps.traffic.google.geocoding;
+
+import in.fastr.apps.traffic.MapPoint;
+import in.fastr.apps.traffic.ServiceProviders;
+import in.fastr.apps.traffic.services.GeocodingService;
 
 import java.io.IOException;
 import java.util.ArrayList;

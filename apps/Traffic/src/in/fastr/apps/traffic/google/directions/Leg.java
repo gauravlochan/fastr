@@ -1,6 +1,6 @@
-package in.fastr.apps.traffic.json.google.directions;
+package in.fastr.apps.traffic.google.directions;
 
-import in.fastr.apps.traffic.json.google.GoogleLatlong;
+import in.fastr.apps.traffic.google.GoogleLatlong;
 
 import java.util.List;
 

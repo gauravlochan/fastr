@@ -1,6 +1,5 @@
-package in.fastr.apps.traffic.services;
+package in.fastr.apps.traffic;
 
-import in.fastr.apps.traffic.SimpleGeoPoint;
 
 import java.io.Serializable;
 

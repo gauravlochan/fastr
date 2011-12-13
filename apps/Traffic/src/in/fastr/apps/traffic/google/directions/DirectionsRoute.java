@@ -1,4 +1,4 @@
-package in.fastr.apps.traffic.json.google.directions;
+package in.fastr.apps.traffic.google.directions;
 
 import java.util.List;
 

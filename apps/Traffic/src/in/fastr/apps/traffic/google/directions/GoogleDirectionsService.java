@@ -1,10 +1,9 @@
-package in.fastr.apps.traffic.services;
+package in.fastr.apps.traffic.google.directions;
 
+import in.fastr.apps.traffic.Route;
+import in.fastr.apps.traffic.ServiceProviders;
 import in.fastr.apps.traffic.SimpleGeoPoint;
-import in.fastr.apps.traffic.json.google.directions.DirectionsRoute;
-import in.fastr.apps.traffic.json.google.directions.Leg;
-import in.fastr.apps.traffic.json.google.directions.Result;
-import in.fastr.apps.traffic.json.google.directions.Step;
+import in.fastr.apps.traffic.services.DirectionsService;
 import in.fastr.library.RESTHelper;
 
 import java.util.ArrayList;
@@ -65,7 +64,7 @@ public class GoogleDirectionsService implements DirectionsService {
 		// For now i'm simply going to add the points from the polyline
 		String points = step.polyline.points;
 		
-		List<GeoPoint> geoPoints = GooglePolylineDecoder.decodePoly(points);
+		List<GeoPoint> geoPoints = PolylineDecoder.decodePoly(points);
 		for (GeoPoint geoPoint: geoPoints) {
 			SimpleGeoPoint sgPoint = new SimpleGeoPoint(geoPoint);
 			route.addPoint(sgPoint);

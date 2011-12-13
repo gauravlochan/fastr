@@ -2,11 +2,11 @@ package in.fastr.apps.traffic.activities;
 
 import greendroid.app.GDActivity;
 import in.fastr.apps.traffic.AppGlobal;
+import in.fastr.apps.traffic.MapPoint;
 import in.fastr.apps.traffic.R;
-import in.fastr.apps.traffic.services.AndroidGeocodingService;
+import in.fastr.apps.traffic.google.geocoding.AndroidGeocodingService;
+import in.fastr.apps.traffic.onze.OnzePointOfInterestService;
 import in.fastr.apps.traffic.services.GeocodingService;
-import in.fastr.apps.traffic.services.LatlongPointOfInterestService;
-import in.fastr.apps.traffic.services.MapPoint;
 import in.fastr.apps.traffic.services.PointOfInterestService;
 import in.fastr.library.Global;
 
@@ -107,7 +107,7 @@ public class EnterAddressActivity extends GDActivity {
 
 	        switch (params[0].destType) {
 	        case PLACE:
-		        PointOfInterestService poiService = new LatlongPointOfInterestService();
+		        PointOfInterestService poiService = new OnzePointOfInterestService();
 		    	points = poiService.getPoints(params[0].destination);
 		    	break;
 

@@ -1,8 +1,8 @@
-package in.fastr.apps.traffic.json.google.directions;
+package in.fastr.apps.traffic.google.directions;
 
+import in.fastr.apps.traffic.Route;
+import in.fastr.apps.traffic.ServiceProviders;
 import in.fastr.apps.traffic.SimpleGeoPoint;
-import in.fastr.apps.traffic.services.Route;
-import in.fastr.apps.traffic.services.ServiceProviders;
 import in.fastr.library.Global;
 
 import org.json.JSONArray;

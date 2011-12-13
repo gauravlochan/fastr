@@ -1,4 +1,4 @@
-package in.fastr.apps.traffic.services;
+package in.fastr.apps.traffic.google.directions;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -6,7 +6,7 @@ import java.util.List;
 import com.google.android.maps.GeoPoint;
 
 // http://jeffreysambells.com/posts/2010/05/27/decoding-polylines-from-google-maps-direction-api-with-java/
-public class GooglePolylineDecoder {
+public class PolylineDecoder {
 
 	public static List<GeoPoint> decodePoly(String encoded) {
 
