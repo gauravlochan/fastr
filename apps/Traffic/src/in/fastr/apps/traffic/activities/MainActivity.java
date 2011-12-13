@@ -103,13 +103,15 @@ public class MainActivity extends GDMapActivity {
             	GeoPoint sourcePoint = getLastKnownLocation();
             	GeoPoint destination = point.getGeoPoint();
             	DirectionsService dir = new GoogleDirectionsService();
-            	Route r = dir.getFirstRoute(new SimpleGeoPoint(sourcePoint), new SimpleGeoPoint(destination));
-            	drawRoute(r);
+            	Route route = dir.getFirstRoute(new SimpleGeoPoint(sourcePoint), new SimpleGeoPoint(destination));
+            	drawRoute(route);
             	
-            	// Call the server to get the congestion points for this route
-            	// TODO: Async task / thread
+            	// Call BTIS asynchronously to get congestion points
+            	new GetCongestionTask().execute(route);
+
+            	// Call the server to send this route (happens in an async task)
             	ServerClient serverclient = new ServerClient();
-            	serverclient.sendRoute(r);
+            	serverclient.sendRoute(route);
             	
             } else {
             	// TODO: Add support for destination addresses

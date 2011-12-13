@@ -2,7 +2,7 @@ package in.fastr.apps.traffic.google.directions;
 
 import in.fastr.apps.traffic.google.GoogleLatlong;
 
-public class Step {
+class Step {
 	public TextValueObject distance;
 	public TextValueObject duration;
 

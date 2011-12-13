@@ -67,7 +67,7 @@ public class OnzePointOfInterestService implements PointOfInterestService {
 		String id = jsonObject.getString(id_key);
 		String desc = jsonObject.getString(ls_key);
 
-		MapPoint point = new MapPoint(ServiceProviders.LATLONG,
+		MapPoint point = new MapPoint(ServiceProviders.ONZE,
 				id, name, desc);
 
 		// Now to extract the latlong

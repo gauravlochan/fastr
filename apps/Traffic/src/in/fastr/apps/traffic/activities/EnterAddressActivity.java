@@ -95,7 +95,7 @@ public class EnterAddressActivity extends GDActivity {
 			this.progressDialog = ProgressDialog.show(
 					EnterAddressActivity.this,
 					"Please wait...", // title
-					"Trying to locate this", // message
+					"Calculating the best route", // message
 					true // indeterminate
 					);
 		}

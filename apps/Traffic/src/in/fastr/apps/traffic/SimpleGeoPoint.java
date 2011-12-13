@@ -6,6 +6,11 @@ import com.google.android.maps.GeoPoint;
 
 /**
  * A simple representation of a geopoint.
+ * 
+ * Why did i introduce a class other than GeoPoint? I think it had
+ * something to do with GeoPoint not being serializable so I
+ * couldn't pass it between intents
+ * 
  * @author gauravlochan
  *
  */

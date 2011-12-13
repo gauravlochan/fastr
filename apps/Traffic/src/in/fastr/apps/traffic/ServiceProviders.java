@@ -1,7 +1,9 @@
 package in.fastr.apps.traffic;
 
 public enum ServiceProviders {
-	ANDROID,
-	GOOGLE,
-	LATLONG
+	FASTR,   // From our server
+	ANDROID, // Android libraries
+	GOOGLE,  // Google
+	ONZE,    // Onze technologies, ie latlong.in
+	BTIS     
 }

@@ -4,7 +4,7 @@ import java.util.List;
 
 import com.google.gson.annotations.SerializedName;
 
-public class DirectionsRoute {
+class DirectionsRoute {
     public Bounds bounds;
 
     public String copyrights;

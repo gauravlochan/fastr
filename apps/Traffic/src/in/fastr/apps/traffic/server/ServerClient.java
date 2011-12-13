@@ -7,7 +7,8 @@ import android.os.AsyncTask;
 import com.google.gson.Gson;
 
 /**
- * Methods that will be called against our own server
+ * Methods that will be called against our own server.  Currently more for testing than 
+ * actual use
  * 
  * @author gauravlochan
  * 

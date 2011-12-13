@@ -1,23 +1,24 @@
-package in.fastr.apps.traffic.updates;
+package in.fastr.apps.traffic.location;
 
-/** Data class for each congestion point.
+/** 
+ * Data class for each location update that is to be sent to the server
  * 
  * @author gaurav
  */
-public class CongestionPoint {
+public class LocationUpdate {
     long epochTime;
     double latitude;
     double longitude;
     float speed;
     float accuracy;
     
-    public CongestionPoint(double latitude, double longitude, long epochTime) {
+    public LocationUpdate(double latitude, double longitude, long epochTime) {
         this.latitude = latitude;
         this.longitude = longitude;
         this.epochTime = epochTime;
     }
 
-    public CongestionPoint(long epochTime, double latitude, double longitude, 
+    public LocationUpdate(long epochTime, double latitude, double longitude, 
             float speed, float accuracy) { 
         this.epochTime = epochTime;
         this.latitude = latitude;

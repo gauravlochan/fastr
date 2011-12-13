@@ -25,7 +25,7 @@ public class MapPoint implements Serializable {
 	/** 
 	 * The Geo point (lat long) for this point
 	 */
-	private SimpleGeoPoint sgPoint;
+	private SimpleGeoPoint location;
 	
 	/**
 	 * A name for this point
@@ -58,11 +58,11 @@ public class MapPoint implements Serializable {
 	}
 	
 	public GeoPoint getGeoPoint() {
-		return sgPoint.getGeoPoint();
+		return location.getGeoPoint();
 	}
 	
 	public void setLocation(double latitude, double longitude) {
-		this.sgPoint = new SimpleGeoPoint(latitude, longitude);
+		this.location = new SimpleGeoPoint(latitude, longitude);
 	}
 	
 

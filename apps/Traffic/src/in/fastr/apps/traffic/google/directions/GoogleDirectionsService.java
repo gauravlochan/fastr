@@ -14,8 +14,6 @@ import com.google.gson.Gson;
 
 public class GoogleDirectionsService implements DirectionsService {
 	private static final String jsonServiceUrl = "http://maps.googleapis.com/maps/api/directions/json?";
-	
-
 
 	@Override
 	public Route getFirstRoute(SimpleGeoPoint source, SimpleGeoPoint destination) {
