@@ -8,7 +8,7 @@ import com.google.android.maps.GeoPoint;
 // http://jeffreysambells.com/posts/2010/05/27/decoding-polylines-from-google-maps-direction-api-with-java/
 public class GooglePolylineDecoder {
 
-	private List<GeoPoint> decodePoly(String encoded) {
+	public static List<GeoPoint> decodePoly(String encoded) {
 
 	    List<GeoPoint> poly = new ArrayList<GeoPoint>();
 	    int index = 0, len = encoded.length();

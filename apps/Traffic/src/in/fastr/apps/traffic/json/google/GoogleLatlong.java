@@ -1,5 +1,7 @@
 package in.fastr.apps.traffic.json.google;
 
+import in.fastr.apps.traffic.SimpleGeoPoint;
+
 import com.google.gson.annotations.SerializedName;
 
 public class GoogleLatlong {
@@ -8,4 +10,8 @@ public class GoogleLatlong {
 
     @SerializedName("lng")
     public Double longitude;
+    
+    public SimpleGeoPoint getSimpleGeoPoint() {
+    	return new SimpleGeoPoint(latitude, longitude);
+    }
 }

@@ -2,6 +2,7 @@ package in.fastr.apps.traffic.json.google.directions;
 
 import in.fastr.apps.traffic.SimpleGeoPoint;
 import in.fastr.apps.traffic.services.Route;
+import in.fastr.apps.traffic.services.ServiceProviders;
 import in.fastr.library.Global;
 
 import org.json.JSONArray;
@@ -30,7 +31,7 @@ public class oldRouteParser {
 	
 	
 	public Route getFirstRoute(String jsonResult) {
-		Route route = new Route();
+		Route route = new Route(ServiceProviders.GOOGLE);
 
 		try {
 
@@ -57,10 +58,10 @@ public class oldRouteParser {
 
 	private void addLegToRoute(JSONObject leg, Route route, boolean is_last_leg) throws JSONException {
 		JSONObject distance = leg.getJSONObject(distance_key);
-		route.drivingDistanceMeters = distance.getInt("value");
+		route.drivingDistanceMeters += distance.getInt("value");
 
 		JSONObject duration = leg.getJSONObject(duration_key);
-		route.estimatedTimeSeconds = duration.getInt("value");
+		route.estimatedTimeSeconds += duration.getInt("value");
 		
 		JSONArray steps = leg.getJSONArray(steps_key);
 		for (int i = 0; i < steps.length(); i++) {

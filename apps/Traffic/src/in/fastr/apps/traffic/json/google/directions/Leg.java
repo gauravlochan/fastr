@@ -7,20 +7,20 @@ import java.util.List;
 import com.google.gson.annotations.SerializedName;
 
 public class Leg {
-	TextValueObject distance;
-	TextValueObject duration;
+	public TextValueObject distance;
+	public TextValueObject duration;
 
     @SerializedName("end_address")
     public String endAddress;
 
     @SerializedName("end_location")
-	GoogleLatlong endLocation;
+    public GoogleLatlong endLocation;
 	
     @SerializedName("start_address")
     public String startAddress;
 
     @SerializedName("start_location")
-	GoogleLatlong startLocation;
+    public GoogleLatlong startLocation;
 	
 	public List<Step> steps;
 	

@@ -10,27 +10,34 @@ import java.util.List;
  * 
  * @author gauravlochan
  */
+// TODO: Think about how to store the distance and time estimates for each leg
+// TODO: Think about how to store the associated directions text
 public class Route {
 	/**
 	 * Identifies which service these directions came from. 
 	 */
 	private ServiceProviders service;
 	
-	private SimpleGeoPoint source;
-	private SimpleGeoPoint destination;
+	public SimpleGeoPoint source;
+	public SimpleGeoPoint destination;
 	
-	// TODO: Constructor that specifies number of points
+	// Even though GeoPoint would have been better to store, it's not serializable
+	// and so gson couldn't convert it to json.  (ummm, i think)
 	private ArrayList<SimpleGeoPoint> points;
 	
-	public int drivingDistanceMeters;
-	public int estimatedTimeSeconds;
+	public int drivingDistanceMeters = 0;
+	public int estimatedTimeSeconds = 0;
 
-	public Route() {
+	public Route(ServiceProviders service) {
+		this.service = service;
 		points = new ArrayList<SimpleGeoPoint>();
 	}
 	
-	// TODO: Think about how to store the distance and time estimates for each leg
-	// TODO: Think about how to store the associated directions text
+	public Route(ServiceProviders service, int numPoints) {
+		this.service = service;
+		points = new ArrayList<SimpleGeoPoint>(numPoints);
+	}
+	
 	public void addPoint(SimpleGeoPoint point) {
 		points.add(point);
 	}
