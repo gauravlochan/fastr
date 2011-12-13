@@ -2,11 +2,10 @@ package in.fastr.apps.traffic.services;
 
 import in.fastr.apps.traffic.SimpleGeoPoint;
 
-public interface DirectionsService {
-	public Route getRoute(SimpleGeoPoint source, SimpleGeoPoint destination);
+import java.util.List;
 
-	// TODO: public ArrayList<Route> getRoutes(SimpleGeoPoint source, SimpleGeoPoint destination);
-	
-	// TODO: Interfaces for getting routes for source/destination in different formats
+public interface DirectionsService {
+	public Route getFirstRoute(SimpleGeoPoint source, SimpleGeoPoint destination);
+	public List<Route> getRoutes(SimpleGeoPoint source, SimpleGeoPoint destination);
 
 }

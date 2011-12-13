@@ -103,7 +103,7 @@ public class MainActivity extends GDMapActivity {
             	GeoPoint sourcePoint = getLastKnownLocation();
             	GeoPoint destination = point.getGeoPoint();
             	DirectionsService dir = new GoogleDirectionsService();
-            	Route r = dir.getRoute(new SimpleGeoPoint(sourcePoint), new SimpleGeoPoint(destination));
+            	Route r = dir.getFirstRoute(new SimpleGeoPoint(sourcePoint), new SimpleGeoPoint(destination));
             	drawRoute(r);
             	
             	// Call the server to get the congestion points for this route

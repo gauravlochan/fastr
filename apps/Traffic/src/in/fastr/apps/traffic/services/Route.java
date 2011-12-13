@@ -22,8 +22,8 @@ public class Route {
 	// TODO: Constructor that specifies number of points
 	private ArrayList<SimpleGeoPoint> points;
 	
-	int drivingDistanceMeters;
-	int estimatedTimeSeconds;
+	public int drivingDistanceMeters;
+	public int estimatedTimeSeconds;
 
 	public Route() {
 		points = new ArrayList<SimpleGeoPoint>();
