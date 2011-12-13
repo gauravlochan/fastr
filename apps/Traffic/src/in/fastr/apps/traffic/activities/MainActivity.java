@@ -11,7 +11,7 @@ import in.fastr.apps.traffic.location.LocationRetriever;
 import in.fastr.apps.traffic.server.ServerClient;
 import in.fastr.apps.traffic.services.DirectionsService;
 import in.fastr.apps.traffic.services.GoogleDirectionsService;
-import in.fastr.apps.traffic.services.PointOfInterest;
+import in.fastr.apps.traffic.services.MapPoint;
 import in.fastr.apps.traffic.services.Route;
 import in.fastr.library.Global;
 
@@ -63,7 +63,7 @@ public class MainActivity extends GDMapActivity {
 		mapView.getController().setZoom(15);
 		
         OverlayItem overlayItem = new OverlayItem(geoPoint, "Current Location", 
-        		"This is your last saved location. Turn the GPS on for more accuracy.");
+        		"This is your last recorded location. Turn the GPS on for more accuracy.");
         drawSinglePoint(R.drawable.gd_map_pin_base, overlayItem);
 		Toast.makeText(this, "You are here", Toast.LENGTH_SHORT).show();
 
@@ -93,10 +93,10 @@ public class MainActivity extends GDMapActivity {
     	if (resultCode == RESULT_OK && requestCode == ENTER_DESTINATION_REQUEST_CODE) {
             Log.i( Global.Company, "resultCode: " + resultCode );
             
-            if (data.hasExtra(AppGlobal.destPointOfInterest)) {
+            if (data.hasExtra(AppGlobal.destPoint)) {
             	// Draw the point of interest
-            	PointOfInterest point = (PointOfInterest) 
-            			data.getExtras().getSerializable(AppGlobal.destPointOfInterest);
+            	MapPoint point = (MapPoint) 
+            			data.getExtras().getSerializable(AppGlobal.destPoint);
             	drawPointOfInterest(point);     
             	
             	// Get the route from here to the destination
@@ -107,6 +107,7 @@ public class MainActivity extends GDMapActivity {
             	drawRoute(r);
             	
             	// Call the server to get the congestion points for this route
+            	// TODO: Async task / thread
             	ServerClient serverclient = new ServerClient();
             	serverclient.sendRoute(r);
             	
@@ -122,7 +123,7 @@ public class MainActivity extends GDMapActivity {
      * 
      * @param point
      */
-    private void drawPointOfInterest(PointOfInterest point) {
+    private void drawPointOfInterest(MapPoint point) {
         OverlayItem overlayItem = new OverlayItem(point.getGeoPoint(), point.getName(), point.getDescription());
         drawSinglePoint(R.drawable.gd_map_pin_pin, overlayItem);
         

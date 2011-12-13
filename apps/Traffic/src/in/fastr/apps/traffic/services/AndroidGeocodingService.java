@@ -1,17 +1,41 @@
 package in.fastr.apps.traffic.services;
 
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+
+import android.content.Context;
+import android.location.Address;
 import android.location.Geocoder;
 
-import com.google.android.maps.GeoPoint;
-
 public class AndroidGeocodingService implements GeocodingService {
+	private Context context;
+	
+	public AndroidGeocodingService(Context context) {
+		this.context = context;
+	}
 
 	@Override
-	public GeoPoint resolveAddress(String address) {
-		Geocoder g;
+	public List<MapPoint> resolveAddress(String addressText) {
+		Geocoder gc = new Geocoder(context);
+		
+        List<Address> foundAdresses = null;
+		try {
+			foundAdresses = gc.getFromLocationName(addressText, 5);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 
-		// TODO Auto-generated method stub
-		return null;
+		ArrayList<MapPoint> list = new ArrayList<MapPoint>();
+		for (Address address : foundAdresses) {
+			MapPoint point = new MapPoint(ServiceProviders.ANDROID, "",
+					address.getFeatureName(), addressText);
+			point.setLocation(address.getLatitude(), address.getLongitude());
+			list.add(point);
+		}
+		
+		return list;
 	}
 
 }

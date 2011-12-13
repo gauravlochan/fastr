@@ -5,7 +5,7 @@ package in.fastr.apps.traffic.services;
 
 import in.fastr.library.RESTHelper;
 
-import com.google.android.maps.GeoPoint;
+import java.util.List;
 
 /**
  * http://code.google.com/apis/maps/documentation/geocoding/
@@ -23,7 +23,7 @@ public class GoogleGeocodingService implements GeocodingService {
 	 * @see in.fastr.apps.traffic.services.GeocodingService#resolveAddress(java.lang.String)
 	 */
 	@Override
-	public GeoPoint resolveAddress(String address) {
+	public List<MapPoint> resolveAddress(String address) {
 		String request = appendAddress(jsonServiceUrl, address);
 		request = appendSensor(request, false);
 
@@ -46,6 +46,5 @@ public class GoogleGeocodingService implements GeocodingService {
 		}
 		
 	}
-
 
 }

@@ -13,6 +13,6 @@ import java.util.List;
  * @author gauravlochan
  */
 public interface PointOfInterestService {
-	List<PointOfInterest> getPoints(String nameOfPlace);
+	List<MapPoint> getPoints(String nameOfPlace);
 
 }

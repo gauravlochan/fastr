@@ -10,6 +10,8 @@ import com.google.android.maps.GeoPoint;
  *
  */
 public class SimpleGeoPoint implements Serializable {
+	private static final long serialVersionUID = 1L;
+
 	private double latitude;
 	private double longitude;
 	

@@ -27,11 +27,11 @@ public class LatlongPointOfInterestService implements PointOfInterestService {
 	 * Gets a list of point of interests from the latlong service
 	 */
 	@Override
-	public List<PointOfInterest> getPoints(String nameOfPlace) {
+	public List<MapPoint> getPoints(String nameOfPlace) {
 		String request = appendName(jsonServiceUrl, nameOfPlace);
 		String result = RESTHelper.simpleGet(request);
 		
-		ArrayList<PointOfInterest> list = new ArrayList<PointOfInterest>();
+		ArrayList<MapPoint> list = new ArrayList<MapPoint>();
 		
         JSONArray jsonArray;
 		try {
@@ -40,7 +40,7 @@ public class LatlongPointOfInterestService implements PointOfInterestService {
 
 			for (int i = 0; i < jsonArray.length(); i++) {
 				JSONObject jsonObject = jsonArray.getJSONObject(i);
-				PointOfInterest point = getPointOfInterest(jsonObject);
+				MapPoint point = getPointOfInterest(jsonObject);
 				list.add(point);
 			}
 		} catch (JSONException e) {
@@ -59,12 +59,12 @@ public class LatlongPointOfInterestService implements PointOfInterestService {
 	 * @return
 	 * @throws JSONException
 	 */
-    private PointOfInterest getPointOfInterest(JSONObject jsonObject) throws JSONException {
+    private MapPoint getPointOfInterest(JSONObject jsonObject) throws JSONException {
 		String name = jsonObject.getString(name_key);
 		String id = jsonObject.getString(id_key);
 		String desc = jsonObject.getString(ls_key);
 
-		PointOfInterest point = new PointOfInterest(ServiceProviders.LATLONG,
+		MapPoint point = new MapPoint(ServiceProviders.LATLONG,
 				id, name, desc);
 
 		// Now to extract the latlong

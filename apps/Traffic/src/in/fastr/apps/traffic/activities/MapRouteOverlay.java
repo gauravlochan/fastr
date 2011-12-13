@@ -54,7 +54,7 @@ public class MapRouteOverlay extends Overlay {
 	public void drawPath(MapView mv, Canvas canvas) {
 		int x1 = -1, y1 = -1, x2 = -1, y2 = -1;
 		Paint paint = new Paint();
-		paint.setColor(Color.GREEN);
+		paint.setColor(Color.BLACK);
 		paint.setStyle(Paint.Style.STROKE);
 		paint.setStrokeWidth(3);
 		for (int i = 0; i < sgPoints.size(); i++) {

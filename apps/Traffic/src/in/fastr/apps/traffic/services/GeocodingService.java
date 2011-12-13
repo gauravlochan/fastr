@@ -1,8 +1,7 @@
 package in.fastr.apps.traffic.services;
 
-import com.google.android.maps.GeoPoint;
+import java.util.List;
 
 public interface GeocodingService {
-	GeoPoint resolveAddress(String address);
-
+	List<MapPoint> resolveAddress(String address);
 }

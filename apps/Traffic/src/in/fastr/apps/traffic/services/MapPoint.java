@@ -1,5 +1,7 @@
 package in.fastr.apps.traffic.services;
 
+import in.fastr.apps.traffic.SimpleGeoPoint;
+
 import java.io.Serializable;
 
 import com.google.android.maps.GeoPoint;
@@ -10,7 +12,7 @@ import com.google.android.maps.GeoPoint;
  * @author gauravlochan
  *
  */
-public class PointOfInterest implements Serializable {
+public class MapPoint implements Serializable {
 	/**
 	 * Identifies which service this Point of Interest came from. 
 	 */
@@ -21,9 +23,10 @@ public class PointOfInterest implements Serializable {
 	 */
 	private String identifier;
 
-	// TODO: Convert to use SimpleGeoPoint
-	private double latitude;
-	private double longitude;
+	/** 
+	 * The Geo point (lat long) for this point
+	 */
+	private SimpleGeoPoint sgPoint;
 	
 	/**
 	 * A name for this point
@@ -36,11 +39,11 @@ public class PointOfInterest implements Serializable {
 	private String description;
 	
 	
-	public PointOfInterest(ServiceProviders sp) {
+	public MapPoint(ServiceProviders sp) {
 		service = sp;
 	}
 	
-	public PointOfInterest(ServiceProviders sp, String identifier, String name, String description) {
+	public MapPoint(ServiceProviders sp, String identifier, String name, String description) {
 		service = sp;
 		this.identifier = identifier;
 		this.name = name;
@@ -56,12 +59,11 @@ public class PointOfInterest implements Serializable {
 	}
 	
 	public GeoPoint getGeoPoint() {
-		return new GeoPoint((int) (latitude * 1E6), (int) (longitude * 1E6));
+		return sgPoint.getGeoPoint();
 	}
 	
 	public void setLocation(double latitude, double longitude) {
-		this.latitude = latitude;
-		this.longitude = longitude;
+		this.sgPoint = new SimpleGeoPoint(latitude, longitude);
 	}
 	
 
