@@ -59,7 +59,7 @@ public class RESTHelper {
                 if (entity != null) {
                     InputStream instream = entity.getContent();
                     result = convertStreamToString(instream);
-                    Log.i(Global.Company, "Result of converstion: [" + result + "]");
+                    Log.i(Global.Company, "Result of conversation: [" + result + "]");
                     instream.close();
                 } else {
                     Log.d(Global.Company, "Empty Http response");

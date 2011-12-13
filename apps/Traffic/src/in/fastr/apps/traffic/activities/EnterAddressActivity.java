@@ -49,6 +49,7 @@ public class EnterAddressActivity extends GDActivity {
 	private EditText _nameOfPlace;
 	private Button _button;
 	
+	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -125,11 +126,18 @@ public class EnterAddressActivity extends GDActivity {
 		protected void onPostExecute(List<MapPoint> points) {
 			this.progressDialog.cancel();
 			
-			Intent data = new Intent();
-			
-			// TODO: Handle the case when no points were returned
-			
+			// If nothing was found, stay on the activity and let user try again
+			if (points.size() == 0) {
+   			    Toast.makeText(EnterAddressActivity.this, "No results found, try again", Toast.LENGTH_LONG).show();
+   			    return;
+			}
+
 			// TODO: Populate all points of interest and ask user to pick
+			if (points.size() > 1) {
+   			    Toast.makeText(EnterAddressActivity.this, "Multiple results found, picking the first", Toast.LENGTH_SHORT).show();
+   			}
+	
+			Intent data = new Intent();
 			data.putExtra(AppGlobal.destPoint, points.get(0));
 			setResult(RESULT_OK, data);
 			finish();
