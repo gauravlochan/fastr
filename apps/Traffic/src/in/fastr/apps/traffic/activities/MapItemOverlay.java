@@ -18,9 +18,9 @@ public class MapItemOverlay extends ItemizedOverlay<OverlayItem>
      mContext = context;
    }
   
-   public void addOverlay(OverlayItem overlay)
+   public void addOverlayItem(OverlayItem overlayItem)
    {
-     mOverlays.add(overlay);
+     mOverlays.add(overlayItem);
      populate();
    }
    

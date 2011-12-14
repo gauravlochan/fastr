@@ -8,6 +8,7 @@ package in.fastr.apps.traffic;
 public class CongestionPoint {
 	public ServiceProviders reportedBy;
 	public String identifier; // service specific identifier
+	public String name;
 
     // TODO: Represent as long epochTime?
 	public String reportedAt;

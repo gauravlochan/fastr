@@ -27,6 +27,7 @@ public class BtisCongestionService implements CongestionService {
 			CongestionPoint point = new CongestionPoint(ServiceProviders.BTIS, result.time, status);
 			point.identifier = location.smscode;
 			point.setLocation(location.latitude, location.longitude);
+			point.name = location.label;
 			congestionPoints.add(point);
 		}
 		
