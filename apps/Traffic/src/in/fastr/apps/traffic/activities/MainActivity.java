@@ -29,6 +29,7 @@ import android.widget.Toast;
 
 import com.google.android.maps.GeoPoint;
 import com.google.android.maps.MapView;
+import com.google.android.maps.MyLocationOverlay;
 import com.google.android.maps.Overlay;
 import com.google.android.maps.OverlayItem;
 
@@ -62,9 +63,16 @@ public class MainActivity extends GDMapActivity {
 		mapView.getController().setCenter(geoPoint);
 		mapView.getController().setZoom(15);
 		
-        OverlayItem overlayItem = new OverlayItem(geoPoint, "Current Location", 
-        		"This is your last recorded location. Turn the GPS on for more accuracy.");
-        drawSinglePoint(R.drawable.gd_map_pin_base, overlayItem);
+		// Add a 'MyLocationOverlay' to track the current location
+		MyLocationOverlay myLocationOverlay = new MyLocationOverlay(this, mapView);
+		mapView.getOverlays().add(myLocationOverlay);
+		myLocationOverlay.enableMyLocation();
+		
+		// TODO: Add an overlay for the source, but use a different marker
+//		OverlayItem overlayItem = new OverlayItem(geoPoint, "Current Location", 
+//	           "This is your last recorded location. Turn the GPS on for more accuracy.");
+//	    drawSinglePoint(R.drawable.gd_map_pin_base, overlayItem);
+
 		Toast.makeText(this, "You are here", Toast.LENGTH_SHORT).show();
 
 	}
@@ -107,7 +115,8 @@ public class MainActivity extends GDMapActivity {
             	drawRoute(route);
             	
             	// Call BTIS asynchronously to get congestion points
-            	new GetCongestionTask().execute(route);
+            	
+            	new GetCongestionTask(this).execute(route);
 
             	// Call the server to send this route (happens in an async task)
             	ServerClient serverclient = new ServerClient();
@@ -152,7 +161,7 @@ public class MainActivity extends GDMapActivity {
     	MapRouteOverlay mapOverlay = new MapRouteOverlay(r, mapView);
     	
         List<Overlay> listOfOverlays = mapView.getOverlays();
-        listOfOverlays.add(mapOverlay);
+        listOfOverlays.add(0, mapOverlay);
         mapView.invalidate();
     }
     

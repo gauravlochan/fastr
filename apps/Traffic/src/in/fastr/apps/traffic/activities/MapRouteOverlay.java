@@ -40,6 +40,7 @@ public class MapRouteOverlay extends Overlay {
 
 			MapController mapController = mv.getController();
 			mapController.animateTo(moveTo);
+			
 			// TODO: Set a zoom level that is appropriate for the route length
 		}
 	}
@@ -54,9 +55,9 @@ public class MapRouteOverlay extends Overlay {
 	public void drawPath(MapView mv, Canvas canvas) {
 		int x1 = -1, y1 = -1, x2 = -1, y2 = -1;
 		Paint paint = new Paint();
-		paint.setColor(Color.BLACK);
-		paint.setStyle(Paint.Style.STROKE);
-		paint.setStrokeWidth(3);
+		paint.setColor(Color.GRAY);
+		paint.setStyle(Paint.Style.FILL_AND_STROKE);
+		paint.setStrokeWidth(4);
 		for (int i = 0; i < sgPoints.size(); i++) {
 			Point point = new Point();
 			mv.getProjection().toPixels(sgPoints.get(i).getGeoPoint(), point);
