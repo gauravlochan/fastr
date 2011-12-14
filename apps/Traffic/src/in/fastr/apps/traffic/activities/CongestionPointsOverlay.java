@@ -27,18 +27,17 @@ public class CongestionPointsOverlay extends ItemizedOverlay<OverlayItem> {
         // Create OverlayItems for each point
         for (int i = 0; i < points.size(); i++) {
             CongestionPoint point = points.get(i);
-            String snippet = "Reported by " + point.reportedBy + " at " + point.reportedAt;
+            // TODO: This reported by string is hardcoded to BTIS, it should pick it up from
+            // somewhere
+            String snippet = "Reported by Bangalore Traffic Information System at " + point.reportedAt;
             OverlayItem overlayItem = new OverlayItem(
                     point.location.getGeoPoint(), 
                     point.name, 
                     snippet);
 
             // Set marker color depending on the traffic status
-            // TODO: Is there a more optimal way to create all the drawables once
             Drawable drawable = getColoredIcon(point.status);
             boundCenterBottom(drawable);
-//            drawable.setBounds(0, 0, drawable.getIntrinsicWidth(),
-//                    drawable.getIntrinsicHeight());
             overlayItem.setMarker(drawable);
 
             mOverlays.add(overlayItem);
@@ -68,13 +67,13 @@ public class CongestionPointsOverlay extends ItemizedOverlay<OverlayItem> {
     
     private Drawable getColoredIcon(TrafficStatus status) {
         if (status == TrafficStatus.RED) {
-            return mContext.getResources().getDrawable(R.drawable.red);
+            return mContext.getResources().getDrawable(R.drawable.marker_red);
         }
         if (status == TrafficStatus.YELLOW) {
-            return mContext.getResources().getDrawable(R.drawable.yellow);
+            return mContext.getResources().getDrawable(R.drawable.marker_orange);
         }
         if (status == TrafficStatus.GREEN) {
-            return mContext.getResources().getDrawable(R.drawable.green);
+            return mContext.getResources().getDrawable(R.drawable.marker_green);
         }
         
         return mContext.getResources().getDrawable(R.drawable.gd_map_pin_dot);

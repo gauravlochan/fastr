@@ -73,9 +73,6 @@ public class MainActivity extends GDMapActivity {
 			Toast.makeText(this, "You are here", Toast.LENGTH_SHORT).show();
 		}
 		
-        // Call BTIS asynchronously to get congestion points and plot them on the map
-        new GetCongestionTask(this, mapView).execute(null);
-	    
 		// TODO: Add an overlay for the source, but use a different marker
 //		OverlayItem overlayItem = new OverlayItem(geoPoint, "Current Location", 
 //	           "This is your last recorded location. Turn the GPS on for more accuracy.");
@@ -120,7 +117,7 @@ public class MainActivity extends GDMapActivity {
             	drawRoute(route);
             	
             	// Call BTIS asynchronously to get congestion points and plot them on the map
-            	// new GetCongestionTask(this, mapView).execute(route);
+            	new GetCongestionTask(this, mapView).execute(route);
 
             	// Call the server to send this route (happens in an async task)
 //            	ServerClient serverclient = new ServerClient();
