@@ -4,6 +4,11 @@ import java.util.List;
 
 import com.google.gson.annotations.SerializedName;
 
+/**
+ * Gson object
+ * 
+ * @author gauravlochan
+ */
 class DirectionsRoute {
     public Bounds bounds;
 

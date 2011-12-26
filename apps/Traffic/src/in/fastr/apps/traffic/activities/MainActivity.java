@@ -18,6 +18,7 @@ import java.util.List;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.location.LocationManager;
@@ -55,14 +56,10 @@ public class MainActivity extends GDMapActivity {
 		mapView = (MapView) findViewById(R.id.mapview);
 		mapView.setBuiltInZoomControls(true);
 		mapView.getController().setZoom(15);
-
-		// Add a 'MyLocationOverlay' to track the current location
-		MyLocationOverlay myLocationOverlay = new MyLocationOverlay(this, mapView);
-		mapView.getOverlays().add(myLocationOverlay);
-		myLocationOverlay.enableMyLocation();
+		
+		GeoPoint geoPoint = resetMapOverlays();
 
 		// Center the map
-		GeoPoint geoPoint = myLocationOverlay.getMyLocation();
 		if (geoPoint == null) {
 			geoPoint = getLastKnownLocation();
 		}
@@ -73,12 +70,17 @@ public class MainActivity extends GDMapActivity {
 			Toast.makeText(this, "You are here", Toast.LENGTH_SHORT).show();
 		}
 		
-		// TODO: Add an overlay for the source, but use a different marker
-//		OverlayItem overlayItem = new OverlayItem(geoPoint, "Current Location", 
-//	           "This is your last recorded location. Turn the GPS on for more accuracy.");
-//	    drawSinglePoint(R.drawable.gd_map_pin_base, overlayItem);
 	}
 	
+	private GeoPoint resetMapOverlays() {
+        // Add a 'MyLocationOverlay' to track the current location
+        MyLocationOverlay myLocationOverlay = new MyLocationOverlay(this, mapView);
+        mapView.getOverlays().clear();
+        mapView.getOverlays().add(myLocationOverlay);
+        myLocationOverlay.enableMyLocation();
+        
+        return myLocationOverlay.getMyLocation();
+	}
 	
     @Override
     public boolean onHandleActionBarItemClick(ActionBarItem item, int position) {
@@ -104,7 +106,10 @@ public class MainActivity extends GDMapActivity {
             Log.i( Global.Company, "resultCode: " + resultCode );
             
             if (data.hasExtra(AppGlobal.destPoint)) {
-            	// Draw the point of interest
+                // reset the map
+                resetMapOverlays();
+
+                // Draw the point of interest
             	MapPoint point = (MapPoint) 
             			data.getExtras().getSerializable(AppGlobal.destPoint);
             	drawPointOfInterest(point);     
@@ -113,11 +118,13 @@ public class MainActivity extends GDMapActivity {
             	GeoPoint sourcePoint = getLastKnownLocation();
             	GeoPoint destination = point.getGeoPoint();
             	DirectionsService dir = new GoogleDirectionsService();
-            	Route route = dir.getFirstRoute(new SimpleGeoPoint(sourcePoint), new SimpleGeoPoint(destination));
-            	drawRoute(route);
+            	List<Route> routes = dir.getRoutes(new SimpleGeoPoint(sourcePoint), 
+            	        new SimpleGeoPoint(destination));
+            	drawMultipleRoutes(routes);
             	
             	// Call BTIS asynchronously to get congestion points and plot them on the map
-            	new GetCongestionTask(this, mapView).execute(route);
+            	// TODO: Eventually pass in the route that we care about
+            	new GetCongestionTask(this, mapView).execute(null);
 
             	// Call the server to send this route (happens in an async task)
 //            	ServerClient serverclient = new ServerClient();
@@ -158,14 +165,24 @@ public class MainActivity extends GDMapActivity {
         mapView.invalidate();
     }
     
-    private void drawRoute(Route r) {
-    	MapRouteOverlay mapOverlay = new MapRouteOverlay(r, mapView);
-    	
+    
+    private void drawMultipleRoutes(List<Route> routes) {
+        // TODO: 3 for now since google returns only 3 routes
+        int colors[] = {Color.GREEN, Color.CYAN, Color.GRAY};
+        
+        for (int i = 0; i< routes.size(); i++) {
+            Route route = routes.get(i);
+            drawRoute(route, colors[i]);
+        }
+    }
+
+    private void drawRoute(Route r, int color) {
+        MapRouteOverlay mapOverlay = new MapRouteOverlay(r, mapView, color);
+        
         List<Overlay> listOfOverlays = mapView.getOverlays();
         listOfOverlays.add(0, mapOverlay);
         mapView.invalidate();
     }
-    
     
  	private GeoPoint getLastKnownLocation() {
 		// Acquire a reference to the system Location Manager

@@ -81,6 +81,7 @@ public class GoogleDirectionsService implements DirectionsService {
 		String request = appendSensor(jsonServiceUrl, true);
 		request = appendSource(request, source);
 		request = appendDestination(request, destination);
+		request = appendAlternativeRoutes(request, true);
 		
 		String jsonResult = RESTHelper.simpleGet(request);
 		return jsonResult;
@@ -104,6 +105,16 @@ public class GoogleDirectionsService implements DirectionsService {
 	private static String appendDestination(String requestUrl, SimpleGeoPoint destination) {
 		return (requestUrl.concat("&destination=")).concat(destination.toString());
 	}
+	
+    private static String appendAlternativeRoutes(String requestUrl, boolean alternatives) {
+        if (alternatives) {
+            return requestUrl.concat("&alternatives=true");
+        } else {
+            return requestUrl.concat("&alternatives=false");
+        }
+        
+    }
+	
 
 
 

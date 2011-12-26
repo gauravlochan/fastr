@@ -25,6 +25,6 @@ class Leg {
 	public List<Step> steps;
 	
     @SerializedName("via_waypoint")
-	public List<String> viaWaypoint;
+	public List<WayPoint> viaWaypoint;
 
 }

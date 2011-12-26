@@ -6,7 +6,6 @@ import in.fastr.apps.traffic.SimpleGeoPoint;
 import java.util.List;
 
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Point;
 
@@ -21,8 +20,9 @@ import com.google.android.maps.Overlay;
 //Also check out http://stackoverflow.com/questions/1612533/android-drivingdirections-removed-since-api-1-0-how-to-do-it-in-1-5-1-6
 public class MapRouteOverlay extends Overlay {
 	List<SimpleGeoPoint> sgPoints;
+	int color;
 
-	public MapRouteOverlay(Route route, MapView mv) {
+	public MapRouteOverlay(Route route, MapView mv, int color) {
 		sgPoints = route.getPoints();
 		int numPoints = sgPoints.size();
 
@@ -41,6 +41,8 @@ public class MapRouteOverlay extends Overlay {
 			MapController mapController = mv.getController();
 			mapController.animateTo(moveTo);
 			
+			this.color = color;
+			
 			// TODO: Set a zoom level that is appropriate for the route length
 		}
 	}
@@ -55,7 +57,7 @@ public class MapRouteOverlay extends Overlay {
 	public void drawPath(MapView mv, Canvas canvas) {
 		int x1 = -1, y1 = -1, x2 = -1, y2 = -1;
 		Paint paint = new Paint();
-		paint.setColor(Color.GRAY);
+		paint.setColor(color);
 		paint.setStyle(Paint.Style.FILL_AND_STROKE);
 		paint.setStrokeWidth(4);
 		for (int i = 0; i < sgPoints.size(); i++) {
