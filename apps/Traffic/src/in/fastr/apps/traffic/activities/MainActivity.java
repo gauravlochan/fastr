@@ -37,6 +37,7 @@ public class MainActivity extends GDMapActivity {
 	private static final int ENTER_DESTINATION_REQUEST_CODE = 100;
 	
 	MapView mapView;
+	MyLocationOverlay myLocationOverlay;
 
 	@Override
 	protected boolean isRouteDisplayed() {
@@ -59,27 +60,15 @@ public class MainActivity extends GDMapActivity {
 		
 		GeoPoint geoPoint = resetMapOverlays();
 
-		// Center the map
+		// The current location is obtained from the MyLocationOverlay widget
+		// If that fails, we have our own code to try to obtain the location
 		if (geoPoint == null) {
 			geoPoint = getLastKnownLocation();
 		}
 		
-		// In some phones (e.g. HTC Wildfire) even getLastKnownLocation fails
-		if (geoPoint != null) {
-		    mapView.getController().setCenter(geoPoint);
-			Toast.makeText(this, "You are here", Toast.LENGTH_SHORT).show();
-		}
-		
-	}
-	
-	private GeoPoint resetMapOverlays() {
-        // Add a 'MyLocationOverlay' to track the current location
-        MyLocationOverlay myLocationOverlay = new MyLocationOverlay(this, mapView);
-        mapView.getOverlays().clear();
-        mapView.getOverlays().add(myLocationOverlay);
-        myLocationOverlay.enableMyLocation();
-        
-        return myLocationOverlay.getMyLocation();
+		// Try to center around current location
+        mapView.getController().setCenter(geoPoint);
+		Toast.makeText(this, "You are here", Toast.LENGTH_SHORT).show();
 	}
 	
     @Override
@@ -99,6 +88,10 @@ public class MainActivity extends GDMapActivity {
     }
 
     
+    /**
+     * The child activities that would call back here are:
+     * - Enter destination address/place - will return with the destination point
+     */
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) 
     {	
@@ -137,6 +130,22 @@ public class MainActivity extends GDMapActivity {
     	}
     }
 
+    /**
+     * Remove all the overlays and add a single 'MyLocationOverlay'
+     * 
+     * @return GeoPoint obtained from myLocationOverlay.  Can be null.
+     */
+    private GeoPoint resetMapOverlays() {
+        mapView.getOverlays().clear();
+
+        // Add a 'MyLocationOverlay' to track the current location
+        myLocationOverlay = new MyLocationOverlay(this, mapView);
+        mapView.getOverlays().add(myLocationOverlay);
+        myLocationOverlay.enableMyLocation();
+        
+        return myLocationOverlay.getMyLocation();
+    }
+    
     /**
      * Draws a point of interest
      * 
@@ -190,8 +199,12 @@ public class MainActivity extends GDMapActivity {
 				.getSystemService(Context.LOCATION_SERVICE);
 		LocationRetriever retriever = new LocationRetriever();
 		Location location = retriever.getLastKnownLocation(locationManager);
+		
+        // HACK: In some phones (e.g. HTC Wildfire) our code to get the location fails
 		if (location == null) {
-			return null;
+		    // Center to Ashok Nagar police station :-)
+            SimpleGeoPoint sgPoint = new SimpleGeoPoint(12.971669, 77.610314);
+            return sgPoint.getGeoPoint();
 		}
 		return LocationHelper.locationToGeoPoint(location);
 	}
