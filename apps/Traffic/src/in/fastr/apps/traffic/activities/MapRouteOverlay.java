@@ -25,25 +25,13 @@ public class MapRouteOverlay extends Overlay {
 	public MapRouteOverlay(Route route, MapView mv, int color) {
 		sgPoints = route.getPoints();
 		int numPoints = sgPoints.size();
+        this.color = color;
 
 		if (numPoints > 0) {
-			// Center to the midpoint of the route
-			int moveToLat = sgPoints.get(0).getGeoPoint().getLatitudeE6() + 
-					( (sgPoints.get(numPoints-1).getGeoPoint().getLatitudeE6() -
-							sgPoints.get(0).getGeoPoint().getLatitudeE6()) / 2);
-			
-			int moveToLong = sgPoints.get(0).getGeoPoint().getLongitudeE6() + 
-					( (sgPoints.get(numPoints-1).getGeoPoint().getLongitudeE6() -
-							sgPoints.get(0).getGeoPoint().getLongitudeE6()) / 2);
+            // TODO: Set a zoom level that is appropriate for the route length
 
-			GeoPoint moveTo = new GeoPoint(moveToLat, moveToLong);
-
-			MapController mapController = mv.getController();
-			mapController.animateTo(moveTo);
-			
-			this.color = color;
-			
-			// TODO: Set a zoom level that is appropriate for the route length
+		    // Don't center when there are 3 routes.
+		    // centerToRouteMidPoint(mv);
 		}
 	}
 
@@ -71,5 +59,22 @@ public class MapRouteOverlay extends Overlay {
 			x1 = x2;
 			y1 = y2;
 		}
+	}
+	
+	private void centerToRouteMidPoint(MapView mv) {
+        int numPoints = sgPoints.size();
+
+        int moveToLat = sgPoints.get(0).getGeoPoint().getLatitudeE6() + 
+                ( (sgPoints.get(numPoints-1).getGeoPoint().getLatitudeE6() -
+                        sgPoints.get(0).getGeoPoint().getLatitudeE6()) / 2);
+        
+        int moveToLong = sgPoints.get(0).getGeoPoint().getLongitudeE6() + 
+                ( (sgPoints.get(numPoints-1).getGeoPoint().getLongitudeE6() -
+                        sgPoints.get(0).getGeoPoint().getLongitudeE6()) / 2);
+
+        GeoPoint moveTo = new GeoPoint(moveToLat, moveToLong);
+
+        MapController mapController = mv.getController();
+        mapController.animateTo(moveTo);
 	}
 }

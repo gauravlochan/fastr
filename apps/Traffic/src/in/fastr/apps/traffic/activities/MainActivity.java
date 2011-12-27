@@ -39,9 +39,16 @@ public class MainActivity extends GDMapActivity {
 	MapView mapView;
 	MyLocationOverlay myLocationOverlay;
 
+	// These are all obtained as part of the activity, and are candidates to save
+	private MapPoint _destination;
+	private SimpleGeoPoint _source;
+
+    private static final String SAVE_SOURCE = "SaveSource";
+	private static final String SAVE_DESTINATION = "SaveDestination";
+
 	@Override
 	protected boolean isRouteDisplayed() {
-		return false;
+		return true;
 	}
 
 	@Override
@@ -58,15 +65,10 @@ public class MainActivity extends GDMapActivity {
 		mapView.setBuiltInZoomControls(true);
 		mapView.getController().setZoom(15);
 		
-		GeoPoint geoPoint = resetMapOverlays();
-
-		// The current location is obtained from the MyLocationOverlay widget
-		// If that fails, we have our own code to try to obtain the location
-		if (geoPoint == null) {
-			geoPoint = getLastKnownLocation();
-		}
+		resetMapOverlays();
 		
 		// Try to center around current location
+        GeoPoint geoPoint = getLastKnownLocation();
         mapView.getController().setCenter(geoPoint);
 		Toast.makeText(this, "You are here", Toast.LENGTH_SHORT).show();
 	}
@@ -102,22 +104,14 @@ public class MainActivity extends GDMapActivity {
                 // reset the map
                 resetMapOverlays();
 
-                // Draw the point of interest
-            	MapPoint point = (MapPoint) 
-            			data.getExtras().getSerializable(AppGlobal.destPoint);
-            	drawPointOfInterest(point);     
+                // The destination comes from the child activity
+            	_destination = (MapPoint) data.getExtras().getSerializable(AppGlobal.destPoint);
             	
             	// Get the route from here to the destination
-            	GeoPoint sourcePoint = getLastKnownLocation();
-            	GeoPoint destination = point.getGeoPoint();
-            	DirectionsService dir = new GoogleDirectionsService();
-            	List<Route> routes = dir.getRoutes(new SimpleGeoPoint(sourcePoint), 
-            	        new SimpleGeoPoint(destination));
-            	drawMultipleRoutes(routes);
+            	GeoPoint source = getLastKnownLocation();
+            	_source = new SimpleGeoPoint(source);
             	
-            	// Call BTIS asynchronously to get congestion points and plot them on the map
-            	// TODO: Eventually pass in the route that we care about
-            	new GetCongestionTask(this, mapView).execute(null);
+            	getAndDrawRoutes(_source, _destination);
 
             	// Call the server to send this route (happens in an async task)
 //            	ServerClient serverclient = new ServerClient();
@@ -130,20 +124,54 @@ public class MainActivity extends GDMapActivity {
     	}
     }
 
+    private void getAndDrawRoutes(SimpleGeoPoint source, MapPoint dest) {
+        // TODO: Should draw the source with a marker too.  
+        drawPointOfInterest(dest, false);     
+
+        DirectionsService dir = new GoogleDirectionsService();
+        List<Route> routes = dir.getRoutes(source, new SimpleGeoPoint(dest.getGeoPoint()));
+        drawMultipleRoutes(routes);
+        
+        // Call BTIS asynchronously to get congestion points and plot them on the map
+        // TODO: Eventually pass in the route that we care about
+        new GetCongestionTask(this, mapView).execute(null);
+    }
+
+    
+    @Override 
+    protected void onSaveInstanceState(Bundle bundle) {
+        bundle.putSerializable(SAVE_DESTINATION, _destination);
+        bundle.putSerializable(SAVE_SOURCE, _source);
+    }
+    
+
+    @Override 
+    protected void onRestoreInstanceState(Bundle bundle) {
+        Object source = bundle.getSerializable(SAVE_SOURCE);
+        Object destination = bundle.getSerializable(SAVE_DESTINATION);
+        
+        if ((source!=null) && (destination!=null)) {
+            _source = (SimpleGeoPoint) source;
+            _destination = (MapPoint) destination;
+            getAndDrawRoutes(_source, _destination);
+        }
+    }
+
+    
     /**
      * Remove all the overlays and add a single 'MyLocationOverlay'
      * 
      * @return GeoPoint obtained from myLocationOverlay.  Can be null.
      */
-    private GeoPoint resetMapOverlays() {
+    private void resetMapOverlays() {
         mapView.getOverlays().clear();
 
         // Add a 'MyLocationOverlay' to track the current location
         myLocationOverlay = new MyLocationOverlay(this, mapView);
         mapView.getOverlays().add(myLocationOverlay);
         myLocationOverlay.enableMyLocation();
-        
-        return myLocationOverlay.getMyLocation();
+       
+        return;
     }
     
     /**
@@ -151,11 +179,13 @@ public class MainActivity extends GDMapActivity {
      * 
      * @param point
      */
-    private void drawPointOfInterest(MapPoint point) {
+    private void drawPointOfInterest(MapPoint point, boolean animateTo) {
         OverlayItem overlayItem = new OverlayItem(point.getGeoPoint(), point.getName(), point.getDescription());
         drawSinglePoint(R.drawable.gd_map_pin_pin, overlayItem);
         
-        mapView.getController().animateTo(point.getGeoPoint());
+        if (animateTo) {
+            mapView.getController().animateTo(point.getGeoPoint());
+        }
 		Toast.makeText(this, point.getName(), Toast.LENGTH_LONG).show();
     }
     
@@ -185,6 +215,7 @@ public class MainActivity extends GDMapActivity {
         }
     }
 
+    
     private void drawRoute(Route r, int color) {
         MapRouteOverlay mapOverlay = new MapRouteOverlay(r, mapView, color);
         
@@ -193,20 +224,32 @@ public class MainActivity extends GDMapActivity {
         mapView.invalidate();
     }
     
+    
  	private GeoPoint getLastKnownLocation() {
+ 	    GeoPoint geoPoint;
+ 	    
+ 	    // First try to get current location from the MyLocationOverlay widget
+ 	    if (myLocationOverlay != null) {
+ 	       geoPoint = myLocationOverlay.getMyLocation();
+ 	       if (geoPoint != null) {
+ 	           return geoPoint;
+ 	       }
+ 	    }
+ 	    
+        // Else try to call into location manager directly
 		// Acquire a reference to the system Location Manager
 		LocationManager locationManager = (LocationManager) this
 				.getSystemService(Context.LOCATION_SERVICE);
 		LocationRetriever retriever = new LocationRetriever();
 		Location location = retriever.getLastKnownLocation(locationManager);
+		if (location != null) {
+		    return LocationHelper.locationToGeoPoint(location);
+		}
 		
         // HACK: In some phones (e.g. HTC Wildfire) our code to get the location fails
-		if (location == null) {
-		    // Center to Ashok Nagar police station :-)
-            SimpleGeoPoint sgPoint = new SimpleGeoPoint(12.971669, 77.610314);
-            return sgPoint.getGeoPoint();
-		}
-		return LocationHelper.locationToGeoPoint(location);
+	    // Center to Ashok Nagar police station :-)
+        SimpleGeoPoint sgPoint = new SimpleGeoPoint(12.971669, 77.610314);
+        return sgPoint.getGeoPoint();
 	}
 
 }
