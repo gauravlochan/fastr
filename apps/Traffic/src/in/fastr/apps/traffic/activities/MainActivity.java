@@ -147,6 +147,8 @@ public class MainActivity extends GDMapActivity {
 
     @Override 
     protected void onRestoreInstanceState(Bundle bundle) {
+        // TODO: This is time consuming AND can lead to multiple redraws
+        // Just save all the relevant data away and reuse it.
         Object source = bundle.getSerializable(SAVE_SOURCE);
         Object destination = bundle.getSerializable(SAVE_DESTINATION);
         

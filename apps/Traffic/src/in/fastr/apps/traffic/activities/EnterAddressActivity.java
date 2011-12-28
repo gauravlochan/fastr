@@ -10,16 +10,25 @@ import in.fastr.apps.traffic.services.GeocodingService;
 import in.fastr.apps.traffic.services.PointOfInterestService;
 import in.fastr.library.Global;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
+import android.app.AlertDialog;
+import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ListView;
+import android.widget.SimpleAdapter;
 import android.widget.Toast;
 
 /**
@@ -27,12 +36,14 @@ import android.widget.Toast;
  * - User can type in an address and click
  * - If user doesnt type in address, pop up warning and keep user here
  * - User can press back.  If they come back here, they will start afresh
- *   (TODO: store state)
  * - TODO: Autocomplete addresses
  * 
  * @author gauravlochan
  */
 public class EnterAddressActivity extends GDActivity {
+    final static String POINT_NAME = "name";
+    final static String POINT_DESC = "description";
+    
    	enum DestinationType { PLACE, ADDRESS };
     class DestLookupParams {
     	String destination;
@@ -44,11 +55,13 @@ public class EnterAddressActivity extends GDActivity {
     	}
     }
 
-	
 	private EditText _destinationAddress;
 	private EditText _nameOfPlace;
 	private Button _button;
 	
+	private Dialog _manyDestinationsDialog; 
+	private List<MapPoint> _points;
+
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -63,6 +76,10 @@ public class EnterAddressActivity extends GDActivity {
 
 	}
 
+	/**
+	 * Validates the input address/place.  If something is wrong, asks the user to fix it
+	 * otherwise moves on and does something with the input
+	 */
     public class GetDirectionsClickHandler implements View.OnClickListener 
     {
     	public void onClick( View view ) {
@@ -87,7 +104,32 @@ public class EnterAddressActivity extends GDActivity {
     	}
     }
     
+    /**
+     * Convert the point data into the structure that the SimpleAdapter understands
+     * @param points
+     * @return
+     */
+    private ArrayList<HashMap<String,String>> getSimpleAdapterList(List<MapPoint> points) {
+        int numPoints = points.size();
+        ArrayList<HashMap<String,String>> list = new ArrayList<HashMap<String,String>>(numPoints);
+        
+        for (int i=0; i < numPoints; i++) {
+            MapPoint point = points.get(i);
+            HashMap<String,String> pointMap = new HashMap<String,String>();
+            pointMap.put(POINT_NAME, point.getName());
+            pointMap.put(POINT_DESC, point.getDescription());
+            list.add(pointMap);
+        }
+        return list;
+    }
+    
 
+    /**
+     * Task takes in the destination (whether an address or a place) and calls the appropriate
+     * service to resolve it, in the meantime displaying and updating the progress dialog.
+     * 
+     * Once the result comes in, handles it
+     */
 	public class PointLookupTask extends AsyncTask<DestLookupParams, Void, List<MapPoint>> {
 		private ProgressDialog progressDialog;
 
@@ -131,17 +173,78 @@ public class EnterAddressActivity extends GDActivity {
    			    Toast.makeText(EnterAddressActivity.this, "No results found, try again", Toast.LENGTH_LONG).show();
    			    return;
 			}
+			
+			// If one point was found
+			if (points.size() == 1) {
+	            Intent data = new Intent();
+	            data.putExtra(AppGlobal.destPoint, points.get(0));
+	            setResult(RESULT_OK, data);
+	            finish();
+	            return;
+			}
 
-			// TODO: Populate all points of interest and ask user to pick
-			if (points.size() > 1) {
-   			    Toast.makeText(EnterAddressActivity.this, "Multiple results found, picking the first", Toast.LENGTH_SHORT).show();
-   			}
-	
-			Intent data = new Intent();
-			data.putExtra(AppGlobal.destPoint, points.get(0));
-			setResult(RESULT_OK, data);
-			finish();
+			// Multiple points were found.  Let the activity handle that
+			Message msg = new Message();
+			msg.obj = points;
+            EnterAddressActivity.this.manyResultsHandler.dispatchMessage(msg);
 		}
 	}
 	
+	private void finishWithSelectedPoint(int item, List<MapPoint> points) {
+        Intent data = new Intent();
+        data.putExtra(AppGlobal.destPoint, points.get(item));
+        setResult(RESULT_OK, data);
+        finish();
+        return;
+	}
+	
+    /**
+     * Handler for when the destination lookup yields many results
+     */
+    Handler manyResultsHandler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            List<MapPoint> points = (List<MapPoint>) msg.obj;
+            EnterAddressActivity.this.displayDialog(points);
+        }
+    };
+    
+    // http://stackoverflow.com/questions/2874191/is-it-possible-to-create-listview-inside-dialog
+    // http://www.vogella.de/articles/AndroidListView/article.html
+    // http://mylifewithandroid.blogspot.com/2008/03/my-first-meeting-with-simpleadapter.html
+    private void displayDialog(List<MapPoint> points) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Multiple results, pick the best one:");
+
+        SimpleAdapter resultsAdapter = new SimpleAdapter(this,
+                getSimpleAdapterList(points),
+                android.R.layout.two_line_list_item, 
+                new String[] { POINT_NAME, POINT_DESC }, 
+                new int[] { android.R.id.text1, android.R.id.text2 }
+        );
+
+        ListView modeList = new ListView(this);
+        modeList.setAdapter(resultsAdapter);
+
+        builder.setView(modeList);
+        
+        // ugly to make this a class member, but i couldn't think of any other way 
+        // to get access to this data inside of OnItemClickListener
+        _points = points;
+        
+        // ugly to make this a class member, but i couldn't think of any other way 
+        // to get access to this data inside of OnItemClickListener
+        _manyDestinationsDialog = builder.create();
+        _manyDestinationsDialog.show();
+
+        modeList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
+                
+                finishWithSelectedPoint(arg2, _points);
+                _manyDestinationsDialog.dismiss();
+            }
+        });
+    }
+
+    
  }
