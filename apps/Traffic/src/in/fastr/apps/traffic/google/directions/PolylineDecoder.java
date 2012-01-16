@@ -1,16 +1,16 @@
 package in.fastr.apps.traffic.google.directions;
 
+import in.fastr.apps.traffic.SimpleGeoPoint;
+
 import java.util.ArrayList;
 import java.util.List;
-
-import com.google.android.maps.GeoPoint;
 
 // http://jeffreysambells.com/posts/2010/05/27/decoding-polylines-from-google-maps-direction-api-with-java/
 class PolylineDecoder {
 
-	public static List<GeoPoint> decodePoly(String encoded) {
+	public static List<SimpleGeoPoint> decodePoly(String encoded) {
 
-	    List<GeoPoint> poly = new ArrayList<GeoPoint>();
+	    List<SimpleGeoPoint> poly = new ArrayList<SimpleGeoPoint>();
 	    int index = 0, len = encoded.length();
 	    int lat = 0, lng = 0;
 
@@ -33,10 +33,12 @@ class PolylineDecoder {
 	        } while (b >= 0x20);
 	        int dlng = ((result & 1) != 0 ? ~(result >> 1) : (result >> 1));
 	        lng += dlng;
+	        
+	        SimpleGeoPoint sgPoint = new SimpleGeoPoint(
+	                ((double) lat / 1E5),
+	                ((double) lng / 1E5));
+	        poly.add(sgPoint);
 
-	        GeoPoint p = new GeoPoint((int) (((double) lat / 1E5) * 1E6),
-	             (int) (((double) lng / 1E5) * 1E6));
-	        poly.add(p);
 	    }
 
 	    return poly;

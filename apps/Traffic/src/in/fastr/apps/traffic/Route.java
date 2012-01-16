@@ -15,14 +15,14 @@ public class Route {
 	/**
 	 * Identifies which service these directions came from. 
 	 */
-	private ServiceProviders service;
+	protected ServiceProviders service;
 	
 	public SimpleGeoPoint source;
 	public SimpleGeoPoint destination;
 	
 	// Even though GeoPoint would have been better to store, it's not serializable
 	// and so gson couldn't convert it to json.  (ummm, i think)
-	private ArrayList<SimpleGeoPoint> points;
+	protected ArrayList<SimpleGeoPoint> points;
 	
 	public int drivingDistanceMeters = 0;
 	public int estimatedTimeSeconds = 0;
@@ -41,6 +41,12 @@ public class Route {
 		points.add(point);
 	}
 	
+	/**
+	 * Returns the list of points in this route. 
+	 * 
+	 * Modifying the list will modify the route, so be careful.
+	 * @return
+	 */
 	public List<SimpleGeoPoint> getPoints() {
 		return this.points;
 	}

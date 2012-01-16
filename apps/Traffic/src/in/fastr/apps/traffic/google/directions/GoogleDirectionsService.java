@@ -9,7 +9,6 @@ import in.fastr.library.RESTHelper;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.google.android.maps.GeoPoint;
 import com.google.gson.Gson;
 
 public class GoogleDirectionsService implements DirectionsService {
@@ -62,9 +61,8 @@ public class GoogleDirectionsService implements DirectionsService {
 		// For now i'm simply going to add the points from the polyline
 		String points = step.polyline.points;
 		
-		List<GeoPoint> geoPoints = PolylineDecoder.decodePoly(points);
-		for (GeoPoint geoPoint: geoPoints) {
-			SimpleGeoPoint sgPoint = new SimpleGeoPoint(geoPoint);
+		List<SimpleGeoPoint> simpleGeoPoints = PolylineDecoder.decodePoly(points);
+		for (SimpleGeoPoint sgPoint: simpleGeoPoints) {
 			route.addPoint(sgPoint);
 		}
 	}
