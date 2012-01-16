@@ -17,9 +17,8 @@ import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.json.JSONArray;
 
-import android.util.Log;
-
 public class RESTHelper {
+    private static Logger logger = new MyLogger(Global.Company);
 	
     /**
      * A simple method to make a REST call to the specified server.  Good for 
@@ -33,7 +32,7 @@ public class RESTHelper {
     
 	public static String simplePost(String server, String payload) {
 		String result = null;
-    	Log.d(Global.Company, "Attempting call to REST");
+    	logger.debug("Attempting call to REST: " + server);
 
         HttpClient httpClient = new DefaultHttpClient();
         HttpPost httpPost = new HttpPost(server);
@@ -52,20 +51,20 @@ public class RESTHelper {
             response = httpClient.execute(httpPost);
             
             if (response != null) {
-                Log.d(Global.Company, "Successful call to REST");
-                Log.d(Global.Company, response.getStatusLine().toString());
+                logger.debug("Successful call to REST");
+                logger.debug(response.getStatusLine().toString());
                 
                 HttpEntity entity = response.getEntity();
                 if (entity != null) {
                     InputStream instream = entity.getContent();
                     result = convertStreamToString(instream);
-                    Log.i(Global.Company, "Result of conversation: [" + result + "]");
+                    logger.debug("Result of conversation: [" + result + "]");
                     instream.close();
                 } else {
-                    Log.d(Global.Company, "Empty Http response");
+                    logger.debug("Empty Http response");
                 }
             } else {
-                Log.d(Global.Company, "Unsuccessful call to REST");
+                logger.debug("Unsuccessful call to REST");
             }
         } catch (ClientProtocolException e) {
             e.printStackTrace();
@@ -85,7 +84,7 @@ public class RESTHelper {
      */
     public static String simpleGet(String server) {
         String result = null;
-        Log.d(Global.Company, "Attempting call to REST");
+        logger.debug("Attempting call to REST: "+ server);
 
         HttpClient httpClient = new DefaultHttpClient();
         HttpGet httpGet = new HttpGet(server);
@@ -93,20 +92,20 @@ public class RESTHelper {
             HttpResponse response = null;
             response = httpClient.execute(httpGet);
             if (response != null) {
-                Log.d(Global.Company, "Successful call to REST");
-                Log.d(Global.Company, response.getStatusLine().toString());
+                logger.debug("Successful call to REST");
+                logger.debug(response.getStatusLine().toString());
                 
                 HttpEntity entity = response.getEntity();
                 if (entity != null) {
                     InputStream instream = entity.getContent();
                     result = convertStreamToString(instream);
-                    Log.i(Global.Company, "Result of converstion: [" + result + "]");
+                    logger.info("Result of converstion: [" + result + "]");
                     instream.close();
                 } else {
-                    Log.d(Global.Company, "Empty Http response");
+                    logger.debug("Empty Http response");
                 }
             } else {
-                Log.d(Global.Company, "Unsuccessful call to REST");
+                logger.debug("Unsuccessful call to REST");
             }
         } catch (ClientProtocolException e) {
             e.printStackTrace();
