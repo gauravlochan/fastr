@@ -8,6 +8,7 @@
 	<classpathentry kind="lib" path="/Users/gauravlochan/code/fastr/external/httpcomponents-client-4.1.2/lib/httpclient-4.1.2.jar"/>
 	<classpathentry kind="lib" path="/Users/gauravlochan/code/fastr/external/httpcomponents-client-4.1.2/lib/httpcore-4.1.2.jar"/>
 	<classpathentry kind="lib" path="/Users/gauravlochan/code/fastr/external/httpcomponents-client-4.1.2/lib/commons-logging-1.1.1.jar"/>
+	<classpathentry kind="lib" path="/Users/gauravlochan/code/fastr/external/json-jena-1.0.jar"/>
 	<classpathentry kind="lib" path="/Developer/android-sdk-mac_x86/platforms/android-7/android.jar"/>
 	<classpathentry kind="lib" path="/Developer/android-sdk-mac_x86/add-ons/addon_google_apis_google_inc_7/libs/maps.jar"/>
 	<classpathentry kind="output" path="bin"/>

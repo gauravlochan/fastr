@@ -61,6 +61,10 @@ public class MapPoint implements Serializable {
 		return location.getGeoPoint();
 	}
 	
+	public SimpleGeoPoint getSimpleGeoPoint() {
+	    return location;
+	}
+	
 	public void setLocation(double latitude, double longitude) {
 		this.location = new SimpleGeoPoint(latitude, longitude);
 	}

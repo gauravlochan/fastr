@@ -4,6 +4,8 @@ import in.fastr.apps.traffic.MapPoint;
 import in.fastr.apps.traffic.ServiceProviders;
 import in.fastr.apps.traffic.services.PointOfInterestService;
 import in.fastr.library.Global;
+import in.fastr.library.Logger;
+import in.fastr.library.MyLogger;
 import in.fastr.library.RESTHelper;
 
 import java.util.ArrayList;
@@ -13,9 +15,9 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import android.util.Log;
-
 public class OnzePointOfInterestService implements PointOfInterestService {
+    private static Logger logger = new MyLogger(Global.Company);
+
 	private static final String api_key = "pihack";
 	private static final String jsonServiceUrl = "http://latlong.in/api/v1/search?api_key="+ api_key;
 	
@@ -39,7 +41,7 @@ public class OnzePointOfInterestService implements PointOfInterestService {
         JSONArray jsonArray;
 		try {
 			jsonArray = new JSONArray(result);
-			Log.i(Global.Company, "Number of entries " + jsonArray.length());
+			logger.info("Number of entries " + jsonArray.length());
 
 			for (int i = 0; i < jsonArray.length(); i++) {
 				JSONObject jsonObject = jsonArray.getJSONObject(i);

@@ -17,7 +17,6 @@ public class RouteGenerator {
     public Route getRoute(SimpleGeoPoint source, SimpleGeoPoint dest) {
         DirectionsService dir = new GoogleDirectionsService();
         List<Route> routes = dir.getRoutes(source, dest);
-        
         return routes.get(0);
     }
 

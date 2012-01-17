@@ -1,8 +1,13 @@
 package in.fastr.tripsim;
 
 import static org.junit.Assert.assertNotNull;
+import in.fastr.apps.traffic.MapPoint;
 import in.fastr.apps.traffic.Route;
 import in.fastr.apps.traffic.SimpleGeoPoint;
+import in.fastr.apps.traffic.onze.OnzePointOfInterestService;
+import in.fastr.apps.traffic.services.PointOfInterestService;
+
+import java.util.List;
 
 import org.junit.Test;
 
@@ -18,10 +23,13 @@ public class RouteGeneratorTest {
     
     @Test
     public void testGetRealRoute() {
-        // SJW bus stop
-        SimpleGeoPoint source = new SimpleGeoPoint(12.929613, 77.615546);
-        // fanoos
-        SimpleGeoPoint dest = new SimpleGeoPoint(12.964491, 77.606702);
+        PointOfInterestService poiService = new OnzePointOfInterestService();
+        
+        List<MapPoint> mapPoints = poiService.getPoints("fanoos");
+        SimpleGeoPoint source = mapPoints.get(0).getSimpleGeoPoint();
+
+        List<MapPoint> mapPoints2 = poiService.getPoints("apollo hospitals");
+        SimpleGeoPoint dest = mapPoints2.get(0).getSimpleGeoPoint();
         
         RouteGenerator br = new RouteGenerator();
         Route route = br.getRoute(source, dest);
