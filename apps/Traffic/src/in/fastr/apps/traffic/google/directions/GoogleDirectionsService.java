@@ -63,8 +63,33 @@ public class GoogleDirectionsService implements DirectionsService {
 		
 		List<SimpleGeoPoint> simpleGeoPoints = PolylineDecoder.decodePoly(points);
 		for (SimpleGeoPoint sgPoint: simpleGeoPoints) {
-			route.addPoint(sgPoint);
+		    // filter out points that are too close.  It slows down the map
+		    // rendering on the phone.
+		    if (!isTooClose(route, sgPoint)) { 
+		        route.addPoint(sgPoint);
+		    }
 		}
+	}
+
+	// TODO: Instead of a generic function like this, we could add code in
+	// the calling loop that saves the last point or something. (optimization)
+	private boolean isTooClose(Route route, SimpleGeoPoint sgPoint) {
+	    // Distance between previous point to ignore (in km)
+	    float THRESHOLD = 0.010f; // 10 meters
+	    
+	    List<SimpleGeoPoint> routePoints = route.getPoints();
+	    if (routePoints.size() == 0) {
+	        return false;
+	    }
+	    
+	    SimpleGeoPoint lastPoint = routePoints.get(routePoints.size()-1);
+	    // Check if distance is less than 5 metres
+	    if (lastPoint.getDistanceFrom(sgPoint) < THRESHOLD) {
+	        System.out.println("Dropping point " +sgPoint.toString());
+	        return true;
+	    }
+	    
+	    return false;
 	}
 
 	/**
