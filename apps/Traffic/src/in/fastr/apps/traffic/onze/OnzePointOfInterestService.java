@@ -1,12 +1,12 @@
 package in.fastr.apps.traffic.onze;
 
 import in.fastr.apps.traffic.MapPoint;
-import in.fastr.apps.traffic.ServiceProviders;
 import in.fastr.apps.traffic.services.PointOfInterestService;
 import in.fastr.library.Global;
 import in.fastr.library.Logger;
 import in.fastr.library.MyLogger;
 import in.fastr.library.RESTHelper;
+import in.fastr.library.ServiceProviders;
 
 import java.util.ArrayList;
 import java.util.List;

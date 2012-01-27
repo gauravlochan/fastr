@@ -1,6 +1,6 @@
 package in.fastr.apps.traffic.google.directions;
 
-import in.fastr.apps.traffic.SimpleGeoPoint;
+import in.fastr.library.SimpleGeoPoint;
 
 import java.util.ArrayList;
 import java.util.List;

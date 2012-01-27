@@ -1,4 +1,4 @@
-package in.fastr.apps.traffic;
+package in.fastr.library;
 
 public enum ServiceProviders {
     SIMULATOR,    // Test data

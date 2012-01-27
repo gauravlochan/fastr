@@ -1,9 +1,9 @@
 package in.fastr.apps.traffic.google.directions;
 
 import in.fastr.apps.traffic.Route;
-import in.fastr.apps.traffic.ServiceProviders;
-import in.fastr.apps.traffic.SimpleGeoPoint;
 import in.fastr.library.Global;
+import in.fastr.library.ServiceProviders;
+import in.fastr.library.SimpleGeoPoint;
 
 import org.json.JSONArray;
 import org.json.JSONException;

@@ -11,5 +11,6 @@
 	<classpathentry kind="lib" path="/Users/gauravlochan/code/fastr/external/json-jena-1.0.jar"/>
 	<classpathentry kind="lib" path="/Developer/android-sdk-mac_x86/platforms/android-7/android.jar"/>
 	<classpathentry kind="lib" path="/Developer/android-sdk-mac_x86/add-ons/addon_google_apis_google_inc_7/libs/maps.jar"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/CommonLib"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

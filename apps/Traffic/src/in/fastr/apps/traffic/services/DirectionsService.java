@@ -1,7 +1,7 @@
 package in.fastr.apps.traffic.services;
 
 import in.fastr.apps.traffic.Route;
-import in.fastr.apps.traffic.SimpleGeoPoint;
+import in.fastr.library.SimpleGeoPoint;
 
 import java.util.List;
 

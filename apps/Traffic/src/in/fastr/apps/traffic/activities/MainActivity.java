@@ -7,12 +7,12 @@ import in.fastr.apps.traffic.AppGlobal;
 import in.fastr.apps.traffic.MapPoint;
 import in.fastr.apps.traffic.R;
 import in.fastr.apps.traffic.Route;
-import in.fastr.apps.traffic.SimpleGeoPoint;
 import in.fastr.apps.traffic.google.directions.GoogleDirectionsService;
 import in.fastr.apps.traffic.location.LocationHelper;
 import in.fastr.apps.traffic.location.LocationRetriever;
 import in.fastr.apps.traffic.services.DirectionsService;
 import in.fastr.library.Global;
+import in.fastr.library.SimpleGeoPoint;
 
 import java.util.List;
 

@@ -1,4 +1,4 @@
-package in.fastr.apps.traffic;
+package in.fastr.library;
 
 // Making this 3 simple colors for now.  Later we should define these better
 public enum TrafficStatus {

@@ -1,6 +1,6 @@
 package in.fastr.apps.traffic.google;
 
-import in.fastr.apps.traffic.SimpleGeoPoint;
+import in.fastr.library.SimpleGeoPoint;
 
 import com.google.gson.annotations.SerializedName;
 

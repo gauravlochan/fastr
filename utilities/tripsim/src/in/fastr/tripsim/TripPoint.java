@@ -1,6 +1,6 @@
 package in.fastr.tripsim;
 
-import in.fastr.apps.traffic.SimpleGeoPoint;
+import in.fastr.library.SimpleGeoPoint;
 
 import java.util.Date;
 

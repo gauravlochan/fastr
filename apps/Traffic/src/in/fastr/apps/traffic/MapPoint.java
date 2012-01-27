@@ -1,6 +1,9 @@
 package in.fastr.apps.traffic;
 
 
+import in.fastr.library.ServiceProviders;
+import in.fastr.library.SimpleGeoPoint;
+
 import java.io.Serializable;
 
 import com.google.android.maps.GeoPoint;

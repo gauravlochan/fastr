@@ -3,7 +3,7 @@ package in.fastr.tripsim;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import in.fastr.apps.traffic.Route;
-import in.fastr.apps.traffic.SimpleGeoPoint;
+import in.fastr.library.SimpleGeoPoint;
 
 import java.util.Date;
 

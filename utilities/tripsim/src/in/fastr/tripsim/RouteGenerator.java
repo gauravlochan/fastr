@@ -1,10 +1,10 @@
 package in.fastr.tripsim;
 
 import in.fastr.apps.traffic.Route;
-import in.fastr.apps.traffic.ServiceProviders;
-import in.fastr.apps.traffic.SimpleGeoPoint;
 import in.fastr.apps.traffic.google.directions.GoogleDirectionsService;
 import in.fastr.apps.traffic.services.DirectionsService;
+import in.fastr.library.ServiceProviders;
+import in.fastr.library.SimpleGeoPoint;
 
 import java.util.List;
 

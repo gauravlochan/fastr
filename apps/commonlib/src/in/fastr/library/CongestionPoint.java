@@ -1,4 +1,5 @@
-package in.fastr.apps.traffic;
+package in.fastr.library;
+
 
 /**
  * A congestion point reported by some service.
@@ -25,5 +26,18 @@ public class CongestionPoint {
 		this.location = new SimpleGeoPoint(latitude, longitude);
 	}
     
+    public double getLatitude() {
+        return location.getLatitude();
+    }
+    
+    public double getLongitude() {
+        return location.getLongitude();
+    }
+    
+    @Deprecated
+    public long getEpochTime() {
+        return 0;
+    }
+
 }
 
