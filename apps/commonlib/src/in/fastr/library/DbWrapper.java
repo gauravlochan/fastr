@@ -18,12 +18,15 @@ public class DbWrapper {
     private static final String COL_TIMESTAMP = "Timestamp";
     private static final String COL_STATUS = "Status";
 
+    private final String dbName;
+    
     // TODO: Change this so that it doesn't need the activity passed in
     // instead, use the android.database.sqlite.SQLiteDatabase class
     private Activity activity;
     
-    public DbWrapper(Activity _activity) {
+    public DbWrapper(Activity _activity, String _dbName) {
         activity = _activity;
+        dbName = _dbName;
     }
     
     
@@ -31,10 +34,10 @@ public class DbWrapper {
      * Create a Database 
      */
     public void createDatabase() {
-        Log.d(Global.Company, "Attempting to create DB");
+        Log.d(Global.Company, "Attempting to create DB "+dbName);
 
         SQLiteDatabase db = 
-            activity.openOrCreateDatabase("Traffix", Context.MODE_PRIVATE, null);
+            activity.openOrCreateDatabase(dbName, Context.MODE_PRIVATE, null);
         try {
             // Using this for debugging for schema changes
             // db.execSQL("DROP TABLE "+TableName);
@@ -61,12 +64,12 @@ public class DbWrapper {
 
     
     /**
-     * Insert a single reported congestion point
+     * Insert a single reported location update
      */
-    public void insertPoint(CongestionPoint point) {
-        Log.d(Global.Company, "Attempting write point to SQL");
+    public void insertPoint(LocationUpdate point) {
+        Log.d(Global.Company, "Attempting write point to DB " + dbName);
         SQLiteDatabase db = 
-            activity.openOrCreateDatabase("Traffix", Context.MODE_PRIVATE, null);
+            activity.openOrCreateDatabase(dbName, Context.MODE_PRIVATE, null);
 
         try {
             String columns = " (Latitude, Longitude, Timestamp, Status) ";
@@ -91,7 +94,7 @@ public class DbWrapper {
      */
     public void logDatabase() {
         SQLiteDatabase db = 
-            activity.openOrCreateDatabase("Traffix", Context.MODE_PRIVATE, null);
+            activity.openOrCreateDatabase(dbName, Context.MODE_PRIVATE, null);
         
         try {
             Cursor c = db.rawQuery("SELECT * FROM " + TableName, null);
@@ -115,12 +118,12 @@ public class DbWrapper {
     }
     
     /**
-     * Return count of congestion points that have not been uploaded.
+     * Return count of location updates that have not been uploaded.
      * 
      * @return count of congestion points that have not been uploaded
      */
-    public long countUnsyncedCongestionPoints() {
-        SQLiteDatabase db = activity.openOrCreateDatabase("Traffix", Context.MODE_PRIVATE, null);
+    public long countUnsyncedLocationUpdates() {
+        SQLiteDatabase db = activity.openOrCreateDatabase(dbName, Context.MODE_PRIVATE, null);
         
         try {
             SQLiteStatement stmt = db.compileStatement("SELECT COUNT(*) FROM " + 
@@ -133,7 +136,7 @@ public class DbWrapper {
     }
     
     /**
-     * Loads a list of unsynced congestion points from the database.  
+     * Loads a list of unsynced location updates from the database.  
      * User can specify a limit to the number of points to load (chunkSize)
      * 
      * @param chunkSize the max number of points to get.  0 implies there
@@ -148,13 +151,13 @@ public class DbWrapper {
     }
     
     /**
-     * Loads a list of all unsynced congestion points from the database.  
+     * Loads a list of all unsynced location updates from the database.  
      *        
      * @return
      */
-    public List<CongestionPoint> getUnsyncedCongestionPoints() {
+    public List<LocationUpdate> getUnsyncedLocationUpdates() {
         SQLiteDatabase db = 
-            activity.openOrCreateDatabase("Traffix", Context.MODE_PRIVATE, null);
+            activity.openOrCreateDatabase(dbName, Context.MODE_PRIVATE, null);
         
         try {
             String query = "SELECT * FROM " + TableName + " WHERE " + 
@@ -167,18 +170,15 @@ public class DbWrapper {
                 int timestamp = c.getColumnIndex(COL_TIMESTAMP);
         
                 int count = c.getCount();
-                List<CongestionPoint> points = new ArrayList<CongestionPoint>(count);
+                List<LocationUpdate> points = new ArrayList<LocationUpdate>(count);
 
                 c.moveToFirst();
                 // Loop through all Results
                 do {
-                    CongestionPoint point = new CongestionPoint(
-                            ServiceProviders.SIMULATOR, // TODO: Fix this, store provider in Db
-                            "", // TODO: Fix this
-                            TrafficStatus.UNSPECIFIED // TODO: Fix this
-                            );
-                    
-                    point.setLocation(c.getDouble(latIndex), c.getDouble(longIndex));
+                    LocationUpdate point = new LocationUpdate(
+                            c.getDouble(latIndex),
+                            c.getDouble(longIndex),
+                            c.getLong(timestamp));
                     points.add(point);
                     Log.d(Global.Company, point.toString());
                 } while (c.moveToNext());

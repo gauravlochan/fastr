@@ -2,7 +2,7 @@ package in.fastr.library;
 
 
 /**
- * A congestion point reported by some service.
+ * A congestion point reported by some service
  * 
  * @author gauravlochan
  */

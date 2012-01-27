@@ -1,4 +1,4 @@
-package in.fastr.apps.traffic.location;
+package in.fastr.library;
 
 /** 
  * Data class for each location update that is to be sent to the server
