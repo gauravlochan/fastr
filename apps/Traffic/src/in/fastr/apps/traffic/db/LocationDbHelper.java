@@ -4,6 +4,7 @@ import in.fastr.apps.traffic.location.LocationUpdate;
 import in.fastr.library.Global;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import android.content.Context;
@@ -124,6 +125,8 @@ public class LocationDbHelper extends SQLiteOpenHelper {
     
             int Column1 = c.getColumnIndex(LocationUpdates.COLUMN_NAME_LATITUDE);
             int Column2 = c.getColumnIndex(LocationUpdates.COLUMN_NAME_LONGITUDE);
+            int Column3 = c.getColumnIndex(LocationUpdates.COLUMN_NAME_TIMESTAMP);
+            int Column4 = c.getColumnIndex(LocationUpdates.COLUMN_NAME_SPEED);
     
             c.moveToFirst();
             if (c != null) {
@@ -131,7 +134,11 @@ public class LocationDbHelper extends SQLiteOpenHelper {
                 do {
                     double lat = c.getDouble(Column1);
                     double lon = c.getDouble(Column2);
-                    String coordinate = String.format("%f %f", lat, lon);
+                    long epochTime = c.getLong(Column3);
+                    Date timeStamp = new Date(epochTime);
+                    float speed = c.getFloat(Column4);
+                    
+                    String coordinate = String.format("%s %f %f %f", timeStamp.toLocaleString(), lat, lon, speed);
                     Log.d(Global.Company, coordinate);
                 } while (c.moveToNext());
             }

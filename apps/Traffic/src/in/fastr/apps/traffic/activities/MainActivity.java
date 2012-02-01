@@ -7,6 +7,7 @@ import in.fastr.apps.traffic.AppGlobal;
 import in.fastr.apps.traffic.MapPoint;
 import in.fastr.apps.traffic.R;
 import in.fastr.apps.traffic.Route;
+import in.fastr.apps.traffic.db.LocationDbHelper;
 import in.fastr.apps.traffic.google.directions.GoogleDirectionsService;
 import in.fastr.apps.traffic.location.LocationHelper;
 import in.fastr.apps.traffic.location.LocationService;
@@ -83,6 +84,11 @@ public class MainActivity extends GDMapActivity {
 
         switch (item.getItemId()) {
             case R.id.action_bar_directions:
+                // Hack start
+                LocationDbHelper dbHelper = new LocationDbHelper(this, null);
+                dbHelper.logDatabase();
+                // Hack end
+
                 startActivityForResult(new Intent(this, EnterAddressActivity.class), 
                 		ENTER_DESTINATION_REQUEST_CODE);
                 break;
