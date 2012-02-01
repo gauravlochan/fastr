@@ -17,7 +17,7 @@ public class LocationService extends Service {
     // Define a listener that responds to location updates
     LocationListener locationListener = new MyLocationListener();
     
-    LocationDbHelper dbHelper = new LocationDbHelper(this.getBaseContext(), null);
+    LocationDbHelper dbHelper = new LocationDbHelper(this, null);
 
     @Override
     public IBinder onBind(Intent intent) {

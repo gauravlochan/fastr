@@ -102,7 +102,7 @@ public class LocationDbHelper extends SQLiteOpenHelper {
                     + point.getLongitude() + ", " 
                     + point.getEpochTime() + ", " 
                     + point.getSpeed() + ", "
-                    + UploadStatus.NEW + ");"
+                    + UploadStatus.NEW.ordinal() + ");"
                     );
             
             Log.d(Global.Company, "Succesful write to DB");
