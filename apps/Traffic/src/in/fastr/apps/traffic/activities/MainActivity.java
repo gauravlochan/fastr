@@ -9,7 +9,7 @@ import in.fastr.apps.traffic.R;
 import in.fastr.apps.traffic.Route;
 import in.fastr.apps.traffic.google.directions.GoogleDirectionsService;
 import in.fastr.apps.traffic.location.LocationHelper;
-import in.fastr.apps.traffic.location.LocationRetriever;
+import in.fastr.apps.traffic.location.LocationService;
 import in.fastr.apps.traffic.services.DirectionsService;
 import in.fastr.library.Global;
 import in.fastr.library.SimpleGeoPoint;
@@ -71,6 +71,11 @@ public class MainActivity extends GDMapActivity {
         GeoPoint geoPoint = getLastKnownLocation();
         mapView.getController().setCenter(geoPoint);
 		Toast.makeText(this, "You are here", Toast.LENGTH_SHORT).show();
+		
+        // Hack start
+        Intent i=new Intent(this, LocationService.class);
+        startService(i);
+        // Hack end
 	}
 	
     @Override
@@ -242,8 +247,7 @@ public class MainActivity extends GDMapActivity {
 		// Acquire a reference to the system Location Manager
 		LocationManager locationManager = (LocationManager) this
 				.getSystemService(Context.LOCATION_SERVICE);
-		LocationRetriever retriever = new LocationRetriever();
-		Location location = retriever.getLastKnownLocation(locationManager);
+		Location location = LocationHelper.getLastKnownLocation(locationManager);
 		if (location != null) {
 		    return LocationHelper.locationToGeoPoint(location);
 		}

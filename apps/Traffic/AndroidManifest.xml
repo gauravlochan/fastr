@@ -32,5 +32,9 @@
             
         </activity>
         
+        <service android:name=".location.LocationService"
+            	 android:enabled="true"> 
+        </service>
+        
     </application>
 </manifest>

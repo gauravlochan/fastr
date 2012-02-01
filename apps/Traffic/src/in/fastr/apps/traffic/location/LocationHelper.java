@@ -23,7 +23,19 @@ public class LocationHelper {
 
 
 	/**
+     * Get the last known location
+     * 
+     * @param locationManager
+     */
+    public static Location getLastKnownLocation(LocationManager locationManager) {
+        String provider = LocationHelper.getDefaultProvider(locationManager);
+        return locationManager.getLastKnownLocation(provider);
+    }
+
+    
+	/**
 	 * Gets a provider, depending on what permissions the application has.
+	 * (This is kinda useless for us)
 	 * 
 	 * @param context
 	 * @param locManager
