@@ -1,5 +1,6 @@
 package in.fastr.apps.traffic.location;
 
+import in.fastr.apps.traffic.db.LocationDbHelper;
 import in.fastr.library.Global;
 import android.app.Service;
 import android.content.Context;
@@ -15,7 +16,8 @@ public class LocationService extends Service {
 
     // Define a listener that responds to location updates
     LocationListener locationListener = new MyLocationListener();
-
+    
+    LocationDbHelper dbHelper = new LocationDbHelper(this.getBaseContext(), null);
 
     @Override
     public IBinder onBind(Intent intent) {
@@ -57,6 +59,10 @@ public class LocationService extends Service {
         @Override
         public void onLocationChanged(Location location) {
             Log.d(Global.Company, "Got an update");
+            
+            // Now write this to the DB
+            LocationUpdate point = new LocationUpdate(location);
+            dbHelper.insertPoint(point);
         }
 
         @Override

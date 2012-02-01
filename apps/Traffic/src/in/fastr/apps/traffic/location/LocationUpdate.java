@@ -1,4 +1,6 @@
-package in.fastr.library;
+package in.fastr.apps.traffic.location;
+
+import android.location.Location;
 
 /** 
  * Data class for each location update that is to be sent to the server
@@ -11,6 +13,14 @@ public class LocationUpdate {
     double longitude;
     float speed;
     float accuracy;
+    
+    public LocationUpdate(Location location) {
+        latitude = location.getLatitude();
+        longitude = location.getLongitude();
+        speed = location.getSpeed();
+        accuracy = location.getAccuracy();
+        epochTime = location.getTime();
+    }
     
     public LocationUpdate(double latitude, double longitude, long epochTime) {
         this.latitude = latitude;

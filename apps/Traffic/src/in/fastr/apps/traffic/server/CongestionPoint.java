@@ -1,4 +1,8 @@
-package in.fastr.library;
+package in.fastr.apps.traffic.server;
+
+import in.fastr.apps.traffic.TrafficStatus;
+import in.fastr.library.ServiceProviders;
+import in.fastr.library.SimpleGeoPoint;
 
 
 /**

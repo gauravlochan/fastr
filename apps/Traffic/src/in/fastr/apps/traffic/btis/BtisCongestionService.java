@@ -1,10 +1,10 @@
 package in.fastr.apps.traffic.btis;
 
+import in.fastr.apps.traffic.TrafficStatus;
+import in.fastr.apps.traffic.server.CongestionPoint;
 import in.fastr.apps.traffic.services.CongestionService;
-import in.fastr.library.CongestionPoint;
 import in.fastr.library.RESTHelper;
 import in.fastr.library.ServiceProviders;
-import in.fastr.library.TrafficStatus;
 
 import java.util.ArrayList;
 import java.util.List;

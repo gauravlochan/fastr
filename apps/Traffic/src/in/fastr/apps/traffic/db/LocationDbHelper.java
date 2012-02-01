@@ -1,4 +1,7 @@
-package in.fastr.library;
+package in.fastr.apps.traffic.db;
+
+import in.fastr.apps.traffic.location.LocationUpdate;
+import in.fastr.library.Global;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,7 +23,9 @@ import android.util.Log;
  * @author gauravlochan
  */
 public class LocationDbHelper extends SQLiteOpenHelper {
-    private final String dbName;
+    private static final String dbName = "beetroute.db";
+    private static final Integer dbVersion = 1;
+    
     private enum UploadStatus {
         NEW,
         UPLOADING,
@@ -29,8 +34,6 @@ public class LocationDbHelper extends SQLiteOpenHelper {
 
     /**
      * A class that defines the table
-     * 
-     * @author gauravlochan
      */
     public static final class LocationUpdates implements BaseColumns {
         // This class cannot be instantiated
@@ -59,9 +62,8 @@ public class LocationDbHelper extends SQLiteOpenHelper {
 
     }
 
-    public LocationDbHelper(Context context, String name, CursorFactory factory, int version) {
-        super(context, name, factory, version);
-        dbName = name;
+    public LocationDbHelper(Context context, CursorFactory factory) {
+        super(context, dbName, factory, dbVersion);
     }
     
     @Override
