@@ -1,4 +1,4 @@
-package in.fastr.apps.traffic.server;
+package in.fastr.apps.traffic.backend;
 
 import in.fastr.apps.traffic.TrafficStatus;
 import in.fastr.library.ServiceProviders;

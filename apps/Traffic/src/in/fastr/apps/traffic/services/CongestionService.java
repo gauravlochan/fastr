@@ -1,6 +1,6 @@
 package in.fastr.apps.traffic.services;
 
-import in.fastr.apps.traffic.server.CongestionPoint;
+import in.fastr.apps.traffic.backend.CongestionPoint;
 
 import java.util.List;
 

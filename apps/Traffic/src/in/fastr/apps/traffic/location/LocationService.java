@@ -12,6 +12,9 @@ import android.os.Bundle;
 import android.os.IBinder;
 import android.util.Log;
 
+import com.parse.Parse;
+import com.parse.ParseObject;
+
 public class LocationService extends Service {
 
     // Define a listener that responds to location updates
@@ -42,6 +45,14 @@ public class LocationService extends Service {
 
         locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER,
                 delay, minDistance, locationListener);
+        
+        Parse.initialize(this, "VsbP7epJPb5KuHYIJtC1b730WLRgfEaHPPHULwRY", "3BDxDW4ex3girWsbvHppbeUc8AURVFkkbWorUMsM"); 
+
+        ParseObject testObject = new ParseObject("TestObject");
+        testObject.put("foo", "bar");
+        testObject.saveInBackground();
+        Log.d(Global.Company, "Called Parse function");
+
     }
     
     @Override

@@ -2,8 +2,8 @@ package in.fastr.apps.traffic.activities;
 
 import in.fastr.apps.traffic.R;
 import in.fastr.apps.traffic.Route;
+import in.fastr.apps.traffic.backend.CongestionPoint;
 import in.fastr.apps.traffic.btis.BtisCongestionService;
-import in.fastr.apps.traffic.server.CongestionPoint;
 import in.fastr.apps.traffic.services.CongestionService;
 import in.fastr.library.Global;
 

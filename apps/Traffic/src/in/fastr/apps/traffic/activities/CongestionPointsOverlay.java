@@ -2,7 +2,7 @@ package in.fastr.apps.traffic.activities;
 
 import in.fastr.apps.traffic.R;
 import in.fastr.apps.traffic.TrafficStatus;
-import in.fastr.apps.traffic.server.CongestionPoint;
+import in.fastr.apps.traffic.backend.CongestionPoint;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -1,7 +1,7 @@
 package in.fastr.apps.traffic.btis;
 
 import in.fastr.apps.traffic.TrafficStatus;
-import in.fastr.apps.traffic.server.CongestionPoint;
+import in.fastr.apps.traffic.backend.CongestionPoint;
 import in.fastr.apps.traffic.services.CongestionService;
 import in.fastr.library.RESTHelper;
 import in.fastr.library.ServiceProviders;

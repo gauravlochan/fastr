@@ -128,8 +128,7 @@ public class LocationDbHelper extends SQLiteOpenHelper {
             int Column3 = c.getColumnIndex(LocationUpdates.COLUMN_NAME_TIMESTAMP);
             int Column4 = c.getColumnIndex(LocationUpdates.COLUMN_NAME_SPEED);
     
-            c.moveToFirst();
-            if (c != null) {
+            if (c.moveToFirst()) {
                 // Loop through all Results
                 do {
                     double lat = c.getDouble(Column1);
