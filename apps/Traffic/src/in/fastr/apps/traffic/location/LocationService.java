@@ -1,5 +1,6 @@
 package in.fastr.apps.traffic.location;
 
+import in.fastr.apps.traffic.backend.ParseHelper;
 import in.fastr.apps.traffic.db.LocationDbHelper;
 import in.fastr.library.Global;
 import android.app.Service;
@@ -13,7 +14,6 @@ import android.os.IBinder;
 import android.util.Log;
 
 import com.parse.Parse;
-import com.parse.ParseObject;
 
 public class LocationService extends Service {
 
@@ -47,12 +47,6 @@ public class LocationService extends Service {
                 delay, minDistance, locationListener);
         
         Parse.initialize(this, "VsbP7epJPb5KuHYIJtC1b730WLRgfEaHPPHULwRY", "3BDxDW4ex3girWsbvHppbeUc8AURVFkkbWorUMsM"); 
-
-        ParseObject testObject = new ParseObject("TestObject");
-        testObject.put("foo", "bar");
-        testObject.saveInBackground();
-        Log.d(Global.Company, "Called Parse function");
-
     }
     
     @Override
@@ -65,15 +59,22 @@ public class LocationService extends Service {
         locationManager.removeUpdates(locationListener);
     }
     
-    
     public class MyLocationListener implements LocationListener {
+
+        // TODO: Db update and Parse update are independent right now.
+        // Eventually we should trigger Parse updates off the DB writes
+        // and try to upload all unsynced points
+        // Also, try to do optimizations like only upload on network access
         @Override
         public void onLocationChanged(Location location) {
             Log.d(Global.Company, "Got an update");
             
-            // Now write this to the DB
+            // Write this to the DB
             LocationUpdate point = new LocationUpdate(location);
             dbHelper.insertPoint(point);
+            
+            // Try to push to parse
+            ParseHelper.pushLocationUpdate(location);
         }
 
         @Override
