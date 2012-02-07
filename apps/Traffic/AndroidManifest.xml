@@ -7,9 +7,10 @@
     <uses-sdk android:minSdkVersion="7" />
 	<uses-library android:name="com.google.android.maps" />
     
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"></uses-permission>
-	<uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"></uses-permission>
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+	<uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
 	<uses-permission android:name="android.permission.INTERNET" />
+	<uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" /> 
     
 
     <application android:icon="@drawable/icon" 
@@ -36,5 +37,13 @@
             	 android:enabled="true"> 
         </service>
         
-    </application>
+        <receiver android:name=".BootCompletedReceiver"
+            android:enabled="true"
+            android:exported="false">
+            <intent-filter >
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+            </intent-filter>
+        </receiver>
+        
+</application>
 </manifest>
