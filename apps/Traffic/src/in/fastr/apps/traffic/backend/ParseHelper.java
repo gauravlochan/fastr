@@ -9,7 +9,7 @@ import com.parse.ParseObject;
 
 public class ParseHelper {
 
-    public static void pushLocationUpdate(Location location) {
+    public static void pushLocationUpdate(Location location, String installationId) {
         ParseObject testObject = new ParseObject("LocationUpdate");
         ParseGeoPoint geoPoint = new ParseGeoPoint(location.getLatitude(), location.getLongitude());
         
@@ -18,6 +18,7 @@ public class ParseHelper {
         testObject.put("speed", location.getSpeed());
         testObject.put("accuracy", location.getAccuracy());
         testObject.put("bearing", location.getBearing());
+        testObject.put("installationId", installationId);
         
         testObject.saveInBackground();
         Log.d(Global.Company, "Kicked off upload to Parse");

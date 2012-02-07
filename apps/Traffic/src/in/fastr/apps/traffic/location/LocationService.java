@@ -1,5 +1,6 @@
 package in.fastr.apps.traffic.location;
 
+import in.fastr.apps.traffic.Preferences;
 import in.fastr.apps.traffic.backend.ParseHelper;
 import in.fastr.apps.traffic.db.LocationDbHelper;
 import in.fastr.library.Global;
@@ -21,7 +22,8 @@ public class LocationService extends Service {
     LocationListener locationListener = new MyLocationListener();
     
     LocationDbHelper dbHelper = new LocationDbHelper(this, null);
-
+    String installationId;
+  
     @Override
     public IBinder onBind(Intent intent) {
         // TODO Auto-generated method stub
@@ -45,7 +47,9 @@ public class LocationService extends Service {
 
         locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER,
                 delay, minDistance, locationListener);
-        
+
+        installationId = Preferences.getInstallationId(this);
+      
         Parse.initialize(this, "VsbP7epJPb5KuHYIJtC1b730WLRgfEaHPPHULwRY", "3BDxDW4ex3girWsbvHppbeUc8AURVFkkbWorUMsM"); 
     }
     
@@ -74,7 +78,8 @@ public class LocationService extends Service {
             dbHelper.insertPoint(point);
             
             // Try to push to parse
-            ParseHelper.pushLocationUpdate(location);
+            ParseHelper.pushLocationUpdate(location, LocationService.this.installationId);
+
         }
 
         @Override

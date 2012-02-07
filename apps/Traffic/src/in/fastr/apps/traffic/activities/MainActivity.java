@@ -5,6 +5,7 @@ import greendroid.widget.ActionBarItem;
 import greendroid.widget.ActionBarItem.Type;
 import in.fastr.apps.traffic.AppGlobal;
 import in.fastr.apps.traffic.MapPoint;
+import in.fastr.apps.traffic.Preferences;
 import in.fastr.apps.traffic.R;
 import in.fastr.apps.traffic.Route;
 import in.fastr.apps.traffic.db.LocationDbHelper;
@@ -73,11 +74,14 @@ public class MainActivity extends GDMapActivity {
         mapView.getController().setCenter(geoPoint);
 		Toast.makeText(this, "You are here", Toast.LENGTH_SHORT).show();
 		
-        // Hack start
+		// Setup the installation ID
+		Preferences.getInstallationId(this);
+		
+        // Start the service in case it is already not running
         Intent i=new Intent(this, LocationService.class);
         startService(i);
-        // Hack end
 	}
+	
 	
     @Override
     public boolean onHandleActionBarItemClick(ActionBarItem item, int position) {
