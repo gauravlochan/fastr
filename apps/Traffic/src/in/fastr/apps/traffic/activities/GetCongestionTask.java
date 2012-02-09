@@ -49,16 +49,18 @@ public class GetCongestionTask extends
 
     @Override
     protected void onPostExecute(List<CongestionPoint> result) {
-        Drawable drawable = context.getResources().getDrawable(R.drawable.gd_map_pin_dot);
-        CongestionPointsOverlay congestionOverlay = new CongestionPointsOverlay(
-                drawable, context);
-
-        congestionOverlay.addCongestionPoints(result);
-        List<Overlay> listOfOverlays = mapView.getOverlays();
-        listOfOverlays.add(congestionOverlay);
-        mapView.invalidate();
-        
-        Toast.makeText(context, "Marked congestion points", Toast.LENGTH_LONG).show();
+        if (result != null) {
+            Drawable drawable = context.getResources().getDrawable(R.drawable.gd_map_pin_dot);
+            CongestionPointsOverlay congestionOverlay = new CongestionPointsOverlay(
+                    drawable, context);
+    
+            congestionOverlay.addCongestionPoints(result);
+            List<Overlay> listOfOverlays = mapView.getOverlays();
+            listOfOverlays.add(congestionOverlay);
+            mapView.invalidate();
+            
+            Toast.makeText(context, "Marked congestion points", Toast.LENGTH_LONG).show();
+        }
     }
 
 }

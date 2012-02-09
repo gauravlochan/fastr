@@ -1,7 +1,6 @@
 package in.fastr.apps.traffic.location;
 
 import in.fastr.apps.traffic.Preferences;
-import in.fastr.apps.traffic.backend.ParseHelper;
 import in.fastr.apps.traffic.db.LocationDbHelper;
 import in.fastr.library.Global;
 import android.app.Service;
@@ -16,6 +15,12 @@ import android.util.Log;
 
 import com.parse.Parse;
 
+/**
+ * A service that is responsible for getting location updates and then storing/uploading
+ * them.
+ * 
+ * @author gauravlochan
+ */
 public class LocationService extends Service {
 
     // Define a listener that responds to location updates
@@ -53,6 +58,7 @@ public class LocationService extends Service {
         Parse.initialize(this, "VsbP7epJPb5KuHYIJtC1b730WLRgfEaHPPHULwRY", "3BDxDW4ex3girWsbvHppbeUc8AURVFkkbWorUMsM"); 
     }
     
+    
     @Override
     public void onDestroy() {
         Log.d(Global.Company, "Service onDestroy");
@@ -62,6 +68,7 @@ public class LocationService extends Service {
                 this.getSystemService(Context.LOCATION_SERVICE);
         locationManager.removeUpdates(locationListener);
     }
+    
     
     public class MyLocationListener implements LocationListener {
 
@@ -77,9 +84,8 @@ public class LocationService extends Service {
             LocationUpdate point = new LocationUpdate(location);
             dbHelper.insertPoint(point);
             
-            // Try to push to parse
-            ParseHelper.pushLocationUpdate(location, LocationService.this.installationId);
-
+            // Poke the location uploader to kick off an update
+            LocationUploader.upload(location, LocationService.this.installationId);
         }
 
         @Override
