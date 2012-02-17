@@ -1,23 +1,30 @@
 package in.fastr.apps.traffic.location;
 
+import in.fastr.apps.traffic.db.LocationDbHelper;
+
+import java.util.List;
 
 
+/**
+ * A class that helps sync 
+ * 
+ * @author gauravlochan
+ *
+ */
 public class SyncLocationDatabase {
+    private final static int RECORDS_TO_UPLOAD_AT_ONCE = 10;
     
     /**
      * try to upload locations from the DB
      * 
      * @param installationId
      */
-    public void asyncUpload(String installationId) {
-        // try to acquire a lock to prevent multiple threads doing the upload
+    public void asyncUpload(String installationId, LocationDbHelper dbHelper) {
+        // TODO: try to acquire a lock to prevent multiple threads doing the upload
         // (think of whether this may block too many threads though)
         
-        
-        // Get a cursor of all unsynced records
-//      return database.query(DATABASE_TABLE, 
-//              new String[] { KEY_ROWID, KEY_CATEGORY, KEY_SUMMARY, KEY_DESCRIPTION }, 
-//              null, null, null, null, null);
+        List <LocationUpdate> updates = 
+                dbHelper.getUnsyncedLocationUpdates(RECORDS_TO_UPLOAD_AT_ONCE);
    
     }
     

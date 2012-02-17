@@ -80,14 +80,12 @@ public class LocationService extends Service {
         public void onLocationChanged(Location location) {
             Log.d(Global.Company, "Got an update");
             
-            // Write this to the DB
-            LocationUpdate point = new LocationUpdate(location);
-            dbHelper.insertPoint(point);
+            // Write this to the DB and Upload this location
+            new StoreLocationTask(installationId, dbHelper).doInBackground(location);
             
-            // Upload this location
-            new UploadLocationTask(installationId).doInBackground(location);
-
             // TODO: Poke the location uploader to kick off unsynced updates
+
+
         }
 
         @Override

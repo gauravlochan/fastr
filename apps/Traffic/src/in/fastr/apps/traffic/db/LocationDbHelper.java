@@ -21,16 +21,24 @@ import android.util.Log;
  * Helper class for using the location updates DB.
  * It extends SQLiteOpenHelper giving access to the DB object
  * 
+ * SQLite limits: http://stackoverflow.com/questions/4759907/dealing-with-a-large-database-in-android/
+ * 
  * @author gauravlochan
  */
 public class LocationDbHelper extends SQLiteOpenHelper {
     private static final String dbName = "beetroute.db";
     private static final Integer dbVersion = 1;
     
+    
+    /**
+     * Status of the record in the server.  
+     * DO NOT REORDER OR CHANGE otherwise it will screw up how all the existing 
+     * records are treated
+     */
     private enum UploadStatus {
-        NEW,
-        UPLOADING,
-        UPLOADED
+        NOT_UPLOADED,
+        UPLOADED,
+        UPLOADING     // TODO: Start to use this eventually
     };
 
     /**
@@ -91,10 +99,14 @@ public class LocationDbHelper extends SQLiteOpenHelper {
     
     /**
      * Insert a single reported location update
+     * @param uploaded TODO
      */
-    public void insertPoint(LocationUpdate point) {
+    public void insertPoint(LocationUpdate point, Boolean uploaded) {
         Log.d(Global.Company, "Attempting write point to DB " + dbName);
         SQLiteDatabase db = getWritableDatabase();
+        
+        Integer status = uploaded ? UploadStatus.UPLOADED.ordinal() :
+                                   UploadStatus.NOT_UPLOADED.ordinal();
 
         try {
             db.execSQL("INSERT INTO " + LocationUpdates.TABLE_NAME + 
@@ -103,10 +115,10 @@ public class LocationDbHelper extends SQLiteOpenHelper {
                     + point.getLongitude() + ", " 
                     + point.getEpochTime() + ", " 
                     + point.getSpeed() + ", "
-                    + UploadStatus.NEW.ordinal() + ");"
+                    + status + ");"
                     );
             
-            Log.d(Global.Company, "Succesful write to DB");
+            Log.d(Global.Company, "Succesfully inserted point into DB");
         } finally {
             db.close();
         }
@@ -157,7 +169,7 @@ public class LocationDbHelper extends SQLiteOpenHelper {
         try {
             SQLiteStatement stmt = db.compileStatement("SELECT COUNT(*) FROM "
                     + LocationUpdates.TABLE_NAME + " WHERE "
-                    + LocationUpdates.COLUMN_NAME_UPLOAD_STATUS + "=" + UploadStatus.NEW
+                    + LocationUpdates.COLUMN_NAME_UPLOAD_STATUS + "=" + UploadStatus.NOT_UPLOADED.ordinal()
                     );
             long count = stmt.simpleQueryForLong();
             return count;
@@ -172,12 +184,12 @@ public class LocationDbHelper extends SQLiteOpenHelper {
      *        
      * @return
      */
-    public List<LocationUpdate> getUnsyncedLocationUpdates() {
+    public List<LocationUpdate> getUnsyncedLocationUpdates(Integer maxRecords) {
         SQLiteDatabase db = getReadableDatabase();
         
         try {
-            String query = "SELECT * FROM " + LocationUpdates.TABLE_NAME + " WHERE " 
-                    + LocationUpdates.COLUMN_NAME_UPLOAD_STATUS + "=" + UploadStatus.NEW + ";";
+            String query = "SELECT * FROM " + LocationUpdates.TABLE_NAME + " WHERE " + 
+                    LocationUpdates.COLUMN_NAME_UPLOAD_STATUS + "=" + UploadStatus.NOT_UPLOADED.ordinal() + ";";
             Cursor c = db.rawQuery(query, null);
 
             if (c != null) {
@@ -185,19 +197,28 @@ public class LocationDbHelper extends SQLiteOpenHelper {
                 int longIndex = c.getColumnIndex(LocationUpdates.COLUMN_NAME_LONGITUDE);
                 int timestamp = c.getColumnIndex(LocationUpdates.COLUMN_NAME_TIMESTAMP);
         
-                int count = c.getCount();
-                List<LocationUpdate> points = new ArrayList<LocationUpdate>(count);
+                int i = c.getCount();
+                List<LocationUpdate> points = new ArrayList<LocationUpdate>(i);
 
-                c.moveToFirst();
+                boolean recordsLeft = c.moveToFirst();
+                int count = 0;
+
                 // Loop through all Results
-                do {
+                while (recordsLeft) {
+                    // Break out if there was a record limit and we've exceeded it
+                    if (maxRecords!=0 && count >= maxRecords) {
+                        break;
+                    } 
+                    
                     LocationUpdate point = new LocationUpdate(
                             c.getDouble(latIndex),
                             c.getDouble(longIndex),
                             c.getLong(timestamp));
                     points.add(point);
+                    count++;
                     Log.d(Global.Company, point.toString());
                 } while (c.moveToNext());
+                
                 return points;
             } else {
                 Log.d(Global.Company, "Cursor is null");
@@ -208,5 +229,5 @@ public class LocationDbHelper extends SQLiteOpenHelper {
         }
     }
     
-    
+   
 }

@@ -8,6 +8,11 @@ import android.location.LocationManager;
 
 import com.google.android.maps.GeoPoint;
 
+/**
+ * Static helped functions
+ * 
+ * @author gauravlochan
+ */
 public class LocationHelper {
 	
     /**
