@@ -39,6 +39,8 @@ public class Preferences {
         SharedPreferences.Editor editor = app_preferences.edit();
         editor.putString(INSTALLATION_ID_KEY, id);
         editor.commit();
+        
+        // TODO: Add a timestamp for when this installation was done.
 
         return id;
     }

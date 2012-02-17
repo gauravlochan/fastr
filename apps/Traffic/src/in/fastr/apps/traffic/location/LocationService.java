@@ -84,8 +84,10 @@ public class LocationService extends Service {
             LocationUpdate point = new LocationUpdate(location);
             dbHelper.insertPoint(point);
             
-            // Poke the location uploader to kick off an update
-            LocationUploader.upload(location, LocationService.this.installationId);
+            // Upload this location
+            new UploadLocationTask(installationId).doInBackground(location);
+
+            // TODO: Poke the location uploader to kick off unsynced updates
         }
 
         @Override
