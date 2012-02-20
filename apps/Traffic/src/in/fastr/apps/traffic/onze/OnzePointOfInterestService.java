@@ -67,7 +67,7 @@ public class OnzePointOfInterestService implements PointOfInterestService {
     private MapPoint getPointOfInterest(JSONObject jsonObject) throws JSONException {
 		String name = jsonObject.getString(name_key);
 		String id = jsonObject.getString(id_key);
-		String desc = jsonObject.getString(ls_key);
+		String desc = extractDescription(jsonObject.getString(ls_key));
 
 		MapPoint point = new MapPoint(ServiceProviders.ONZE,
 				id, name, desc);
@@ -85,6 +85,16 @@ public class OnzePointOfInterestService implements PointOfInterestService {
     
 	private static String appendName(String requestUrl, String name) {
 		return (requestUrl.concat("&query=")).concat(name.replace(' ', '+'));
+	}
+	
+	/** 
+	 * Remove the <br/> tags from the description returned by latlong API
+	 * @param rawDescription
+	 * @return
+	 */
+	private String extractDescription(String rawDescription) {
+	    return rawDescription.replace("<br/>", "");
+	    
 	}
 	
 }
