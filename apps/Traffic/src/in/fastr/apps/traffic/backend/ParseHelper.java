@@ -10,16 +10,24 @@ import com.parse.ParseObject;
 
 public class ParseHelper {
 
-    public static void asyncLocationUpdate(Location location, String installationId) {
+    public static void locationUpdate(Location location, String installationId) throws ParseException {
+        ParseObject parseObject = createParseObject(location, installationId);
+        parseObject.save();
+        Log.d(Global.Company, "Completed upload to Parse");
+    }
+
+    public static void backgroundLocationUpdate(Location location, String installationId) {
         ParseObject parseObject = createParseObject(location, installationId);
         parseObject.saveInBackground();
         Log.d(Global.Company, "Kicked off upload to Parse");
     }
     
-    public static void locationUpdate(Location location, String installationId) throws ParseException {
+    
+    public static void eventualLocationUpdate(Location location, String installationId) throws ParseException {
         ParseObject parseObject = createParseObject(location, installationId);
-        parseObject.save();
-        Log.d(Global.Company, "Completed upload to Parse");
+        // TODO: Note, Parse takes care to upload this, or save it locally for later
+        parseObject.saveEventually();
+        Log.d(Global.Company, "Initiated eventual upload to Parse");
     }
     
     private static ParseObject createParseObject(Location location, String installationId) {

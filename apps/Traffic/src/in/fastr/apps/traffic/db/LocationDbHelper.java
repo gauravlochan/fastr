@@ -26,6 +26,7 @@ import android.util.Log;
  * @author gauravlochan
  */
 public class LocationDbHelper extends SQLiteOpenHelper {
+    private static final String TAG = Global.Company;
     private static final String dbName = "beetroute.db";
     private static final Integer dbVersion = 1;
     
@@ -203,6 +204,7 @@ public class LocationDbHelper extends SQLiteOpenHelper {
                 boolean recordsLeft = c.moveToFirst();
                 int count = 0;
 
+                Log.d(TAG, "Print all NOT_UPLOADED location updates");
                 // Loop through all Results
                 while (recordsLeft) {
                     // Break out if there was a record limit and we've exceeded it

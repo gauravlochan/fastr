@@ -55,7 +55,7 @@ public class LocationUpdate {
 
     @Override
     public String toString() {
-        return String.format("CongestionPoint: time=%d lat=%f long=%f", 
+        return String.format("LocationUpdate: time=%d lat=%f long=%f", 
                 epochTime, latitude, longitude);
     }
 

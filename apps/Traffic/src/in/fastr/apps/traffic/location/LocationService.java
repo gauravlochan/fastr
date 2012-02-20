@@ -56,6 +56,9 @@ public class LocationService extends Service {
         installationId = Preferences.getInstallationId(this);
       
         Parse.initialize(this, "VsbP7epJPb5KuHYIJtC1b730WLRgfEaHPPHULwRY", "3BDxDW4ex3girWsbvHppbeUc8AURVFkkbWorUMsM"); 
+
+        // Poke the location uploader to kick off unsynced updates
+        new SyncLocationDatabase().asyncUpload(installationId, dbHelper);
     }
     
     
@@ -72,10 +75,7 @@ public class LocationService extends Service {
     
     public class MyLocationListener implements LocationListener {
 
-        // TODO: Db update and Parse update are independent right now.
-        // Eventually we should trigger Parse updates off the DB writes
-        // and try to upload all unsynced points
-        // Also, try to do optimizations like only upload on network access
+        // TODO: try to do optimizations like only upload on network access
         @Override
         public void onLocationChanged(Location location) {
             Log.d(Global.Company, "Got an update");
@@ -83,7 +83,6 @@ public class LocationService extends Service {
             // Write this to the DB and Upload this location
             new StoreLocationTask(installationId, dbHelper).doInBackground(location);
             
-            // TODO: Poke the location uploader to kick off unsynced updates
 
 
         }
