@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="hello">Hello World, TrafficActivity!</string>
-    <string name="app_name">Traffic</string>
+    <string name="app_name">BeetRoute</string>
     <string name="clicked_on_direction">You have clicked on the directions button</string>
     <string name="EnterAddress">Enter Address</string>
     <string name="DestinationAddress">Destination Address</string>

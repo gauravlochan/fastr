@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-      package="in.fastr.apps.traffic"
+      package="in.beetroute.apps.traffic"
       android:versionCode="3"
       android:versionName="0.2.1">
     
@@ -34,7 +34,7 @@
             
         </activity>
         
-        <service android:name=".location.LocationService"
+        <service android:name="in.beetroute.apps.traffic.location.LocationService"
             	 android:enabled="true"> 
         </service>
         
