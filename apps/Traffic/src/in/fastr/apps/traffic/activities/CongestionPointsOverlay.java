@@ -3,6 +3,7 @@ package in.fastr.apps.traffic.activities;
 import in.fastr.apps.traffic.R;
 import in.fastr.apps.traffic.TrafficStatus;
 import in.fastr.apps.traffic.backend.CongestionPoint;
+import in.fastr.library.Global;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,6 +16,8 @@ import com.google.android.maps.ItemizedOverlay;
 import com.google.android.maps.OverlayItem;
 
 public class CongestionPointsOverlay extends ItemizedOverlay<OverlayItem> {
+    private static final String TAG = Global.COMPANY;
+
     private ArrayList<OverlayItem> mOverlays = new ArrayList<OverlayItem>();
     private Context mContext;
 

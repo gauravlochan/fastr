@@ -19,8 +19,9 @@ import com.google.android.maps.MapView;
 import com.google.android.maps.Overlay;
 
 // Task so as not to block the UI thread
-public class GetCongestionTask extends
-        AsyncTask<Route, Void, List<CongestionPoint>> {
+public class GetCongestionTask extends AsyncTask<Route, Void, List<CongestionPoint>> {
+    private static final String TAG = Global.COMPANY;
+
     private Context context;
     private MapView mapView;
 
@@ -42,7 +43,7 @@ public class GetCongestionTask extends
             CongestionService congestionSvc = new BtisCongestionService();
             points = congestionSvc.getCongestionPoints();
         } catch (Exception e) {
-            Log.e(Global.Company, "Error calling BTIS", e);
+            Log.e(TAG, "Error calling BTIS", e);
         }
         return points;
     }

@@ -16,7 +16,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 public class OnzePointOfInterestService implements PointOfInterestService {
-    private static Logger logger = new MyLogger(Global.Company);
+    private static Logger logger = new MyLogger(Global.COMPANY);
 
 	private static final String api_key = "pihack";
 	private static final String jsonServiceUrl = "http://latlong.in/api/v1/search?api_key="+ api_key;

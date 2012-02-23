@@ -41,6 +41,8 @@ import android.widget.Toast;
  * @author gauravlochan
  */
 public class EnterAddressActivity extends GDActivity {
+    private static final String TAG = Global.COMPANY;
+
     final static String POINT_NAME = "name";
     final static String POINT_DESC = "description";
     
@@ -145,7 +147,7 @@ public class EnterAddressActivity extends GDActivity {
 
 		@Override
 		protected List<MapPoint> doInBackground(DestLookupParams... params) {
-	        Log.d(Global.Company, "Calling poiService");
+	        Log.d(TAG, "Calling poiService");
 	        List<MapPoint> points = null;
 
 	        switch (params[0].destType) {
@@ -160,7 +162,7 @@ public class EnterAddressActivity extends GDActivity {
 	            break;      	
 	        	
 	        }
-	        Log.d(Global.Company, "Called poiService");
+	        Log.d(TAG, "Called poiService");
 			return points;
 		}
 

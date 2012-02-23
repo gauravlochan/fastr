@@ -6,6 +6,7 @@ package in.fastr.library;
  * @author gaurav
  */
 public class Global {
-    public static String Company = "fastr";
+    public final static String COMPANY = "beetroute";
+    public final static String COMPANY_WEBSITE = "http://www.beetroute.in";
 
 }

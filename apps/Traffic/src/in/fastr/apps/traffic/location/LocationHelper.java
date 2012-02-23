@@ -1,5 +1,6 @@
 package in.fastr.apps.traffic.location;
 
+import in.fastr.library.Global;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.location.Criteria;
@@ -14,6 +15,7 @@ import com.google.android.maps.GeoPoint;
  * @author gauravlochan
  */
 public class LocationHelper {
+    private static final String TAG = Global.COMPANY;
 	
     /**
      * Gets a location provider, without any criteria

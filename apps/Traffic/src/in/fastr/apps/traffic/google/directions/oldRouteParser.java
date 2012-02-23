@@ -18,6 +18,8 @@ import android.util.Log;
  */
 @Deprecated
 public class oldRouteParser {
+    private static final String TAG = Global.COMPANY;
+
 	private static final String routes_key = "routes";
 	private static final String legs_key = "legs";
 
@@ -37,11 +39,11 @@ public class oldRouteParser {
 
             JSONObject resultObject = new JSONObject(jsonResult);
 		    JSONArray routes = resultObject.getJSONArray(routes_key);
-		    Log.d(Global.Company, "number of routes = "+routes.length());
+		    Log.d(TAG, "number of routes = "+routes.length());
 		    
 		    JSONObject routeObject = routes.getJSONObject(0);
 		    JSONArray legs = routeObject.getJSONArray(legs_key);
-		    Log.d(Global.Company, "number of legs = "+legs.length());
+		    Log.d(TAG, "number of legs = "+legs.length());
 		    
 			for (int i = 0; i < legs.length(); i++) {
 				JSONObject leg = legs.getJSONObject(i);

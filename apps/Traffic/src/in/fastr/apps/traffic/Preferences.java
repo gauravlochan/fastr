@@ -15,6 +15,8 @@ import android.util.Log;
  * @author gauravlochan
  */
 public class Preferences {
+    private static final String TAG = Global.COMPANY;
+
     public static final String INSTALLATION_ID_KEY = "InstallationId";
     
     /**
@@ -35,7 +37,7 @@ public class Preferences {
 
         // id doesnt exist, create a random one
         String id = UUID.randomUUID().toString();
-        Log.i(Global.Company, "Generated an installation ID="+id);
+        Log.i(TAG, "Generated an installation ID="+id);
         SharedPreferences.Editor editor = app_preferences.edit();
         editor.putString(INSTALLATION_ID_KEY, id);
         editor.commit();

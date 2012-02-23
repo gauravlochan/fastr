@@ -34,6 +34,8 @@ import com.google.android.maps.Overlay;
 import com.google.android.maps.OverlayItem;
 
 public class MainActivity extends GDMapActivity {
+    private static final String TAG = Global.COMPANY;
+
 	// Define a request code for the destination activity
 	private static final int ENTER_DESTINATION_REQUEST_CODE = 100;
 	
@@ -54,7 +56,7 @@ public class MainActivity extends GDMapActivity {
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
-        Log.d(Global.Company, "Creating MainActivity");
+        Log.d(TAG, "Creating MainActivity");
 
 		super.onCreate(savedInstanceState);
         setActionBarContentView(R.layout.map);
@@ -111,7 +113,7 @@ public class MainActivity extends GDMapActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) 
     {	
     	if (resultCode == RESULT_OK && requestCode == ENTER_DESTINATION_REQUEST_CODE) {
-            Log.i( Global.Company, "resultCode: " + resultCode );
+            Log.i(TAG, "resultCode: " + resultCode );
             
             if (data.hasExtra(AppGlobal.destPoint)) {
                 // reset the map
@@ -132,7 +134,7 @@ public class MainActivity extends GDMapActivity {
 //            	
             } else {
             	// TODO: Add support for destination addresses
-            	Log.e(Global.Company, "Did not find point of interest in intent");
+            	Log.e(TAG, "Did not find point of interest in intent");
             }
     	}
     }

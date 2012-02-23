@@ -14,7 +14,7 @@ import android.util.Log;
  * @author gauravlochan
  */
 public class StoreLocationTask extends AsyncTask<Location, Void, Void> {
-    private final String TAG = Global.Company;
+    private static final String TAG = Global.COMPANY;
     
     private String installationId;
     private LocationDbHelper dbHelper;

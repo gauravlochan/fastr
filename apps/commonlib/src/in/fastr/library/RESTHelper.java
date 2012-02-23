@@ -18,7 +18,7 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import org.json.JSONArray;
 
 public class RESTHelper {
-    private static Logger logger = new MyLogger(Global.Company);
+    private static Logger logger = new MyLogger(Global.COMPANY);
 	
     /**
      * A simple method to make a REST call to the specified server.  Good for 

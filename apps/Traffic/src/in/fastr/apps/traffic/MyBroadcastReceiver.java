@@ -8,7 +8,7 @@ import android.content.Intent;
 import android.util.Log;
 
 public class MyBroadcastReceiver extends BroadcastReceiver {
-    private final String TAG = Global.Company;
+    private static final String TAG = Global.COMPANY;
 
     @Override
     public void onReceive(Context context, Intent intent) {

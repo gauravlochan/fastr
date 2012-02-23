@@ -1,6 +1,7 @@
 package in.fastr.apps.traffic.backend;
 
 import in.fastr.apps.traffic.Route;
+import in.fastr.library.Global;
 import in.fastr.library.RESTHelper;
 import android.os.AsyncTask;
 
@@ -14,6 +15,8 @@ import com.google.gson.Gson;
  * 
  */
 public class ServerClient {
+    private static final String TAG = Global.COMPANY;
+
 	// This is the address of pradeeps server.  Need to use a public server soon!
 	public static String serverIP = "http://192.168.1.4:8888/upload";
 	

@@ -1,6 +1,7 @@
 package in.fastr.apps.traffic;
 
 
+import in.fastr.library.Global;
 import in.fastr.library.ServiceProviders;
 import in.fastr.library.SimpleGeoPoint;
 
@@ -15,6 +16,9 @@ import java.util.List;
 // TODO: Think about how to store the distance and time estimates for each leg
 // TODO: Think about how to store the associated directions text
 public class Route {
+    private static final String TAG = Global.COMPANY;
+
+    
 	/**
 	 * Identifies which service these directions came from. 
 	 */

@@ -22,6 +22,7 @@ import com.parse.Parse;
  * @author gauravlochan
  */
 public class LocationService extends Service {
+    private static final String TAG = Global.COMPANY;
 
     // Define a listener that responds to location updates
     LocationListener locationListener = new MyLocationListener();
@@ -37,7 +38,7 @@ public class LocationService extends Service {
 
     @Override
     public void onCreate() {
-        Log.d(Global.Company, "Service onCreate");
+        Log.d(TAG, "Service onCreate");
         super.onCreate();
 
         // Register the listener with the Location Manager to receive location updates
@@ -64,7 +65,7 @@ public class LocationService extends Service {
     
     @Override
     public void onDestroy() {
-        Log.d(Global.Company, "Service onDestroy");
+        Log.d(TAG, "Service onDestroy");
         super.onDestroy();
         
         LocationManager locationManager = (LocationManager) 
@@ -78,7 +79,7 @@ public class LocationService extends Service {
         // TODO: try to do optimizations like only upload on network access
         @Override
         public void onLocationChanged(Location location) {
-            Log.d(Global.Company, "Got an update");
+            Log.d(TAG, "Got an update");
             
             // Write this to the DB and Upload this location
             new StoreLocationTask(installationId, dbHelper).doInBackground(location);
@@ -89,17 +90,17 @@ public class LocationService extends Service {
 
         @Override
         public void onStatusChanged(String provider, int status, Bundle extras) {
-            Log.d(Global.Company, "On Status changed");
+            Log.d(TAG, "On Status changed");
         }
 
         @Override
         public void onProviderEnabled(String provider) {
-            Log.d(Global.Company, "Provider enabled");
+            Log.d(TAG, "Provider enabled");
         }
 
         @Override
         public void onProviderDisabled(String provider) {
-            Log.d(Global.Company, "Provider disabled");
+            Log.d(TAG, "Provider disabled");
         }
         
     }

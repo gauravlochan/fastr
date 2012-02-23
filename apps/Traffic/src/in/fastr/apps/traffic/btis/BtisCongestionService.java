@@ -15,6 +15,8 @@ import android.util.Log;
 import com.google.gson.Gson;
 
 public class BtisCongestionService implements CongestionService {
+    private static final String TAG = Global.COMPANY;
+
 	private static final String serviceUrl = "http://www.btis.in/trafficstatus_cache.txt";
 
 	@Override
@@ -25,7 +27,7 @@ public class BtisCongestionService implements CongestionService {
 		BtisResult result = gson.fromJson(jsonResult, BtisResult.class);
 		
 		if (result == null) {
-		    Log.e(Global.Company, "Congestion data from BTIS is missing or the wrong json format");
+		    Log.e(TAG, "Congestion data from BTIS is missing or the wrong json format");
 		    return null;
 		} else {
     		List<CongestionPoint> congestionPoints = new ArrayList<CongestionPoint>(result.locations.size());

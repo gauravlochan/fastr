@@ -26,7 +26,7 @@ import android.util.Log;
  * @author gauravlochan
  */
 public class LocationDbHelper extends SQLiteOpenHelper {
-    private static final String TAG = Global.Company;
+    private static final String TAG = Global.COMPANY;
     private static final String dbName = "beetroute.db";
     private static final Integer dbVersion = 1;
     
@@ -78,19 +78,19 @@ public class LocationDbHelper extends SQLiteOpenHelper {
     
     @Override
     public void onCreate(SQLiteDatabase db) {
-        Log.d(Global.Company, "Attempting to create DB " + dbName);
+        Log.d(TAG, "Attempting to create DB " + dbName);
 
         /* Create a Table in the Database. */
         db.execSQL("CREATE TABLE IF NOT EXISTS " + LocationUpdates.TABLE_NAME +
                 "(" + LocationUpdates.getSchema() + ");");
 
-        Log.d(Global.Company, "Successfully created DB");
+        Log.d(TAG, "Successfully created DB");
     }
 
     
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        Log.w(Global.Company, "Upgrading database from version " + oldVersion
+        Log.w(TAG, "Upgrading database from version " + oldVersion
                 + " to " + newVersion + ", which will destroy all old data");
 
         db.execSQL("DROP TABLE IF EXISTS " + LocationUpdates.TABLE_NAME);
@@ -103,7 +103,7 @@ public class LocationDbHelper extends SQLiteOpenHelper {
      * @param uploaded TODO
      */
     public void insertPoint(LocationUpdate point, Boolean uploaded) {
-        Log.d(Global.Company, "Attempting write point to DB " + dbName);
+        Log.d(TAG, "Attempting write point to DB " + dbName);
         SQLiteDatabase db = getWritableDatabase();
         
         Integer status = uploaded ? UploadStatus.UPLOADED.ordinal() :
@@ -119,7 +119,7 @@ public class LocationDbHelper extends SQLiteOpenHelper {
                     + status + ");"
                     );
             
-            Log.d(Global.Company, "Succesfully inserted point into DB");
+            Log.d(TAG, "Succesfully inserted point into DB");
         } finally {
             db.close();
         }
@@ -151,7 +151,7 @@ public class LocationDbHelper extends SQLiteOpenHelper {
                     float speed = c.getFloat(Column4);
                     
                     String coordinate = String.format("%s %f %f %f", timeStamp.toLocaleString(), lat, lon, speed);
-                    Log.d(Global.Company, coordinate);
+                    Log.d(TAG, coordinate);
                 } while (c.moveToNext());
             }
         } finally {
@@ -218,12 +218,12 @@ public class LocationDbHelper extends SQLiteOpenHelper {
                             c.getLong(timestamp));
                     points.add(point);
                     count++;
-                    Log.d(Global.Company, point.toString());
+                    Log.d(TAG, point.toString());
                 } while (c.moveToNext());
                 
                 return points;
             } else {
-                Log.d(Global.Company, "Cursor is null");
+                Log.d(TAG, "Cursor is null");
                 return null;
             }
         } finally {
