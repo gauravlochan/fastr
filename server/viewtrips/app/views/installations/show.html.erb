@@ -1,0 +1,20 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <b>Id:</b>
+  <%= @installation.id %>
+</p>
+
+<p>
+  <b>On:</b>
+  <%= @installation.on %>
+</p>
+
+<p>
+  <b>User:</b>
+  <%= @installation.user %>
+</p>
+
+
+<%= link_to 'Edit', edit_installation_path(@installation) %> |
+<%= link_to 'Back', installations_path %>

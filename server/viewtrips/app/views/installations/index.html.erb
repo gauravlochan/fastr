@@ -1,0 +1,27 @@
+<h1>Listing installations</h1>
+
+<table>
+  <tr>
+    <th>Id</th>
+    <th>On</th>
+    <th>User</th>
+    <th></th>
+    <th></th>
+    <th></th>
+  </tr>
+
+<% @installations.each do |installation| %>
+  <tr>
+    <td><%= installation.id %></td>
+    <td><%= installation.on %></td>
+    <td><%= installation.user %></td>
+    <td><%= link_to 'Show', installation %></td>
+    <td><%= link_to 'Edit', edit_installation_path(installation) %></td>
+    <td><%= link_to 'Destroy', installation, :confirm => 'Are you sure?', :method => :delete %></td>
+  </tr>
+<% end %>
+</table>
+
+<br />
+
+<%= link_to 'New Installation', new_installation_path %>
