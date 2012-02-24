@@ -1,11 +1,11 @@
 package in.beetroute.apps.traffic;
 
 import in.beetroute.apps.commonlib.Global;
+import in.beetroute.apps.commonlib.Logger;
 import in.beetroute.apps.traffic.location.LocationService;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.util.Log;
 
 public class MyBroadcastReceiver extends BroadcastReceiver {
     private static final String TAG = Global.COMPANY;
@@ -20,7 +20,7 @@ public class MyBroadcastReceiver extends BroadcastReceiver {
         
         // android.net.ConnectivityManager.CONNECTIVITY_ACTION
         if ("android.net.conn.CONNECTIVITY_CHANGE".equals(intent.getAction())) {
-            Log.d(TAG, "Connectivity Change");
+            Logger.debug(TAG, "Connectivity Change");
         }
 
         

@@ -2,6 +2,7 @@ package in.beetroute.apps.traffic.activities;
 
 import greendroid.app.GDActivity;
 import in.beetroute.apps.commonlib.Global;
+import in.beetroute.apps.commonlib.Logger;
 import in.beetroute.apps.traffic.AppGlobal;
 import in.beetroute.apps.traffic.MapPoint;
 import in.beetroute.apps.traffic.R;
@@ -22,7 +23,6 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
@@ -147,7 +147,7 @@ public class EnterAddressActivity extends GDActivity {
 
 		@Override
 		protected List<MapPoint> doInBackground(DestLookupParams... params) {
-	        Log.d(TAG, "Calling poiService");
+	        Logger.debug(TAG, "Calling poiService");
 	        List<MapPoint> points = null;
 
 	        switch (params[0].destType) {
@@ -162,7 +162,7 @@ public class EnterAddressActivity extends GDActivity {
 	            break;      	
 	        	
 	        }
-	        Log.d(TAG, "Called poiService");
+	        Logger.debug(TAG, "Called poiService");
 			return points;
 		}
 

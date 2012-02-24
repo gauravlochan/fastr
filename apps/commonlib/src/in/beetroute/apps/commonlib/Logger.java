@@ -13,23 +13,60 @@ public class Logger {
     public static final boolean DEBUG = true;   // Change this when releasing the product
     public static final boolean JVM = false;    // Change this when testing in eclipse
     
-    public static void debug(String tag, String message) {
+    public static int debug(String tag, String message) {
         if (DEBUG) {
             if (JVM) {
                 // don't log
+                return 0;
             } else {
-                Log.d(tag, message);
+                return Log.d(tag, message);
             }
         }
+        // don't log for release builds
+        return 0;
     }
 
-    public static void info(String tag, String message) {
+    
+    public static int info(String tag, String message) {
         if (DEBUG) {
             if (JVM) {
                 // don't log
+                return 0;
             } else {
-                Log.i(tag, message);
+                return Log.i(tag, message);
             }
+        }
+        // don't log for release builds
+        return 0;
+    }
+    
+    public static int warn(String tag, String message) {
+        // warnings should be logged regardless of debug/release
+        if (JVM) {
+            return 0;
+            // don't log
+        } else {
+            return Log.w(tag, message);
+        }
+    }
+    
+    public static int error(String tag, String message, Throwable tr) {
+        // errors should be logged regardless of debug/release
+        if (JVM) {
+            return 0;
+            // don't log
+        } else {
+            return Log.e(tag, message, tr);
+        }
+    }
+    
+    public static int error(String tag, String message) {
+        // errors should be logged regardless of debug/release
+        if (JVM) {
+            return 0;
+            // don't log
+        } else {
+            return Log.e(tag, message);
         }
     }
 

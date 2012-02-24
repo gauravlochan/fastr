@@ -1,6 +1,7 @@
 package in.beetroute.apps.traffic.activities;
 
 import in.beetroute.apps.commonlib.Global;
+import in.beetroute.apps.commonlib.Logger;
 import in.beetroute.apps.traffic.R;
 import in.beetroute.apps.traffic.Route;
 import in.beetroute.apps.traffic.backend.CongestionPoint;
@@ -12,7 +13,6 @@ import java.util.List;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
-import android.util.Log;
 import android.widget.Toast;
 
 import com.google.android.maps.MapView;
@@ -43,7 +43,7 @@ public class GetCongestionTask extends AsyncTask<Route, Void, List<CongestionPoi
             CongestionService congestionSvc = new BtisCongestionService();
             points = congestionSvc.getCongestionPoints();
         } catch (Exception e) {
-            Log.e(TAG, "Error calling BTIS", e);
+            Logger.error(TAG, "Error calling BTIS", e);
         }
         return points;
     }

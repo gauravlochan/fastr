@@ -1,6 +1,7 @@
 package in.beetroute.apps.traffic.location;
 
 import in.beetroute.apps.commonlib.Global;
+import in.beetroute.apps.commonlib.Logger;
 import in.beetroute.apps.traffic.Preferences;
 import in.beetroute.apps.traffic.db.LocationDbHelper;
 import android.app.Service;
@@ -11,7 +12,6 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.IBinder;
-import android.util.Log;
 
 import com.parse.Parse;
 
@@ -38,7 +38,7 @@ public class LocationService extends Service {
 
     @Override
     public void onCreate() {
-        Log.d(TAG, "Service onCreate");
+        Logger.debug(TAG, "Service onCreate");
         super.onCreate();
 
         // Register the listener with the Location Manager to receive location updates
@@ -65,7 +65,7 @@ public class LocationService extends Service {
     
     @Override
     public void onDestroy() {
-        Log.d(TAG, "Service onDestroy");
+        Logger.debug(TAG, "Service onDestroy");
         super.onDestroy();
         
         LocationManager locationManager = (LocationManager) 
@@ -79,7 +79,7 @@ public class LocationService extends Service {
         // TODO: try to do optimizations like only upload on network access
         @Override
         public void onLocationChanged(Location location) {
-            Log.d(TAG, "Got an update");
+            Logger.debug(TAG, "Got an update");
             
             // Write this to the DB and Upload this location
             new StoreLocationTask(installationId, dbHelper).doInBackground(location);
@@ -90,17 +90,17 @@ public class LocationService extends Service {
 
         @Override
         public void onStatusChanged(String provider, int status, Bundle extras) {
-            Log.d(TAG, "On Status changed");
+            Logger.debug(TAG, "On Status changed");
         }
 
         @Override
         public void onProviderEnabled(String provider) {
-            Log.d(TAG, "Provider enabled");
+            Logger.debug(TAG, "Provider enabled");
         }
 
         @Override
         public void onProviderDisabled(String provider) {
-            Log.d(TAG, "Provider disabled");
+            Logger.debug(TAG, "Provider disabled");
         }
         
     }

@@ -1,13 +1,13 @@
 package in.beetroute.apps.traffic;
 
 import in.beetroute.apps.commonlib.Global;
+import in.beetroute.apps.commonlib.Logger;
 
 import java.util.UUID;
 
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
-import android.util.Log;
 
 /**
  * Wrapper class around preferences
@@ -37,7 +37,7 @@ public class Preferences {
 
         // id doesnt exist, create a random one
         String id = UUID.randomUUID().toString();
-        Log.i(TAG, "Generated an installation ID="+id);
+        Logger.info(TAG, "Generated an installation ID="+id);
         SharedPreferences.Editor editor = app_preferences.edit();
         editor.putString(INSTALLATION_ID_KEY, id);
         editor.commit();

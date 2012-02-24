@@ -1,6 +1,7 @@
 package in.beetroute.apps.traffic.btis;
 
 import in.beetroute.apps.commonlib.Global;
+import in.beetroute.apps.commonlib.Logger;
 import in.beetroute.apps.commonlib.RESTHelper;
 import in.beetroute.apps.commonlib.ServiceProviders;
 import in.beetroute.apps.traffic.TrafficStatus;
@@ -9,8 +10,6 @@ import in.beetroute.apps.traffic.services.CongestionService;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import android.util.Log;
 
 import com.google.gson.Gson;
 
@@ -27,7 +26,7 @@ public class BtisCongestionService implements CongestionService {
 		BtisResult result = gson.fromJson(jsonResult, BtisResult.class);
 		
 		if (result == null) {
-		    Log.e(TAG, "Congestion data from BTIS is missing or the wrong json format");
+		    Logger.error(TAG, "Congestion data from BTIS is missing or the wrong json format");
 		    return null;
 		} else {
     		List<CongestionPoint> congestionPoints = new ArrayList<CongestionPoint>(result.locations.size());

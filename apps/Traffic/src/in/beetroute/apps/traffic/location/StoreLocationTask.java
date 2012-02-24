@@ -1,11 +1,11 @@
 package in.beetroute.apps.traffic.location;
 
 import in.beetroute.apps.commonlib.Global;
+import in.beetroute.apps.commonlib.Logger;
 import in.beetroute.apps.traffic.backend.ParseHelper;
 import in.beetroute.apps.traffic.db.LocationDbHelper;
 import android.location.Location;
 import android.os.AsyncTask;
-import android.util.Log;
 
 /**
  * Takes in the location to upload.
@@ -26,7 +26,7 @@ public class StoreLocationTask extends AsyncTask<Location, Void, Void> {
 
     @Override
     protected Void doInBackground(Location... params) {
-        Log.d(TAG, "StoreLocationTask");
+        Logger.debug(TAG, "StoreLocationTask");
         
         Location location = params[0];
         LocationUpdate point = new LocationUpdate(location);
@@ -40,12 +40,12 @@ public class StoreLocationTask extends AsyncTask<Location, Void, Void> {
             // Mark in DB with success
             dbHelper.insertPoint(point, true);
             
-            Log.d(TAG, "Inserted to DB as 'Uploaded'");
+            Logger.debug(TAG, "Inserted to DB as 'Uploaded'");
         } catch (Exception e) {
             // Mark in DB with failure
             dbHelper.insertPoint(point, false);
 
-            Log.i(TAG, "Inserted location to DB as 'Not Uploaded'");
+            Logger.info(TAG, "Inserted location to DB as 'Not Uploaded'");
         }
         
         return null;

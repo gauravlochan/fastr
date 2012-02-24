@@ -1,6 +1,7 @@
 package in.beetroute.apps.traffic.db;
 
 import in.beetroute.apps.commonlib.Global;
+import in.beetroute.apps.commonlib.Logger;
 import in.beetroute.apps.traffic.location.LocationUpdate;
 
 import java.util.ArrayList;
@@ -14,7 +15,6 @@ import android.database.sqlite.SQLiteDatabase.CursorFactory;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.database.sqlite.SQLiteStatement;
 import android.provider.BaseColumns;
-import android.util.Log;
 
 
 /**
@@ -78,19 +78,19 @@ public class LocationDbHelper extends SQLiteOpenHelper {
     
     @Override
     public void onCreate(SQLiteDatabase db) {
-        Log.d(TAG, "Attempting to create DB " + dbName);
+        Logger.debug(TAG, "Attempting to create DB " + dbName);
 
         /* Create a Table in the Database. */
         db.execSQL("CREATE TABLE IF NOT EXISTS " + LocationUpdates.TABLE_NAME +
                 "(" + LocationUpdates.getSchema() + ");");
 
-        Log.d(TAG, "Successfully created DB");
+        Logger.debug(TAG, "Successfully created DB");
     }
 
     
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        Log.w(TAG, "Upgrading database from version " + oldVersion
+        Logger.warn(TAG, "Upgrading database from version " + oldVersion
                 + " to " + newVersion + ", which will destroy all old data");
 
         db.execSQL("DROP TABLE IF EXISTS " + LocationUpdates.TABLE_NAME);
@@ -103,7 +103,7 @@ public class LocationDbHelper extends SQLiteOpenHelper {
      * @param uploaded TODO
      */
     public void insertPoint(LocationUpdate point, Boolean uploaded) {
-        Log.d(TAG, "Attempting write point to DB " + dbName);
+        Logger.debug(TAG, "Attempting write point to DB " + dbName);
         SQLiteDatabase db = getWritableDatabase();
         
         Integer status = uploaded ? UploadStatus.UPLOADED.ordinal() :
@@ -119,7 +119,7 @@ public class LocationDbHelper extends SQLiteOpenHelper {
                     + status + ");"
                     );
             
-            Log.d(TAG, "Succesfully inserted point into DB");
+            Logger.debug(TAG, "Succesfully inserted point into DB");
         } finally {
             db.close();
         }
@@ -151,7 +151,7 @@ public class LocationDbHelper extends SQLiteOpenHelper {
                     float speed = c.getFloat(Column4);
                     
                     String coordinate = String.format("%s %f %f %f", timeStamp.toLocaleString(), lat, lon, speed);
-                    Log.d(TAG, coordinate);
+                    Logger.debug(TAG, coordinate);
                 } while (c.moveToNext());
             }
         } finally {
@@ -204,7 +204,7 @@ public class LocationDbHelper extends SQLiteOpenHelper {
                 boolean recordsLeft = c.moveToFirst();
                 int count = 0;
 
-                Log.d(TAG, "Print all NOT_UPLOADED location updates");
+                Logger.debug(TAG, "Print all NOT_UPLOADED location updates");
                 // Loop through all Results
                 while (recordsLeft) {
                     // Break out if there was a record limit and we've exceeded it
@@ -218,12 +218,12 @@ public class LocationDbHelper extends SQLiteOpenHelper {
                             c.getLong(timestamp));
                     points.add(point);
                     count++;
-                    Log.d(TAG, point.toString());
+                    Logger.debug(TAG, point.toString());
                 } while (c.moveToNext());
                 
                 return points;
             } else {
-                Log.d(TAG, "Cursor is null");
+                Logger.debug(TAG, "Cursor is null");
                 return null;
             }
         } finally {

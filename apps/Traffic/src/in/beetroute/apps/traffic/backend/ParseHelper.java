@@ -1,8 +1,8 @@
 package in.beetroute.apps.traffic.backend;
 
 import in.beetroute.apps.commonlib.Global;
+import in.beetroute.apps.commonlib.Logger;
 import android.location.Location;
-import android.util.Log;
 
 import com.parse.ParseException;
 import com.parse.ParseGeoPoint;
@@ -14,13 +14,13 @@ public class ParseHelper {
     public static void locationUpdate(Location location, String installationId) throws ParseException {
         ParseObject parseObject = createParseObject(location, installationId);
         parseObject.save();
-        Log.d(TAG, "Completed upload to Parse");
+        Logger.debug(TAG, "Completed upload to Parse");
     }
 
     public static void backgroundLocationUpdate(Location location, String installationId) {
         ParseObject parseObject = createParseObject(location, installationId);
         parseObject.saveInBackground();
-        Log.d(TAG, "Kicked off upload to Parse");
+        Logger.debug(TAG, "Kicked off upload to Parse");
     }
     
     
@@ -28,7 +28,7 @@ public class ParseHelper {
         ParseObject parseObject = createParseObject(location, installationId);
         // TODO: Note, Parse takes care to upload this, or save it locally for later
         parseObject.saveEventually();
-        Log.d(TAG, "Initiated eventual upload to Parse");
+        Logger.debug(TAG, "Initiated eventual upload to Parse");
     }
     
     private static ParseObject createParseObject(Location location, String installationId) {

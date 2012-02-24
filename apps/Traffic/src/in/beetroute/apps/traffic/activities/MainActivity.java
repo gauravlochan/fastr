@@ -4,6 +4,7 @@ import greendroid.app.GDMapActivity;
 import greendroid.widget.ActionBarItem;
 import greendroid.widget.ActionBarItem.Type;
 import in.beetroute.apps.commonlib.Global;
+import in.beetroute.apps.commonlib.Logger;
 import in.beetroute.apps.commonlib.SimpleGeoPoint;
 import in.beetroute.apps.traffic.AppGlobal;
 import in.beetroute.apps.traffic.MapPoint;
@@ -24,7 +25,6 @@ import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
-import android.util.Log;
 import android.widget.Toast;
 
 import com.google.android.maps.GeoPoint;
@@ -56,7 +56,7 @@ public class MainActivity extends GDMapActivity {
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
-        Log.d(TAG, "Creating MainActivity");
+        Logger.debug(TAG, "Creating MainActivity");
 
 		super.onCreate(savedInstanceState);
         setActionBarContentView(R.layout.map);
@@ -113,7 +113,7 @@ public class MainActivity extends GDMapActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) 
     {	
     	if (resultCode == RESULT_OK && requestCode == ENTER_DESTINATION_REQUEST_CODE) {
-            Log.i(TAG, "resultCode: " + resultCode );
+            Logger.info(TAG, "resultCode: " + resultCode );
             
             if (data.hasExtra(AppGlobal.destPoint)) {
                 // reset the map
@@ -134,7 +134,7 @@ public class MainActivity extends GDMapActivity {
 //            	
             } else {
             	// TODO: Add support for destination addresses
-            	Log.e(TAG, "Did not find point of interest in intent");
+            	Logger.error(TAG, "Did not find point of interest in intent");
             }
     	}
     }
