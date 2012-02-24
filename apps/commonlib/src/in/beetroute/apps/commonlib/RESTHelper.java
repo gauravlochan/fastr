@@ -18,7 +18,7 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import org.json.JSONArray;
 
 public class RESTHelper {
-    private static Logger logger = new MyLogger(Global.COMPANY);
+    public static final String TAG = Global.COMPANY;
 	
     /**
      * A simple method to make a REST call to the specified server.  Good for 
@@ -32,7 +32,7 @@ public class RESTHelper {
     
 	public static String simplePost(String server, String payload) {
 		String result = null;
-    	logger.debug("Attempting call to REST: " + server);
+    	Logger.debug(TAG, "Attempting call to REST: " + server);
 
         HttpClient httpClient = new DefaultHttpClient();
         HttpPost httpPost = new HttpPost(server);
@@ -51,20 +51,20 @@ public class RESTHelper {
             response = httpClient.execute(httpPost);
             
             if (response != null) {
-                logger.debug("Successful call to REST");
-                logger.debug(response.getStatusLine().toString());
+                Logger.debug(TAG, "Successful call to REST");
+                Logger.debug(TAG, response.getStatusLine().toString());
                 
                 HttpEntity entity = response.getEntity();
                 if (entity != null) {
                     InputStream instream = entity.getContent();
                     result = convertStreamToString(instream);
-                    logger.debug("Result of conversation: [" + result + "]");
+                    Logger.debug(TAG, "Result of conversation: [" + result + "]");
                     instream.close();
                 } else {
-                    logger.debug("Empty Http response");
+                    Logger.debug(TAG, "Empty Http response");
                 }
             } else {
-                logger.debug("Unsuccessful call to REST");
+                Logger.debug(TAG, "Unsuccessful call to REST");
             }
         } catch (ClientProtocolException e) {
             e.printStackTrace();
@@ -84,7 +84,7 @@ public class RESTHelper {
      */
     public static String simpleGet(String server) {
         String result = null;
-        logger.debug("Attempting call to REST: "+ server);
+        Logger.debug(TAG, "Attempting call to REST: "+ server);
 
         HttpClient httpClient = new DefaultHttpClient();
         HttpGet httpGet = new HttpGet(server);
@@ -92,20 +92,20 @@ public class RESTHelper {
             HttpResponse response = null;
             response = httpClient.execute(httpGet);
             if (response != null) {
-                logger.debug("Successful call to REST");
-                logger.debug(response.getStatusLine().toString());
+                Logger.debug(TAG, "Successful call to REST");
+                Logger.debug(TAG, response.getStatusLine().toString());
                 
                 HttpEntity entity = response.getEntity();
                 if (entity != null) {
                     InputStream instream = entity.getContent();
                     result = convertStreamToString(instream);
-                    logger.info("Result of converstion: [" + result + "]");
+                    Logger.info(TAG, "Result of converstion: [" + result + "]");
                     instream.close();
                 } else {
-                    logger.debug("Empty Http response");
+                    Logger.debug(TAG, "Empty Http response");
                 }
             } else {
-                logger.debug("Unsuccessful call to REST");
+                Logger.debug(TAG, "Unsuccessful call to REST");
             }
         } catch (ClientProtocolException e) {
             e.printStackTrace();

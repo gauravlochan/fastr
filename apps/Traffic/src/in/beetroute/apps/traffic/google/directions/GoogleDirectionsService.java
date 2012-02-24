@@ -1,5 +1,6 @@
 package in.beetroute.apps.traffic.google.directions;
 
+import in.beetroute.apps.commonlib.Global;
 import in.beetroute.apps.commonlib.RESTHelper;
 import in.beetroute.apps.commonlib.ServiceProviders;
 import in.beetroute.apps.commonlib.SimpleGeoPoint;
@@ -9,9 +10,12 @@ import in.beetroute.apps.traffic.services.DirectionsService;
 import java.util.ArrayList;
 import java.util.List;
 
+import android.util.Log;
+
 import com.google.gson.Gson;
 
 public class GoogleDirectionsService implements DirectionsService {
+    private static final String TAG = Global.COMPANY;
 	private static final String jsonServiceUrl = "http://maps.googleapis.com/maps/api/directions/json?";
 
 	@Override
@@ -85,7 +89,7 @@ public class GoogleDirectionsService implements DirectionsService {
 	    SimpleGeoPoint lastPoint = routePoints.get(routePoints.size()-1);
 	    // Check if distance is less than 5 metres
 	    if (lastPoint.getDistanceFrom(sgPoint) < THRESHOLD) {
-	        System.out.println("Dropping point " +sgPoint.toString());
+	        Log.d(TAG, "Dropping point " +sgPoint.toString());
 	        return true;
 	    }
 	    

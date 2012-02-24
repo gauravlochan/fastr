@@ -2,7 +2,6 @@ package in.beetroute.apps.traffic.onze;
 
 import in.beetroute.apps.commonlib.Global;
 import in.beetroute.apps.commonlib.Logger;
-import in.beetroute.apps.commonlib.MyLogger;
 import in.beetroute.apps.commonlib.RESTHelper;
 import in.beetroute.apps.commonlib.ServiceProviders;
 import in.beetroute.apps.traffic.MapPoint;
@@ -16,7 +15,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 public class OnzePointOfInterestService implements PointOfInterestService {
-    private static Logger logger = new MyLogger(Global.COMPANY);
+    private static final String TAG = Global.COMPANY;
 
 	private static final String api_key = "pihack";
 	private static final String jsonServiceUrl = "http://latlong.in/api/v1/search?api_key="+ api_key;
@@ -41,8 +40,8 @@ public class OnzePointOfInterestService implements PointOfInterestService {
         JSONArray jsonArray;
 		try {
 			jsonArray = new JSONArray(result);
-			logger.info("Number of entries " + jsonArray.length());
-
+			Logger.info(TAG, "Number of entries " + jsonArray.length());
+			
 			for (int i = 0; i < jsonArray.length(); i++) {
 				JSONObject jsonObject = jsonArray.getJSONObject(i);
 				MapPoint point = getPointOfInterest(jsonObject);
