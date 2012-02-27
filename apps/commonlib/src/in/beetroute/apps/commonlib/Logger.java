@@ -10,7 +10,7 @@ import android.util.Log;
  */
 
 public class Logger {
-    public static final boolean DEBUG = true;   // Change this when releasing the product
+    public static final boolean DEBUG = false;   // Change this when releasing the product
     public static final boolean JVM = false;    // Change this when testing in eclipse
     
     public static int debug(String tag, String message) {
