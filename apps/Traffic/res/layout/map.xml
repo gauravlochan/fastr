@@ -5,7 +5,7 @@
 	android:layout_width="fill_parent"
 	android:layout_height="fill_parent"
 	android:clickable="true"
-    android:apiKey="0wylgYXVAFg7ZQg6PEvoqDcPmkPMmhAd_NLWLzw" />
+    android:apiKey="0HvLnBA5C5E8w7itCenvn6Q5ixcAfYQcBdy4epg" />
 
 <!-- release android:apiKey="0wylgYXVAFg7ZQg6PEvoqDcPmkPMmhAd_NLWLzw" -->
 <!-- debug android:apiKey="0HvLnBA5C5E8w7itCenvn6Q5ixcAfYQcBdy4epg" -->

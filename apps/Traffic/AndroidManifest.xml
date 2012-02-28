@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
       package="in.beetroute.apps.traffic"
-      android:versionCode="4"
-      android:versionName="0.2.2">
+      android:versionCode="5"
+      android:versionName="0.3.0">
     
     <uses-sdk android:minSdkVersion="7" />
 	<uses-library android:name="com.google.android.maps" />
@@ -18,7 +18,7 @@
                  android:label="@string/app_name"
                  android:theme="@style/Theme.GDCatalog"
                  android:name=".TrafficApplication"
-                 android:debuggable="false">
+                 android:debuggable="true">
                  
 		<uses-library android:name="com.google.android.maps" />
         
@@ -35,6 +35,11 @@
             
         </activity>
         
+        <activity android:name=".activities.RouteListActivity"
+                  android:label="@string/app_name">
+            
+        </activity>
+            
         <service android:name="in.beetroute.apps.traffic.location.LocationService"
             	 android:enabled="true"> 
         </service>

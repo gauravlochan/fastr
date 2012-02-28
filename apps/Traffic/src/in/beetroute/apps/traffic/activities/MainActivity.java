@@ -63,6 +63,9 @@ public class MainActivity extends GDMapActivity {
 
         // Add the direction button
         addActionBarItem(Type.Export, R.id.action_bar_directions);
+        
+        // Add the route history button
+        addActionBarItem(Type.List, R.id.action_bar_routelist);
 
 		mapView = (MapView) findViewById(R.id.mapview);
 		mapView.setBuiltInZoomControls(true);
@@ -95,6 +98,10 @@ public class MainActivity extends GDMapActivity {
 
                 startActivityForResult(new Intent(this, EnterAddressActivity.class), 
                 		ENTER_DESTINATION_REQUEST_CODE);
+                break;
+                
+            case R.id.action_bar_routelist:
+                startActivity(new Intent(this, RouteListActivity.class));
                 break;
 
             default:

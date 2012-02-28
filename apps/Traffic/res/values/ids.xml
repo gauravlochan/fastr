@@ -20,5 +20,7 @@
 <resources>
 
 	<item type="id" name="action_bar_directions" />
+	<item type="id" name="action_bar_routelist" />
+			
 
 </resources>
