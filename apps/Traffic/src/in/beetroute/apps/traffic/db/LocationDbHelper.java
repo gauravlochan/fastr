@@ -45,9 +45,9 @@ public class LocationDbHelper extends SQLiteOpenHelper {
     /**
      * A class that defines the table
      */
-    public static final class LocationUpdates implements BaseColumns {
+    public static final class LocationTable implements BaseColumns {
         // This class cannot be instantiated
-        private LocationUpdates() {}
+        private LocationTable() {}
         
         public static final String TABLE_NAME = "locationUpdates";
 
@@ -57,6 +57,10 @@ public class LocationDbHelper extends SQLiteOpenHelper {
         public static final String COLUMN_NAME_SPEED = "Speed";
         public static final String COLUMN_NAME_UPLOAD_STATUS = "UploadStatus";
         
+        public static final String COLUMN_STRING = String.format(" (%s, %s, %s, %s, %s) ",
+                COLUMN_NAME_LATITUDE, COLUMN_NAME_LONGITUDE, COLUMN_NAME_TIMESTAMP,
+                COLUMN_NAME_SPEED, COLUMN_NAME_UPLOAD_STATUS);
+
         public static String getSchema() {
             return _ID + " INTEGER PRIMARY KEY,"
                     + COLUMN_NAME_LATITUDE + " Double, "
@@ -72,19 +76,21 @@ public class LocationDbHelper extends SQLiteOpenHelper {
 
     }
 
+    
     public LocationDbHelper(Context context, CursorFactory factory) {
         super(context, dbName, factory, dbVersion);
     }
     
     @Override
     public void onCreate(SQLiteDatabase db) {
-        Logger.debug(TAG, "Attempting to create DB " + dbName);
+        Logger.debug(TAG, "Attempting to create table " + LocationTable.TABLE_NAME +
+                " in DB " + dbName);
 
         /* Create a Table in the Database. */
-        db.execSQL("CREATE TABLE IF NOT EXISTS " + LocationUpdates.TABLE_NAME +
-                "(" + LocationUpdates.getSchema() + ");");
+        db.execSQL("CREATE TABLE IF NOT EXISTS " + LocationTable.TABLE_NAME +
+                "(" + LocationTable.getSchema() + ");");
 
-        Logger.debug(TAG, "Successfully created DB");
+        Logger.debug(TAG, "Successfully created table");
     }
 
     
@@ -92,8 +98,10 @@ public class LocationDbHelper extends SQLiteOpenHelper {
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         Logger.warn(TAG, "Upgrading database from version " + oldVersion
                 + " to " + newVersion + ", which will destroy all old data");
+        
+        // TODO: Need to come up with a good upgrade script
 
-        db.execSQL("DROP TABLE IF EXISTS " + LocationUpdates.TABLE_NAME);
+        db.execSQL("DROP TABLE IF EXISTS " + LocationTable.TABLE_NAME);
         onCreate(db);
     }    
     
@@ -110,8 +118,9 @@ public class LocationDbHelper extends SQLiteOpenHelper {
                                    UploadStatus.NOT_UPLOADED.ordinal();
 
         try {
-            db.execSQL("INSERT INTO " + LocationUpdates.TABLE_NAME + 
-                    LocationUpdates.getColumns() + " VALUES ("
+            db.execSQL("INSERT INTO " + LocationTable.TABLE_NAME 
+                    + LocationTable.COLUMN_STRING
+                    + " VALUES ("
                     + point.getLatitude() + ", " 
                     + point.getLongitude() + ", " 
                     + point.getEpochTime() + ", " 
@@ -134,12 +143,12 @@ public class LocationDbHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = getReadableDatabase();
         
         try {
-            Cursor c = db.rawQuery("SELECT * FROM " + LocationUpdates.TABLE_NAME, null);
+            Cursor c = db.rawQuery("SELECT * FROM " + LocationTable.TABLE_NAME, null);
     
-            int Column1 = c.getColumnIndex(LocationUpdates.COLUMN_NAME_LATITUDE);
-            int Column2 = c.getColumnIndex(LocationUpdates.COLUMN_NAME_LONGITUDE);
-            int Column3 = c.getColumnIndex(LocationUpdates.COLUMN_NAME_TIMESTAMP);
-            int Column4 = c.getColumnIndex(LocationUpdates.COLUMN_NAME_SPEED);
+            int Column1 = c.getColumnIndex(LocationTable.COLUMN_NAME_LATITUDE);
+            int Column2 = c.getColumnIndex(LocationTable.COLUMN_NAME_LONGITUDE);
+            int Column3 = c.getColumnIndex(LocationTable.COLUMN_NAME_TIMESTAMP);
+            int Column4 = c.getColumnIndex(LocationTable.COLUMN_NAME_SPEED);
     
             if (c.moveToFirst()) {
                 // Loop through all Results
@@ -169,8 +178,8 @@ public class LocationDbHelper extends SQLiteOpenHelper {
         
         try {
             SQLiteStatement stmt = db.compileStatement("SELECT COUNT(*) FROM "
-                    + LocationUpdates.TABLE_NAME + " WHERE "
-                    + LocationUpdates.COLUMN_NAME_UPLOAD_STATUS + "=" + UploadStatus.NOT_UPLOADED.ordinal()
+                    + LocationTable.TABLE_NAME + " WHERE "
+                    + LocationTable.COLUMN_NAME_UPLOAD_STATUS + "=" + UploadStatus.NOT_UPLOADED.ordinal()
                     );
             long count = stmt.simpleQueryForLong();
             return count;
@@ -189,14 +198,14 @@ public class LocationDbHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = getReadableDatabase();
         
         try {
-            String query = "SELECT * FROM " + LocationUpdates.TABLE_NAME + " WHERE " + 
-                    LocationUpdates.COLUMN_NAME_UPLOAD_STATUS + "=" + UploadStatus.NOT_UPLOADED.ordinal() + ";";
+            String query = "SELECT * FROM " + LocationTable.TABLE_NAME + " WHERE " + 
+                    LocationTable.COLUMN_NAME_UPLOAD_STATUS + "=" + UploadStatus.NOT_UPLOADED.ordinal() + ";";
             Cursor c = db.rawQuery(query, null);
 
             if (c != null) {
-                int latIndex = c.getColumnIndex(LocationUpdates.COLUMN_NAME_LATITUDE);
-                int longIndex = c.getColumnIndex(LocationUpdates.COLUMN_NAME_LONGITUDE);
-                int timestamp = c.getColumnIndex(LocationUpdates.COLUMN_NAME_TIMESTAMP);
+                int latIndex = c.getColumnIndex(LocationTable.COLUMN_NAME_LATITUDE);
+                int longIndex = c.getColumnIndex(LocationTable.COLUMN_NAME_LONGITUDE);
+                int timestamp = c.getColumnIndex(LocationTable.COLUMN_NAME_TIMESTAMP);
         
                 int i = c.getCount();
                 List<LocationUpdate> points = new ArrayList<LocationUpdate>(i);
