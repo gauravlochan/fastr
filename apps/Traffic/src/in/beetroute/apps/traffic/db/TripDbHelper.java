@@ -3,6 +3,7 @@ package in.beetroute.apps.traffic.db;
 import in.beetroute.apps.commonlib.Global;
 import in.beetroute.apps.commonlib.Logger;
 import android.content.Context;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteDatabase.CursorFactory;
 import android.database.sqlite.SQLiteOpenHelper;
@@ -44,15 +45,16 @@ public class TripDbHelper extends SQLiteOpenHelper {
         // http://stackoverflow.com/questions/5289861/sqlite-android-foreign-key-syntax
         // http://www.sqlite.org/foreignkeys.html
         public static String getSchema() {
-            return _ID + " INTEGER PRIMARY KEY,"
-                    + COLUMN_NAME_START_POINT + " INTEGER, "
-                    + "FOREIGN KEY(" + COLUMN_NAME_START_POINT + ") REFERENCES " +
-                       LocationDbHelper.LocationTable.TABLE_NAME+ "(" + LocationDbHelper.LocationTable._ID + ")"
-                    + COLUMN_NAME_END_POINT + " INTEGER, "
-                    + "FOREIGN KEY(" + COLUMN_NAME_END_POINT + ") REFERENCES " +
-                       LocationDbHelper.LocationTable.TABLE_NAME+ "(" + LocationDbHelper.LocationTable._ID + ")"
-                    + COLUMN_NAME_START_NAME + " TEXT, " 
-                    + COLUMN_NAME_END_NAME + " TEXT, ";
+            return _ID + " INTEGER PRIMARY KEY, "
+                + COLUMN_NAME_START_POINT + " INTEGER, "
+                + COLUMN_NAME_END_POINT + " INTEGER, "
+                + COLUMN_NAME_START_NAME + " TEXT, " 
+                + COLUMN_NAME_END_NAME + " TEXT, "
+                + "FOREIGN KEY(" + COLUMN_NAME_START_POINT + ") REFERENCES " +
+                LocationDbHelper.LocationTable.TABLE_NAME+ "(" + LocationDbHelper.LocationTable._ID + "), "
+                + "FOREIGN KEY(" + COLUMN_NAME_END_POINT + ") REFERENCES " +
+                LocationDbHelper.LocationTable.TABLE_NAME+ "(" + LocationDbHelper.LocationTable._ID + ")"
+                ;
         }
 
     }
@@ -63,12 +65,13 @@ public class TripDbHelper extends SQLiteOpenHelper {
     
     @Override
     public void onCreate(SQLiteDatabase db) {
-        Logger.debug(TAG, "Attempting to create table " + TripTable.TABLE_NAME +
-                " in DB " + dbName);
+        Logger.debug(TAG, "Attempting to create table in db");
 
         /* Create a Table in the Database. */
-        db.execSQL("CREATE TABLE IF NOT EXISTS " + TripTable.TABLE_NAME +
-                "(" + TripTable.getSchema() + ");");
+        String sql = "CREATE TABLE IF NOT EXISTS " + TripTable.TABLE_NAME +
+                "(" + TripTable.getSchema() + ");";
+        Logger.debug(TAG, sql);
+        db.execSQL(sql);
 
         Logger.debug(TAG, "Successfully created table");
     }
@@ -93,7 +96,14 @@ public class TripDbHelper extends SQLiteOpenHelper {
         
     }
     
-    
+    /**
+     * Print out the database contents
+     */
+    public void logDatabase() {
+        SQLiteDatabase db = getWritableDatabase();
+        
+        Cursor c = db.rawQuery("SELECT * FROM " + TripTable.TABLE_NAME, null);
+    }
 
 }
 

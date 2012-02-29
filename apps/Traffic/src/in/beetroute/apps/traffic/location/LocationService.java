@@ -83,8 +83,6 @@ public class LocationService extends Service {
             
             // Write this to the DB and Upload this location
             new StoreLocationTask(installationId, dbHelper).doInBackground(location);
-            
-
 
         }
 

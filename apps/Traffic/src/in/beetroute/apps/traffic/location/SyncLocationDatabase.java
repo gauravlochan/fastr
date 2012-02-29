@@ -6,7 +6,7 @@ import java.util.List;
 
 
 /**
- * A class that helps sync 
+ * A class that helps sync.  This is not important now that Parse does this for us 
  * 
  * @author gauravlochan
  *

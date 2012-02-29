@@ -1,6 +1,7 @@
 package in.beetroute.apps.traffic.activities;
 
 import in.beetroute.apps.traffic.R;
+import in.beetroute.apps.traffic.db.TripDbHelper;
 import android.app.Activity;
 import android.database.Cursor;
 import android.net.Uri;
@@ -20,6 +21,9 @@ public class RouteListActivity extends Activity {
         setContentView(R.layout.routelist); 
         
         _listView = (ListView) findViewById(R.id.list);
+        
+        TripDbHelper tripDbHelper = new TripDbHelper(this, null);
+        tripDbHelper.logDatabase();
         
         // From http://www.vogella.de/articles/AndroidListView/article.html#cursor
         Cursor mCursor = getContacts();
