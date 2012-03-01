@@ -1,10 +1,10 @@
 package in.fastr.tripsim;
 
-import in.fastr.apps.traffic.Route;
-import in.fastr.apps.traffic.google.directions.GoogleDirectionsService;
-import in.fastr.apps.traffic.services.DirectionsService;
-import in.fastr.library.ServiceProviders;
-import in.fastr.library.SimpleGeoPoint;
+import in.beetroute.apps.commonlib.ServiceProviders;
+import in.beetroute.apps.commonlib.SimpleGeoPoint;
+import in.beetroute.apps.traffic.Route;
+import in.beetroute.apps.traffic.google.directions.GoogleDirectionsService;
+import in.beetroute.apps.traffic.services.DirectionsService;
 
 import java.util.List;
 

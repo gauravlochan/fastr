@@ -1,11 +1,11 @@
 package in.fastr.tripsim;
 
 import static org.junit.Assert.assertNotNull;
-import in.fastr.apps.traffic.MapPoint;
-import in.fastr.apps.traffic.Route;
-import in.fastr.apps.traffic.onze.OnzePointOfInterestService;
-import in.fastr.apps.traffic.services.PointOfInterestService;
-import in.fastr.library.SimpleGeoPoint;
+import in.beetroute.apps.commonlib.SimpleGeoPoint;
+import in.beetroute.apps.traffic.MapPoint;
+import in.beetroute.apps.traffic.Route;
+import in.beetroute.apps.traffic.onze.OnzePointOfInterestService;
+import in.beetroute.apps.traffic.services.PointOfInterestService;
 
 import java.util.List;
 

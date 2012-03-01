@@ -2,8 +2,8 @@ package in.fastr.tripsim;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import in.fastr.apps.traffic.Route;
-import in.fastr.library.SimpleGeoPoint;
+import in.beetroute.apps.commonlib.SimpleGeoPoint;
+import in.beetroute.apps.traffic.Route;
 
 import java.util.Date;
 

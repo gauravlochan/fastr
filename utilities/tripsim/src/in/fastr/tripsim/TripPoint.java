@@ -1,6 +1,6 @@
 package in.fastr.tripsim;
 
-import in.fastr.library.SimpleGeoPoint;
+import in.beetroute.apps.commonlib.SimpleGeoPoint;
 
 import java.util.Date;
 
