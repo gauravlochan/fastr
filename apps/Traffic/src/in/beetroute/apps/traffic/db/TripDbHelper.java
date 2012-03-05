@@ -88,6 +88,16 @@ public class TripDbHelper extends SQLiteOpenHelper {
     }
     
     
+    public void deleteTable() {
+        SQLiteDatabase db = getWritableDatabase();
+        try {
+            db.execSQL("DROP TABLE IF EXISTS " + TripTable.TABLE_NAME);
+            onCreate(db);
+        } finally {
+            db.close();
+        }
+
+    }
     
     /**
      * Create a trip

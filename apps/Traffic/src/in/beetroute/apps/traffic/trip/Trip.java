@@ -22,7 +22,7 @@ public class Trip {
 
     // The thresholds that are used to calculate the end of the trip
     private static final int TIME_CUTOFF = 10 * 60 * 1000; // 10 minutes
-    private static final float DIST_THRESHOLD = 0.100f; // 100 meters
+    private static final float DIST_THRESHOLD = 0.500f; // 500 meters
     private static final float SPEED_THRESHOLD = 1.0f; // 1 m/s = 3.6 km/hr 
     
     // TODO: Don't leave it public
@@ -236,7 +236,7 @@ public class Trip {
         SimpleGeoPoint sgPoint = new SimpleGeoPoint(location.getLatitude(), location.getLongitude());
         
         List<Address> addresses = geoService.resolveLocation(sgPoint, 1);
-        if (addresses == null) {
+        if ((addresses == null) || (addresses.size()==0)) {
             return "-unknown-";
         }
         
