@@ -14,6 +14,7 @@ import in.beetroute.apps.traffic.R;
 import in.beetroute.apps.traffic.location.LocationService;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.google.android.maps.GeoPoint;
@@ -120,15 +121,22 @@ public class MainActivity extends BRMapActivity {
             
             if (data.hasExtra(AppGlobal.destPoint)) {
                 // reset the map
+            	Log.v("logging:",AppGlobal.destPoint);
                 resetMapOverlays();
 
                 // The destination comes from the child activity
             	_destination = (MapPoint) data.getExtras().getSerializable(AppGlobal.destPoint);
             	
             	// Get the route from here to the destination
-            	GeoPoint source = getLastKnownLocation();
-            	_source = new SimpleGeoPoint(source);
             	
+            	if(data.hasExtra(AppGlobal.sourcePoint)){
+            		MapPoint sourceMapPoint = (MapPoint) data.getExtras().getSerializable(AppGlobal.sourcePoint);
+            		drawPointOfInterest(sourceMapPoint, false);
+            		_source = sourceMapPoint.getSimpleGeoPoint();
+            	} else{
+	            	GeoPoint source = getLastKnownLocation();
+	            	_source = new SimpleGeoPoint(source);
+            	}
             	getAndDrawRoutes(_source, _destination);
             	
                 // Call BTIS asynchronously to get congestion points and plot them on the map
@@ -146,6 +154,18 @@ public class MainActivity extends BRMapActivity {
     	}
     }
 
+    private void getAndDrawRoutes(SimpleGeoPoint source, MapPoint dest) {
+        // TODO: Should draw the source with a marker too.  
+        drawPointOfInterest(dest, false);     
+
+        DirectionsService dir = new GoogleDirectionsService();
+        List<Route> routes = dir.getRoutes(source, new SimpleGeoPoint(dest.getGeoPoint()));
+        drawMultipleRoutes(routes);
+        
+        // Call BTIS asynchronously to get congestion points and plot them on the map
+        // TODO: Eventually pass in the route that we care about
+        new GetCongestionTask(this, mapView).execute(null);
+    }
     
     @Override 
     protected void onSaveInstanceState(Bundle bundle) {

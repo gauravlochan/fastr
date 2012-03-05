@@ -10,21 +10,27 @@
         android:id="@+id/textView1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/EnterAddress"
+        android:text="@string/SourceAddressLbl"
         android:textAppearance="?android:attr/textAppearanceLarge" android:layout_marginTop="10dp" android:layout_gravity="center_horizontal"/>
 
     <EditText
         android:id="@+id/destAddressEditText"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:hint="@string/DestinationAddress"
+        android:hint="@string/MyLocation"
         android:inputType="textPostalAddress" android:layout_marginTop="10dp"/>
 
+    <Button
+        android:id="@+id/changeSourceButton"
+        android:layout_width="150dp"
+        android:layout_height="wrap_content"
+        android:text="@string/GetDirections" android:layout_gravity="center_horizontal" android:layout_marginTop="30dp"/>
+    
     <TextView
         android:id="@+id/textView2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/NameOfPlace"
+        android:text="@string/DestAddressLbl"
         android:textAppearance="?android:attr/textAppearanceLarge" android:layout_gravity="center_horizontal" android:layout_marginTop="10dp"/>
 
     <EditText

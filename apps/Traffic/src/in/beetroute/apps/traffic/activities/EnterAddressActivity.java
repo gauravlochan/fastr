@@ -50,20 +50,31 @@ public class EnterAddressActivity extends GDActivity {
     class DestLookupParams {
     	String destination;
     	DestinationType destType;
+    	boolean isDestination;
 
-    	public DestLookupParams(String destination, DestinationType destType) {
+    	public DestLookupParams(String destination, DestinationType destType, boolean isDest) {
     		this.destination = destination;
     		this.destType = destType;
+    		this.isDestination = isDest;
     	}
     }
-
-	private EditText _destinationAddress;
+    private MapPoint sourcePoint;
+	private EditText _sourceAddress;
 	private EditText _nameOfPlace;
 	private Button _button;
+	private Button changeSourceButton;
 	
 	private Dialog _manyDestinationsDialog; 
-	private List<MapPoint> _points;
+	private MapPointList _pointList;
 
+	public class MapPointList{
+		public List<MapPoint> points;
+		public boolean isDestination;
+		
+		public MapPointList() {
+			points = null;
+		}
+	}
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -73,7 +84,10 @@ public class EnterAddressActivity extends GDActivity {
         _button = ( Button ) findViewById( R.id.getDirectionsButton );
         _button.setOnClickListener( new GetDirectionsClickHandler() );
 
-        _destinationAddress = (EditText) findViewById( R.id.destAddressEditText );
+        changeSourceButton = ( Button ) findViewById(R.id.changeSourceButton);
+        changeSourceButton.setOnClickListener(new ChangeSourceClickHandler());
+        
+        _sourceAddress = (EditText) findViewById( R.id.destAddressEditText );
         _nameOfPlace = (EditText) findViewById( R.id.placeEditText );
 
 	}
@@ -85,24 +99,26 @@ public class EnterAddressActivity extends GDActivity {
     public class GetDirectionsClickHandler implements View.OnClickListener 
     {
     	public void onClick( View view ) {
-    		String destinationAddress = _destinationAddress.getText().toString();
-    		String nameOfPlace = _nameOfPlace.getText().toString();
     		
-    		if (destinationAddress.length() == 0) {
-    			if (nameOfPlace.length() == 0) {
-    			    Toast.makeText(EnterAddressActivity.this, R.string.emptyaddresserror, Toast.LENGTH_SHORT).show();
-    			} else {
-    				DestLookupParams destParams = new DestLookupParams(nameOfPlace, DestinationType.PLACE);
-    				new PointLookupTask().execute(destParams);
-    			}
+    		String nameOfPlace = _nameOfPlace.getText().toString();
+    		if(nameOfPlace.length() == 0){
+    			Toast.makeText(EnterAddressActivity.this, R.string.emptyaddresserror, Toast.LENGTH_SHORT).show();
     		} else {
-    			if (nameOfPlace.length() == 0) {
-    				DestLookupParams destParams = new DestLookupParams(destinationAddress, DestinationType.ADDRESS);
-    				new PointLookupTask().execute(destParams);
-    			} else {
-    			    Toast.makeText(EnterAddressActivity.this, R.string.bothspecifiederror, Toast.LENGTH_SHORT).show();
-    			}
+    			DestLookupParams destParams = new DestLookupParams(nameOfPlace, DestinationType.PLACE, true);
+				new PointLookupTask().execute(destParams);
     		}
+    	}
+    }
+    
+    public class ChangeSourceClickHandler implements View.OnClickListener
+    {
+    	public void onClick(View view){
+    		String sourceAddress = _sourceAddress.getText().toString();
+    		if(sourceAddress.length() != 0){
+    			DestLookupParams destParams = new DestLookupParams(sourceAddress, DestinationType.PLACE, false);
+				new PointLookupTask().execute(destParams);
+    		}
+    		
     	}
     }
     
@@ -132,7 +148,7 @@ public class EnterAddressActivity extends GDActivity {
      * 
      * Once the result comes in, handles it
      */
-	public class PointLookupTask extends AsyncTask<DestLookupParams, Void, List<MapPoint>> {
+	public class PointLookupTask extends AsyncTask<DestLookupParams, Void, MapPointList> {
 		private ProgressDialog progressDialog;
 
 		@Override
@@ -146,57 +162,78 @@ public class EnterAddressActivity extends GDActivity {
 		}
 
 		@Override
-		protected List<MapPoint> doInBackground(DestLookupParams... params) {
+		protected MapPointList doInBackground(DestLookupParams... params) {
 	        Logger.debug(TAG, "Calling poiService");
-	        List<MapPoint> points = null;
+	        MapPointList pointList = new MapPointList();	
 
 	        switch (params[0].destType) {
 	        case PLACE:
 		        PointOfInterestService poiService = new OnzePointOfInterestService();
-		    	points = poiService.getPoints(params[0].destination);
+		    	pointList.points = poiService.getPoints(params[0].destination);
 		    	break;
 
 	        case ADDRESS:
 	        	GeocodingService geoService = new AndroidGeocodingService(EnterAddressActivity.this);
-	          	points = geoService.resolveAddress(params[0].destination);
+	        	pointList.points = geoService.resolveAddress(params[0].destination);
 	            break;      	
 	        	
 	        }
 	        Logger.debug(TAG, "Called poiService");
-			return points;
+	        if(params[0].isDestination){
+	        	pointList.isDestination = true;
+	        }else{
+	        	pointList.isDestination = false;
+	        }
+			return pointList;
 		}
 
 		@Override
-		protected void onPostExecute(List<MapPoint> points) {
+		protected void onPostExecute(MapPointList pointList) {
 			this.progressDialog.cancel();
 			
 			// If nothing was found, stay on the activity and let user try again
-			if (points.size() == 0) {
+			if (pointList.points.size() == 0) {
    			    Toast.makeText(EnterAddressActivity.this, "No results found, try again", Toast.LENGTH_LONG).show();
    			    return;
 			}
 			
 			// If one point was found
-			if (points.size() == 1) {
+			if (pointList.points.size() == 1) {
 	            Intent data = new Intent();
-	            data.putExtra(AppGlobal.destPoint, points.get(0));
-	            setResult(RESULT_OK, data);
-	            finish();
+	            if(pointList.isDestination){
+	            	data.putExtra(AppGlobal.destPoint, pointList.points.get(0));
+	            	if(sourcePoint!=null){
+	            		data.putExtra(AppGlobal.sourcePoint, sourcePoint);
+	            	}
+		            setResult(RESULT_OK, data);
+		            finish();
+	            }else{
+	            	sourcePoint = pointList.points.get(0);
+	            }
+
 	            return;
 			}
 
 			// Multiple points were found.  Let the activity handle that
 			Message msg = new Message();
-			msg.obj = points;
+			msg.obj = pointList;
             EnterAddressActivity.this.manyResultsHandler.dispatchMessage(msg);
 		}
 	}
 	
-	private void finishWithSelectedPoint(int item, List<MapPoint> points) {
+	private void finishWithSelectedPoint(int item, MapPointList pointList) {
         Intent data = new Intent();
-        data.putExtra(AppGlobal.destPoint, points.get(item));
-        setResult(RESULT_OK, data);
-        finish();
+        if(pointList.isDestination){
+	        data.putExtra(AppGlobal.destPoint, pointList.points.get(item));
+	        if(sourcePoint!=null){
+	        	data.putExtra(AppGlobal.sourcePoint, sourcePoint);
+	        }
+	        setResult(RESULT_OK, data);
+	        finish();
+        }else{
+        	sourcePoint = pointList.points.get(item);
+        }
+
         return;
 	}
 	
@@ -206,20 +243,24 @@ public class EnterAddressActivity extends GDActivity {
     Handler manyResultsHandler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
-            List<MapPoint> points = (List<MapPoint>) msg.obj;
-            EnterAddressActivity.this.displayDialog(points);
+            MapPointList pointList = (MapPointList) msg.obj;
+            if(pointList.isDestination){
+            	EnterAddressActivity.this.displayDialog(pointList, "Pick Destination:");
+            }else{
+            	EnterAddressActivity.this.displayDialog(pointList, "Pick Source:");
+            }
         }
     };
     
     // http://stackoverflow.com/questions/2874191/is-it-possible-to-create-listview-inside-dialog
     // http://www.vogella.de/articles/AndroidListView/article.html
     // http://mylifewithandroid.blogspot.com/2008/03/my-first-meeting-with-simpleadapter.html
-    private void displayDialog(List<MapPoint> points) {
+    private void displayDialog(MapPointList pointList, String msg) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("Multiple results, pick the best one:");
+        builder.setTitle(msg);
 
         SimpleAdapter resultsAdapter = new SimpleAdapter(this,
-                getSimpleAdapterList(points),
+                getSimpleAdapterList(pointList.points),
                 android.R.layout.two_line_list_item, 
                 new String[] { POINT_NAME, POINT_DESC }, 
                 new int[] { android.R.id.text1, android.R.id.text2 }
@@ -232,7 +273,7 @@ public class EnterAddressActivity extends GDActivity {
         
         // ugly to make this a class member, but i couldn't think of any other way 
         // to get access to this data inside of OnItemClickListener
-        _points = points;
+        _pointList = pointList;
         
         // ugly to make this a class member, but i couldn't think of any other way 
         // to get access to this data inside of OnItemClickListener
@@ -242,7 +283,7 @@ public class EnterAddressActivity extends GDActivity {
         modeList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
                 
-                finishWithSelectedPoint(arg2, _points);
+                finishWithSelectedPoint(arg2, _pointList);
                 _manyDestinationsDialog.dismiss();
             }
         });
