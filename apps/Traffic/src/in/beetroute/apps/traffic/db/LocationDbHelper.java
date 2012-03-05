@@ -265,7 +265,8 @@ public class LocationDbHelper extends SQLiteOpenHelper {
                         LocationTable.COLUMN_NAME_TIMESTAMP },
                 LocationTable.COLUMN_NAME_TIMESTAMP + ">?",     // where clause
                 new String[] {timestamp.toString()},        // argument to where clause
-                null, null, null);
+                null, null, 
+                LocationTable.COLUMN_NAME_TIMESTAMP);
     }
 
     /**

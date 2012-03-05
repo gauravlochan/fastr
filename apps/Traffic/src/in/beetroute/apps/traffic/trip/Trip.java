@@ -99,17 +99,18 @@ public class Trip {
         if (c.moveToFirst()) {
             LocationUpdate tripStartPoint = null;
             
-            // If there was a previous trip, filter out all stationary points after that trip
-            if (previousTripEndpoint != null) {
+            if (previousTripEndpoint == null) {
+                // Use the first location update as the trip start
+                tripStartPoint = locationDbHelper.getCurrentLocationUpdate(c);
+            } else {
+                // If there was a previous trip, filter out all stationary points after that trip
                 tripStartPoint = skipStationaryPoints(locationDbHelper, c, previousTripEndpoint);
-                // if no new trip, return null
+
+                // if there were only stationary points after the previous trip, no new trip
                 if (tripStartPoint == null) {
-                    Logger.info(TAG, "Couldn't find starting point for a new trip");
+                    Logger.info(TAG, "No starting point for a new trip");
                     return null;
                 }
-            } else {
-                // this point is the trip start
-                tripStartPoint = locationDbHelper.getCurrentLocationUpdate(c);
             }
             
             // Start the trip with the first moving point
@@ -122,19 +123,21 @@ public class Trip {
                 
                 if (isMoving(lastMovingPoint, currentPoint)) {
                     lastMovingPoint = currentPoint;
-                    //Logger.debug(TAG, "Found a newer moving point at " + currentPoint.toString());
+                    // Logger.debug(TAG, "Found a newer moving point at " + currentPoint.toString());
                 } else {
-                    //Logger.debug(TAG, "User not moved to new point at " + currentPoint.toString());
+                    Logger.debug(TAG, "Found a stationary point at " + currentPoint.toString());
 
                     // if the user has been stationary beyond the end of the trip then
                     // mark the trip ended.
                     if (hasTripEnded(lastMovingPoint, currentPoint)) {
+                        Logger.info(TAG, "End of the trip detected at " + currentPoint.toString());
+                        
                         newTrip.endPointId = c.getInt(column_id);
                         
                         // We do the geocoding here (No point doing it any earlier)
                         newTrip.startPointName = getLocationName(context, tripStartPoint);
                         newTrip.endPointName = getLocationName(context, currentPoint);
-                        
+
                         return newTrip;
                     }
                 }
@@ -148,7 +151,8 @@ public class Trip {
             return null;
         }
     }
-        
+    
+
     /**
      * Go over the cursor and see if there is any location update that is considered
      * to be a movement from the last location.
@@ -163,14 +167,18 @@ public class Trip {
     private static LocationUpdate skipStationaryPoints(LocationDbHelper locationDbHelper, 
             Cursor c, LocationUpdate lastPoint) {
         
+        Integer count = 0;
         do {
             LocationUpdate currentPoint = locationDbHelper.getCurrentLocationUpdate(c);
             if (isMoving(lastPoint, currentPoint)) {
+                Logger.info(TAG, "Skipped over " + count.toString() + " stationary points.");
                 return currentPoint;
             }
-            Logger.debug(TAG, "Skipping over non-moving point at " + currentPoint.toString());
+            Logger.debug(TAG, "Skipping over stationary point at " + currentPoint.toString());
+            count++;
         } while (c.moveToNext());
         
+        Logger.info(TAG, "User has been stationary since last trip ended.  No new trip");
         return null;
     }
     
@@ -184,15 +192,16 @@ public class Trip {
      * @return
      */
     private static boolean isMoving(LocationUpdate lastMovingPoint, LocationUpdate currentPoint) {
-        Logger.debug(TAG, String.format("Get distance between %f,%f to %f,%f,", 
-                lastMovingPoint.getLatitude(), lastMovingPoint.getLongitude(),
-                currentPoint.getLatitude(), currentPoint.getLongitude()));
- 
         double distance = SimpleGeoPoint.getDistance(
                 lastMovingPoint.getLatitude(), lastMovingPoint.getLongitude(),
                 currentPoint.getLatitude(), currentPoint.getLongitude() );
-        
-        // TODO: Need to come with better logic for more accurate readings
+
+        Logger.debug(TAG, String.format("Distance = %f between %f,%f to %f,%f", 
+                distance,
+                lastMovingPoint.getLatitude(), lastMovingPoint.getLongitude(),
+                currentPoint.getLatitude(), currentPoint.getLongitude()));
+
+        // TODO: Need to come with better logic for updates with varying accuracy levels
         if (distance > DIST_THRESHOLD) {
             return true;
         }
