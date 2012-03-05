@@ -9,4 +9,8 @@
     <string name="emptyaddresserror">You need to specify an address or place</string>
     <string name="NameOfPlace">Or Place</string>
     <string name="bothspecifiederror">You need to specify only one</string>
+    <string name="TripList">Previous Trips</string>
+    <string name="ViewTrip">View Trip</string>
+        
+        
 </resources>

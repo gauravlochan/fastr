@@ -31,14 +31,19 @@
         </activity>
         
         <activity android:name=".activities.EnterAddressActivity"
-                  android:label="@string/app_name">
+                  android:label="@string/GetDirections">
             
         </activity>
         
         <activity android:name=".activities.RouteListActivity"
-                  android:label="@string/app_name">
+                  android:label="@string/TripList">
             
         </activity>
+            
+        <activity android:name=".activities.ShowRouteActivity"
+                  android:label="@string/ViewTrip">
+        </activity>
+
             
         <service android:name="in.beetroute.apps.traffic.location.LocationService"
             	 android:enabled="true"> 

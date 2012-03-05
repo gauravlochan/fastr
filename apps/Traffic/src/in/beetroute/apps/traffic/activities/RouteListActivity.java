@@ -1,14 +1,17 @@
 package in.beetroute.apps.traffic.activities;
 
+import in.beetroute.apps.traffic.AppGlobal;
 import in.beetroute.apps.traffic.R;
 import in.beetroute.apps.traffic.db.TripDbHelper;
 import in.beetroute.apps.traffic.db.TripDbHelper.TripTable;
 import in.beetroute.apps.traffic.trip.Trip;
 import android.app.Activity;
+import android.content.Intent;
 import android.database.Cursor;
-import android.net.Uri;
 import android.os.Bundle;
-import android.provider.ContactsContract;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
@@ -56,22 +59,24 @@ public class RouteListActivity extends Activity {
                 new int[] { android.R.id.text1, android.R.id.text2 });
 
         _listView.setAdapter(adapter);
+        
+        _listView.setOnItemClickListener( new SelectTripClickHandler() );
     }
 
-    
-    private Cursor getContacts() {
-        // Run query
-        Uri uri = ContactsContract.Contacts.CONTENT_URI;
-        String[] projection = new String[] { ContactsContract.Contacts._ID,
-                ContactsContract.Contacts.DISPLAY_NAME };
-        String selection = ContactsContract.Contacts.IN_VISIBLE_GROUP + " = '"
-                + ("1") + "'";
-        String[] selectionArgs = null;
-        String sortOrder = ContactsContract.Contacts.DISPLAY_NAME
-                + " COLLATE LOCALIZED ASC";
+    /**
+     * Validates the input address/place.  If something is wrong, asks the user to fix it
+     * otherwise moves on and does something with the input
+     */
+    public class SelectTripClickHandler implements OnItemClickListener {
 
-        return managedQuery(uri, projection, selection, selectionArgs,
-                sortOrder);
+        @Override
+        public void onItemClick(AdapterView<?> parent, View view, int position,
+                long id) {
+            
+            Intent intent = new Intent(RouteListActivity.this, ShowRouteActivity.class);
+            intent.putExtra(AppGlobal.TRIP_KEY, position);
+            startActivity(intent);
+        }
     }
-         
+             
 }
