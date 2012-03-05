@@ -5,6 +5,7 @@ import in.beetroute.apps.commonlib.Logger;
 import in.beetroute.apps.commonlib.SimpleGeoPoint;
 import in.beetroute.apps.traffic.db.LocationDbHelper;
 import in.beetroute.apps.traffic.db.LocationDbHelper.LocationTable;
+import in.beetroute.apps.traffic.db.TripDbHelper;
 import in.beetroute.apps.traffic.google.geocoding.AndroidGeocodingService;
 import in.beetroute.apps.traffic.location.LocationUpdate;
 import in.beetroute.apps.traffic.services.GeocodingService;
@@ -24,11 +25,12 @@ public class Trip {
     private static final float DIST_THRESHOLD = 0.100f; // 100 meters
     private static final float SPEED_THRESHOLD = 1.0f; // 1 m/s = 3.6 km/hr 
     
-    private Integer startPointId;
-    private Integer endPointId;
+    // TODO: Don't leave it public
+    public Integer startPointId;
+    public Integer endPointId;
 
-    private String startPointName;
-    private String endPointName;
+    public String startPointName;
+    public String endPointName;
 
     // prevent default constructor
     private Trip() {}
@@ -37,6 +39,24 @@ public class Trip {
         this.startPointId = startPointId;
     }
 
+    public Trip(Integer startPointId, Integer endPointId, String startName, String endName) {
+        this.startPointId = startPointId;
+        this.startPointName = startName;
+        this.endPointId = endPointId;
+        this.endPointName = endName;
+    }
+    
+    /**
+     * Get the most recent trip.
+     * 
+     * @param context
+     * @return
+     */
+    public static Trip getLastTrip(Context context) {
+        TripDbHelper tripDbHelper = new TripDbHelper(context, null);
+        return tripDbHelper.getLatestTrip();
+    }
+    
     /**
      * Tries to find a newer trip than the specified one
      * 
@@ -73,6 +93,7 @@ public class Trip {
 
         // Get all the location updates after the last trip
         Cursor c = locationDbHelper.getNewerLocationUpdates(timestamp);
+        
         int column_id = c.getColumnIndex(LocationTable._ID);
 
         if (c.moveToFirst()) {
@@ -101,16 +122,16 @@ public class Trip {
                 
                 if (isMoving(lastMovingPoint, currentPoint)) {
                     lastMovingPoint = currentPoint;
-                    Logger.debug(TAG, "Found a newer moving point at " + currentPoint.toString());
+                    //Logger.debug(TAG, "Found a newer moving point at " + currentPoint.toString());
                 } else {
-                    Logger.debug(TAG, "User not moved to new point at " + currentPoint.toString());
+                    //Logger.debug(TAG, "User not moved to new point at " + currentPoint.toString());
 
                     // if the user has been stationary beyond the end of the trip then
                     // mark the trip ended.
                     if (hasTripEnded(lastMovingPoint, currentPoint)) {
                         newTrip.endPointId = c.getInt(column_id);
                         
-                        // We do the geocoding here
+                        // We do the geocoding here (No point doing it any earlier)
                         newTrip.startPointName = getLocationName(context, tripStartPoint);
                         newTrip.endPointName = getLocationName(context, currentPoint);
                         

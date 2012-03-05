@@ -2,6 +2,7 @@ package in.beetroute.apps.traffic.activities;
 
 import in.beetroute.apps.traffic.R;
 import in.beetroute.apps.traffic.db.TripDbHelper;
+import in.beetroute.apps.traffic.db.TripDbHelper.TripTable;
 import in.beetroute.apps.traffic.trip.Trip;
 import android.app.Activity;
 import android.database.Cursor;
@@ -25,11 +26,16 @@ public class RouteListActivity extends Activity {
         _listView = (ListView) findViewById(R.id.list);
         
         TripDbHelper tripDbHelper = new TripDbHelper(this, null);
-        tripDbHelper.logDatabase();
-        Trip firstTrip = Trip.getNextTrip(this, null);
+        
+        Trip lastTrip = Trip.getLastTrip(this);
+        Trip nextTrip = Trip.getNextTrip(this, lastTrip);
+        if (nextTrip != null) {
+            tripDbHelper.insertTrip(nextTrip);
+        }
         
         // From http://www.vogella.de/articles/AndroidListView/article.html#cursor
-        Cursor mCursor = getContacts();
+        // TODO Join this with the LocationUpdates
+        Cursor mCursor = tripDbHelper.getAll();
         startManagingCursor(mCursor);
         
         // Now create a new list adapter bound to the cursor.
@@ -42,8 +48,9 @@ public class RouteListActivity extends Activity {
                                                         // rows).
                 mCursor, // Pass in the cursor to bind to.
                 // Array of cursor columns to bind to.
-                new String[] { ContactsContract.Contacts._ID,
-                        ContactsContract.Contacts.DISPLAY_NAME },
+                new String[] { 
+                    TripTable.COLUMN_NAME_START_NAME,
+                    TripTable.COLUMN_NAME_END_NAME },
                 // Parallel array of which template objects to bind to those
                 // columns.
                 new int[] { android.R.id.text1, android.R.id.text2 });

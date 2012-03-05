@@ -58,7 +58,7 @@ public class LocationDbHelper extends SQLiteOpenHelper {
         
         // TODO: Need to add accuracy column
         
-        public static final String COLUMN_STRING = String.format(" (%s, %s, %s, %s, %s) ",
+        public static final String COLUMN_NAMES_FOR_INSERT = String.format(" (%s, %s, %s, %s, %s) ",
                 COLUMN_NAME_LATITUDE, COLUMN_NAME_LONGITUDE, COLUMN_NAME_TIMESTAMP,
                 COLUMN_NAME_SPEED, COLUMN_NAME_UPLOAD_STATUS);
 
@@ -120,9 +120,10 @@ public class LocationDbHelper extends SQLiteOpenHelper {
         Integer status = uploaded ? UploadStatus.UPLOADED.ordinal() :
                                    UploadStatus.NOT_UPLOADED.ordinal();
 
+        // TODO: Replace this with a db.insert
         try {
             db.execSQL("INSERT INTO " + LocationTable.TABLE_NAME 
-                    + LocationTable.COLUMN_STRING
+                    + LocationTable.COLUMN_NAMES_FOR_INSERT
                     + " VALUES ("
                     + point.getLatitude() + ", " 
                     + point.getLongitude() + ", " 
@@ -135,7 +136,6 @@ public class LocationDbHelper extends SQLiteOpenHelper {
         } finally {
             db.close();
         }
-
     }
     
     
