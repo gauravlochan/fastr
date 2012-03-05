@@ -22,7 +22,7 @@ public class LocationUpdate {
         epochTime = location.getTime();
     }
     
-    public LocationUpdate(double latitude, double longitude, long epochTime) {
+    public LocationUpdate(long epochTime, double latitude, double longitude) {
         this.latitude = latitude;
         this.longitude = longitude;
         this.epochTime = epochTime;

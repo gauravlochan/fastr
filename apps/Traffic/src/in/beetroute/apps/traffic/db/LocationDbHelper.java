@@ -2,6 +2,7 @@ package in.beetroute.apps.traffic.db;
 
 import in.beetroute.apps.commonlib.Global;
 import in.beetroute.apps.commonlib.Logger;
+import in.beetroute.apps.traffic.AppGlobal;
 import in.beetroute.apps.traffic.location.LocationUpdate;
 
 import java.util.ArrayList;
@@ -27,9 +28,7 @@ import android.provider.BaseColumns;
  */
 public class LocationDbHelper extends SQLiteOpenHelper {
     private static final String TAG = Global.COMPANY;
-    private static final String dbName = "beetroute.db";
-    private static final Integer dbVersion = 1;
-    
+
     
     /**
      * Status of the record in the server.  
@@ -57,6 +56,8 @@ public class LocationDbHelper extends SQLiteOpenHelper {
         public static final String COLUMN_NAME_SPEED = "Speed";
         public static final String COLUMN_NAME_UPLOAD_STATUS = "UploadStatus";
         
+        // TODO: Need to add accuracy column
+        
         public static final String COLUMN_STRING = String.format(" (%s, %s, %s, %s, %s) ",
                 COLUMN_NAME_LATITUDE, COLUMN_NAME_LONGITUDE, COLUMN_NAME_TIMESTAMP,
                 COLUMN_NAME_SPEED, COLUMN_NAME_UPLOAD_STATUS);
@@ -65,7 +66,7 @@ public class LocationDbHelper extends SQLiteOpenHelper {
             return _ID + " INTEGER PRIMARY KEY,"
                     + COLUMN_NAME_LATITUDE + " Double, "
                     + COLUMN_NAME_LONGITUDE+ " Double, "
-                    + COLUMN_NAME_TIMESTAMP+ " Double, "
+                    + COLUMN_NAME_TIMESTAMP+ " Double, "        // TODO: Why double?
                     + COLUMN_NAME_SPEED + " Double, "
                     + COLUMN_NAME_UPLOAD_STATUS + " Integer";
         }
@@ -78,13 +79,14 @@ public class LocationDbHelper extends SQLiteOpenHelper {
 
     
     public LocationDbHelper(Context context, CursorFactory factory) {
-        super(context, dbName, factory, dbVersion);
+        super(context, AppGlobal.dbName, factory, AppGlobal.dbVersion);
     }
+    
     
     @Override
     public void onCreate(SQLiteDatabase db) {
         Logger.debug(TAG, "Attempting to create table " + LocationTable.TABLE_NAME +
-                " in DB " + dbName);
+                " in DB " + AppGlobal.dbName);
 
         /* Create a Table in the Database. */
         db.execSQL("CREATE TABLE IF NOT EXISTS " + LocationTable.TABLE_NAME +
@@ -96,14 +98,15 @@ public class LocationDbHelper extends SQLiteOpenHelper {
     
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        Logger.warn(TAG, "Upgrading database from version " + oldVersion
-                + " to " + newVersion + ", which will destroy all old data");
+        Logger.info(TAG, "Request to upgrade " + LocationTable.TABLE_NAME
+                + " from version " + oldVersion 
+                + " to " + newVersion + ", which doesn't do anything");
         
         // TODO: Need to come up with a good upgrade script
 
-        db.execSQL("DROP TABLE IF EXISTS " + LocationTable.TABLE_NAME);
-        onCreate(db);
-    }    
+        // db.execSQL("DROP TABLE IF EXISTS " + LocationTable.TABLE_NAME);
+        // onCreate(db);
+    }   
     
     
     /**
@@ -111,7 +114,7 @@ public class LocationDbHelper extends SQLiteOpenHelper {
      * @param uploaded TODO
      */
     public void insertPoint(LocationUpdate point, Boolean uploaded) {
-        Logger.debug(TAG, "Attempting write point to DB " + dbName);
+        Logger.debug(TAG, "Attempting write point to DB " + AppGlobal.dbName);
         SQLiteDatabase db = getWritableDatabase();
         
         Integer status = uploaded ? UploadStatus.UPLOADED.ordinal() :
@@ -145,19 +148,19 @@ public class LocationDbHelper extends SQLiteOpenHelper {
         try {
             Cursor c = db.rawQuery("SELECT * FROM " + LocationTable.TABLE_NAME, null);
     
-            int Column1 = c.getColumnIndex(LocationTable.COLUMN_NAME_LATITUDE);
-            int Column2 = c.getColumnIndex(LocationTable.COLUMN_NAME_LONGITUDE);
-            int Column3 = c.getColumnIndex(LocationTable.COLUMN_NAME_TIMESTAMP);
-            int Column4 = c.getColumnIndex(LocationTable.COLUMN_NAME_SPEED);
+            int latIndex = c.getColumnIndex(LocationTable.COLUMN_NAME_LATITUDE);
+            int longIndex = c.getColumnIndex(LocationTable.COLUMN_NAME_LONGITUDE);
+            int timeIndex = c.getColumnIndex(LocationTable.COLUMN_NAME_TIMESTAMP);
+            int speedIndex = c.getColumnIndex(LocationTable.COLUMN_NAME_SPEED);
     
             if (c.moveToFirst()) {
                 // Loop through all Results
                 do {
-                    double lat = c.getDouble(Column1);
-                    double lon = c.getDouble(Column2);
-                    long epochTime = c.getLong(Column3);
+                    double lat = c.getDouble(latIndex);
+                    double lon = c.getDouble(longIndex);
+                    long epochTime = c.getLong(timeIndex);
                     Date timeStamp = new Date(epochTime);
-                    float speed = c.getFloat(Column4);
+                    float speed = c.getFloat(speedIndex);
                     
                     String coordinate = String.format("%s %f %f %f", timeStamp.toLocaleString(), lat, lon, speed);
                     Logger.debug(TAG, coordinate);
@@ -222,13 +225,14 @@ public class LocationDbHelper extends SQLiteOpenHelper {
                     } 
                     
                     LocationUpdate point = new LocationUpdate(
+                            c.getLong(timestamp),
                             c.getDouble(latIndex),
-                            c.getDouble(longIndex),
-                            c.getLong(timestamp));
+                            c.getDouble(longIndex));
                     points.add(point);
                     count++;
                     Logger.debug(TAG, point.toString());
-                } while (c.moveToNext());
+                    recordsLeft = c.moveToNext();
+                }
                 
                 return points;
             } else {
@@ -240,5 +244,86 @@ public class LocationDbHelper extends SQLiteOpenHelper {
         }
     }
     
-   
+    /**
+     * Gets all location updates after the specified timestamp
+     * Close the cursor when done.
+     * 
+     * @param timestamp
+     */
+    public Cursor getNewerLocationUpdates(Long timestamp) {       
+        SQLiteDatabase db = getReadableDatabase();
+        
+        // TODO: Currently not ordering it, since natural order should be fine
+        // if this doesn't work, then order by timestamp
+        
+        // http://www.vogella.de/articles/AndroidSQLite/article.html#sqliteoverview_query
+        return db.query(LocationTable.TABLE_NAME,
+                new String[] { LocationTable._ID, 
+                        LocationTable.COLUMN_NAME_LATITUDE,
+                        LocationTable.COLUMN_NAME_LONGITUDE, 
+                        LocationTable.COLUMN_NAME_SPEED,
+                        LocationTable.COLUMN_NAME_TIMESTAMP },
+                LocationTable.COLUMN_NAME_TIMESTAMP + ">?",     // where clause
+                new String[] {timestamp.toString()},        // argument to where clause
+                null, null, null);
+    }
+
+    /**
+     * Gets the location object for the given locationId.
+     * 
+     * @param locationId
+     * @return
+     */
+    public LocationUpdate getLocationUpdate(Integer locationId) {
+        SQLiteDatabase db = getReadableDatabase();
+        try {
+            Cursor c = db.query(LocationTable.TABLE_NAME,
+                    new String[] { LocationTable._ID, 
+                        LocationTable.COLUMN_NAME_LATITUDE,
+                        LocationTable.COLUMN_NAME_LONGITUDE, 
+                        LocationTable.COLUMN_NAME_SPEED,
+                        LocationTable.COLUMN_NAME_TIMESTAMP
+                        },
+                    LocationTable._ID + "=?",               // where clause
+                    new String[] {locationId.toString()},   // where parameter
+                    null, null, null);
+            
+            if (c != null) {
+                boolean recordsLeft = c.moveToFirst();
+                if (!recordsLeft) {
+                    return null;
+                }
+                return getCurrentLocationUpdate(c);
+            }
+        } finally {
+            db.close();
+        }
+
+        return null;
+    }
+    
+
+    /**
+     * Gets the locationUpdate from the cursors current position.
+     * Doesn't move the cursor
+     * 
+     * @param c
+     * @return
+     */
+    public LocationUpdate getCurrentLocationUpdate(Cursor c) {
+        int latIndex = c.getColumnIndex(LocationTable.COLUMN_NAME_LATITUDE);
+        int longIndex = c.getColumnIndex(LocationTable.COLUMN_NAME_LONGITUDE);
+        int timeIndex = c.getColumnIndex(LocationTable.COLUMN_NAME_TIMESTAMP);
+        int speedIndex = c.getColumnIndex(LocationTable.COLUMN_NAME_SPEED);
+        
+        LocationUpdate point = new LocationUpdate(
+                c.getLong(timeIndex),
+                c.getDouble(latIndex),
+                c.getDouble(longIndex),
+                c.getFloat(speedIndex),
+                0f                          // TODO: Accuracy!!!
+                );
+        
+        return point;
+    }
 }

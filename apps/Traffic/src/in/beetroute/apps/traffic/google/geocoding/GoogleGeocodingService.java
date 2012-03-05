@@ -4,10 +4,13 @@
 package in.beetroute.apps.traffic.google.geocoding;
 
 import in.beetroute.apps.commonlib.RESTHelper;
+import in.beetroute.apps.commonlib.SimpleGeoPoint;
 import in.beetroute.apps.traffic.MapPoint;
 import in.beetroute.apps.traffic.services.GeocodingService;
 
 import java.util.List;
+
+import android.location.Address;
 
 /**
  * http://code.google.com/apis/maps/documentation/geocoding/
@@ -48,5 +51,11 @@ public class GoogleGeocodingService implements GeocodingService {
 		}
 		
 	}
+
+    @Override
+    public List<Address> resolveLocation(SimpleGeoPoint sgPoint, int maxResults) {
+        // TODO Auto-generated method stub
+        return null;
+    }
 
 }

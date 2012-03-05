@@ -2,6 +2,7 @@ package in.beetroute.apps.traffic.activities;
 
 import in.beetroute.apps.traffic.R;
 import in.beetroute.apps.traffic.db.TripDbHelper;
+import in.beetroute.apps.traffic.trip.Trip;
 import android.app.Activity;
 import android.database.Cursor;
 import android.net.Uri;
@@ -11,6 +12,7 @@ import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
 
+// TODO: Arrows like http://mfarhan133.wordpress.com/2010/10/14/list-view-tutorial-for-android/
 public class RouteListActivity extends Activity {
 
     protected ListView _listView;
@@ -24,6 +26,7 @@ public class RouteListActivity extends Activity {
         
         TripDbHelper tripDbHelper = new TripDbHelper(this, null);
         tripDbHelper.logDatabase();
+        Trip firstTrip = Trip.getNextTrip(this, null);
         
         // From http://www.vogella.de/articles/AndroidListView/article.html#cursor
         Cursor mCursor = getContacts();
@@ -46,8 +49,8 @@ public class RouteListActivity extends Activity {
                 new int[] { android.R.id.text1, android.R.id.text2 });
 
         _listView.setAdapter(adapter);
-        
     }
+
     
     private Cursor getContacts() {
         // Run query

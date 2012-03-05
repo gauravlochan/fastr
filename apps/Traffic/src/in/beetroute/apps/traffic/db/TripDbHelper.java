@@ -2,6 +2,7 @@ package in.beetroute.apps.traffic.db;
 
 import in.beetroute.apps.commonlib.Global;
 import in.beetroute.apps.commonlib.Logger;
+import in.beetroute.apps.traffic.AppGlobal;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -21,8 +22,6 @@ import android.provider.BaseColumns;
  */
 public class TripDbHelper extends SQLiteOpenHelper {
     private static final String TAG = Global.COMPANY;
-    private static final String dbName = "beetroute.db";
-    private static final Integer dbVersion = 2;
     
     /**
      * A class that defines the table
@@ -60,7 +59,7 @@ public class TripDbHelper extends SQLiteOpenHelper {
     }
         
     public TripDbHelper(Context context, CursorFactory factory) {
-        super(context, dbName, factory, dbVersion);
+        super(context, AppGlobal.dbName, factory, AppGlobal.dbVersion);
     }
     
     @Override
@@ -79,14 +78,16 @@ public class TripDbHelper extends SQLiteOpenHelper {
     
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        Logger.warn(TAG, "Upgrading database from version " + oldVersion
-                + " to " + newVersion + ", which will destroy all old data");
+        Logger.info(TAG, "Request to upgrade " + TripTable.TABLE_NAME
+                + " from version " + oldVersion 
+                + " to " + newVersion + ", which doesn't do anything");
 
         // TODO: Need to come up with a good upgrade script
         
-        db.execSQL("DROP TABLE IF EXISTS " + TripTable.TABLE_NAME);
-        onCreate(db);
+        // db.execSQL("DROP TABLE IF EXISTS " + TripTable.TABLE_NAME);
+        // onCreate(db);
     }
+    
     
     /**
      * Create a trip
@@ -96,6 +97,7 @@ public class TripDbHelper extends SQLiteOpenHelper {
         
     }
     
+    
     /**
      * Print out the database contents
      */
@@ -104,6 +106,7 @@ public class TripDbHelper extends SQLiteOpenHelper {
         
         Cursor c = db.rawQuery("SELECT * FROM " + TripTable.TABLE_NAME, null);
     }
+    
 
 }
 
