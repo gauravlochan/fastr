@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content" >
+      <TextView
+        android:id="@+id/label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Your friend has sent directions to his location. Do you want to reach him ?"
+        android:textSize="30px" >
+    </TextView>
+    
+    <Button
+        android:id="@+id/button1"
+        android:layout_width="50dp"
+        android:layout_height="5dp"
+        android:layout_below="@id/label"
+        android:onClick="getRouteMap"
+        android:text="Yes" />
+
+    <Button
+        android:id="@+id/button2"
+        android:layout_width="50dp"
+        android:layout_height="5dp"
+        android:layout_below="@id/label"
+        android:layout_toRightOf="@+id/button1"
+        android:layout_alignTop="@+id/button1"
+        android:onClick="doNothing"
+        android:text="No" />
+</RelativeLayout>
