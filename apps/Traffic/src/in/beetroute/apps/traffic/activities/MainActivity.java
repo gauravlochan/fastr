@@ -36,7 +36,6 @@ import com.google.android.maps.OverlayItem;
 
 public class MainActivity extends GDMapActivity {
     private static final String TAG = Global.COMPANY;
-    private static final int FINDMEID = 10;
 
 	// Define a request code for the destination activity
 	private static final int ENTER_DESTINATION_REQUEST_CODE = 100;
@@ -70,7 +69,7 @@ public class MainActivity extends GDMapActivity {
         addActionBarItem(Type.List, R.id.action_bar_routelist);
         
         // Add the find me icon to the action bar
-        addActionBarItem(Type.LocateMyself,FINDMEID);
+        addActionBarItem(Type.LocateMyself, R.id.action_bar_findme);
 
 		mapView = (MapView) findViewById(R.id.mapview);
 		mapView.setBuiltInZoomControls(true);
@@ -109,7 +108,7 @@ public class MainActivity extends GDMapActivity {
                 startActivity(new Intent(this, RouteListActivity.class));
                 break;
             
-            case FINDMEID:
+            case R.id.action_bar_findme:
             	startActivity(new Intent(this,SendSMS.class));
             	break;
 
