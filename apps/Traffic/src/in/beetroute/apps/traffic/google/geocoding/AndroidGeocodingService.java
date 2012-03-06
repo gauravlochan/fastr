@@ -1,6 +1,7 @@
 package in.beetroute.apps.traffic.google.geocoding;
 
 import in.beetroute.apps.commonlib.ServiceProviders;
+import in.beetroute.apps.commonlib.SimpleGeoPoint;
 import in.beetroute.apps.traffic.MapPoint;
 import in.beetroute.apps.traffic.services.GeocodingService;
 
@@ -27,7 +28,6 @@ public class AndroidGeocodingService implements GeocodingService {
 		try {
 			foundAdresses = gc.getFromLocationName(addressText, 5);
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
@@ -40,6 +40,19 @@ public class AndroidGeocodingService implements GeocodingService {
 		}
 		
 		return list;
+	}
+	
+	public List<Address> resolveLocation(SimpleGeoPoint sgPoint, int maxResults) {
+	    Geocoder gc = new Geocoder(context);
+	    try {
+            return gc.getFromLocation(sgPoint.getLatitude(), sgPoint.getLongitude(), maxResults);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+	    // on exception, return empty array
+        return new ArrayList<Address>();
+
 	}
 
 }
