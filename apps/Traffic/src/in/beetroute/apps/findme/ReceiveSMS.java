@@ -14,7 +14,6 @@ public class ReceiveSMS extends BroadcastReceiver {
 	 * In the onReceive method, we pull the message sent
 	 */
 	public void onReceive(Context context, Intent intent) {
-		// TODO Auto-generated method stub
 		Bundle bundle = intent.getExtras();
 		System.out.println("In the SMS Receive body");
 		Object[] messages = (Object[])bundle.get("pdus");
@@ -22,6 +21,7 @@ public class ReceiveSMS extends BroadcastReceiver {
 		for(int i=0;i<messages.length;++i){
 			sms[i] = SmsMessage.createFromPdu((byte[])messages[i]);
 		}
+
 		for(int i=0;i<messages.length;++i){
 			String address = sms[i].getOriginatingAddress();
 			String message = sms[i].getMessageBody().toString();
@@ -29,17 +29,13 @@ public class ReceiveSMS extends BroadcastReceiver {
 				String[] msgParts = message.split(",");
 				String messageToSend = msgParts[0];
 				System.out.println(messageToSend);
-				Intent showDialogIntent = new Intent(context, ShowDialog.class);
+				
+				Intent showDialogIntent = new Intent(context, ConfirmPlotRoute.class);
 				showDialogIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-				Intent showRouteMapIntent = new Intent(context, PlotRouteMap.class);
-				showRouteMapIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-				showRouteMapIntent.putExtra("address", address);
-				showRouteMapIntent.putExtra("latlon", messageToSend);
 				showDialogIntent.putExtra("address", address);
 				showDialogIntent.putExtra("latlon", messageToSend);
-				context.startActivity(showDialogIntent);
 				
-				//context.startActivity(showRouteMapIntent);
+				context.startActivity(showDialogIntent);
 			}
 		}
 	}

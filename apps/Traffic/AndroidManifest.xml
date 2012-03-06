@@ -23,16 +23,9 @@
                  android:debuggable="true">
                  
 		<uses-library android:name="com.google.android.maps" />
-        <receiver android:name="in.beetroute.apps.findme.ReceiveSMS" android:enabled="true">
-		<intent-filter>
-			<action android:name="android.provider.Telephony.SMS_RECEIVED" />
-		</intent-filter>
-		</receiver>
-		<receiver android:name="SentConfirmation" android:enabled="true">
-		<intent-filter>
-			<action android:name="android.provider.Telephony.SMS_SENT" />
-		</intent-filter>
-		</receiver>
+		
+		<!--  Activities  -->
+		
         <activity android:name=".activities.MainActivity"
                   android:label="@string/app_name">
             <intent-filter>
@@ -50,30 +43,37 @@
                   android:label="@string/TripList">
             
         </activity>
-        <!-- 
-        	Adding the FindMe activities.
-         -->
-        <activity android:name="in.beetroute.apps.findme.SendSMS"
-            android:label="@string/app_name" >
-         </activity>
-         <activity
-            android:name="in.beetroute.apps.findme.PlotRouteMap"
-            android:label="@string/app_name" >          
-        </activity>
-         <activity
-            android:name="in.beetroute.apps.findme.ShowDialog"
-            android:label="@string/app_name" >          
-        </activity>
-            
+
         <activity android:name=".activities.ShowRouteActivity"
                   android:label="@string/ViewTrip">
         </activity>
+            
+            
+        <!-- FindMe -->
+        <activity android:name="in.beetroute.apps.findme.SendSMS"
+            android:label="@string/app_name" >
+        </activity>
+        
+        <activity
+            android:name="in.beetroute.apps.findme.PlotRouteMap"
+            android:label="@string/app_name" >          
+        </activity>
+        
+        <activity
+            android:name="in.beetroute.apps.findme.ConfirmPlotRoute"
+            android:label="@string/app_name" >          
+        </activity>
 
+            
+        <!-- Services -->
             
         <service android:name="in.beetroute.apps.traffic.location.LocationService"
             	 android:enabled="true"> 
         </service>
-        
+            
+
+        <!-- Receivers -->
+            
         <receiver android:name=".MyBroadcastReceiver"
             android:enabled="true"
             android:exported="false">
@@ -81,6 +81,20 @@
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
             </intent-filter>
         </receiver>
+        
+        <receiver android:name="in.beetroute.apps.findme.ReceiveSMS" android:enabled="true">
+		    <intent-filter>
+			    <action android:name="android.provider.Telephony.SMS_RECEIVED" />
+		    </intent-filter>
+		</receiver>
+		
+        <!-- TODO: Need a comment for why we need this receiver -->
+		<receiver android:name="SentConfirmation" android:enabled="true">
+		    <intent-filter>
+			    <action android:name="android.provider.Telephony.SMS_SENT" />
+		    </intent-filter>
+		</receiver>
+        
         
     </application>
 </manifest>

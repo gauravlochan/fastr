@@ -7,18 +7,16 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 
-public class ShowDialog extends Activity {
-	private static final int DIALOG_ALERT = 10;
-	private String toAddress;
-	@Override
+public class ConfirmPlotRoute extends Activity {
+
+    private String toAddress;
+	
+    @Override
 	protected void onCreate(Bundle savedInstanceState) {
-		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
-		setContentView(in.beetroute.apps.traffic.R.layout.showdialog);
+		setContentView(R.layout.showdialog);
 		Bundle extras = getIntent().getExtras();
 		toAddress = extras.getString("latlon");
-		
-		//showDialog(DIALOG_ALERT);
 	}
 	
 	public void getRouteMap(View view) {

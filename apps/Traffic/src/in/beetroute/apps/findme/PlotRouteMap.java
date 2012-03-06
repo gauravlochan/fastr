@@ -20,7 +20,6 @@ public class PlotRouteMap extends Activity {
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
-		// TODO Auto-generated method stub
 		try {
 			super.onCreate(savedInstanceState);
 			setContentView(R.layout.plotroutemap);

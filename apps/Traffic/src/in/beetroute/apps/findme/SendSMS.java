@@ -3,8 +3,6 @@ package in.beetroute.apps.findme;
 import in.beetroute.apps.commonlib.Global;
 import in.beetroute.apps.commonlib.Logger;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 import android.app.Activity;
@@ -35,64 +33,20 @@ import android.widget.Toast;
  */
 public class SendSMS extends ListActivity {
 	private static final int PICK_CONTACT = 1;
-	private ArrayList<HashMap<String, String>> contactDetails;
-	private ArrayList<String> contactNames;
 	private static final String TAG = Global.COMPANY;
 
 	
-
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(in.beetroute.apps.traffic.R.layout.findme);
 		Intent intent = new Intent(Intent.ACTION_PICK, ContactsContract.Contacts.CONTENT_URI);
 		startActivityForResult(intent, PICK_CONTACT);
-		/*
-		Cursor cursor = getContacts();
-		contactNames = new ArrayList<String>();
-		contactDetails = new ArrayList<HashMap<String, String>>();
-		if (cursor.getCount() > 0) {
-			while(cursor.moveToNext()) {
-				String id = cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts._ID));
-				//String phoneNumber = getPhoneNumber(id);
-				String phoneNumber = "";
-				String displayName = cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME));
-				String contact = displayName + ":" + id;
-				//String contact = displayName;
-				HashMap<String,String> idMap = new HashMap<String, String>();
-				idMap.put(displayName, id);
-				//idMap.put("name", displayName);
-				contactNames.add(contact);
-				contactDetails.add(idMap);
-			}
-
-		}
-		
-		ListAdapter adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1,contactNames);
-		setListAdapter(adapter);
-		ListView lv = getListView();
-		lv.setTextFilterEnabled(true);
-		lv.setOnItemClickListener(new OnItemClickListener() {
-			@Override
-			public void onItemClick(AdapterView<?> arg0, View arg1, int position,long arg3) {
-				displayItems(position);
-				
-				Iterator iterator = contactDetails.iterator();
-				while(iterator.hasNext()) {
-					HashMap<String, String> map =(HashMap<String, String>)iterator.next();
-					System.out.println(map);
-				}
-				
-			}
-		});
-		*/
 	}
-	
 	
 
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-		// TODO Auto-generated method stub
 		super.onActivityResult(requestCode, resultCode, data);
 		switch(requestCode) {
 		case PICK_CONTACT:
@@ -119,34 +73,6 @@ public class SendSMS extends ListActivity {
 	}
 
 
-
-	private Cursor getContacts(){
-		Uri uri = ContactsContract.Contacts.CONTENT_URI;
-		String[] projection = new String[] {ContactsContract.Contacts._ID,ContactsContract.Contacts.DISPLAY_NAME};
-		String selection = ContactsContract.Contacts.IN_VISIBLE_GROUP + "='" + ("1") + "'";
-		String[] selectionArgs = null;
-		String sortOrder = ContactsContract.Contacts.DISPLAY_NAME + " COLLATE LOCALIZED ASC";
-		Cursor c = null;
-		try {
-			c = managedQuery(uri, projection, selection, selectionArgs, sortOrder);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return c;
-	}
-
-	private void displayItems(int position) {
-		String displayName = this.getListAdapter().getItem(position).toString();
-		String[] nameArray = displayName.split(":");
-		String id = nameArray[1];
-		String phoneNumber = getPhoneNumber(id);
-		String gpsPosition = getGpsData(getApplicationContext());
-		String messageToSend = gpsPosition.concat(",latLng");
-		if(!gpsPosition.equals("NO GPS")) {
-			sendSms(phoneNumber, messageToSend);
-		}
-	}
-
 	private void sendSms(String phoneNumber, String textMessage) {
 		String SENT="SMS_SENT";
 		//System.out.println(idMap.get(displayName));
@@ -156,7 +82,6 @@ public class SendSMS extends ListActivity {
 
 				@Override
 				public void onReceive(Context arg0, Intent arg1) {
-					// TODO Auto-generated method stub
 					switch(getResultCode()) {
 					case Activity.RESULT_OK:
 						Toast.makeText(getBaseContext(), "Your location information has been sent", Toast.LENGTH_LONG).show();
@@ -189,6 +114,7 @@ public class SendSMS extends ListActivity {
 		return phoneNumber;
 	}
 
+	// TODO: Use LocationHelper code instead
 	public String getGpsData(Context context) {
 		String latlon = "";
 		try {
