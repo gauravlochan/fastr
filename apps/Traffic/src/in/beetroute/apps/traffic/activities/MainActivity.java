@@ -6,6 +6,7 @@ import greendroid.widget.ActionBarItem.Type;
 import in.beetroute.apps.commonlib.Global;
 import in.beetroute.apps.commonlib.Logger;
 import in.beetroute.apps.commonlib.SimpleGeoPoint;
+import in.beetroute.apps.findme.SendSMS;
 import in.beetroute.apps.traffic.AppGlobal;
 import in.beetroute.apps.traffic.MapPoint;
 import in.beetroute.apps.traffic.Preferences;
@@ -35,6 +36,7 @@ import com.google.android.maps.OverlayItem;
 
 public class MainActivity extends GDMapActivity {
     private static final String TAG = Global.COMPANY;
+    private static final int FINDMEID = 10;
 
 	// Define a request code for the destination activity
 	private static final int ENTER_DESTINATION_REQUEST_CODE = 100;
@@ -66,6 +68,9 @@ public class MainActivity extends GDMapActivity {
         
         // Add the route history button
         addActionBarItem(Type.List, R.id.action_bar_routelist);
+        
+        // Add the find me icon to the action bar
+        addActionBarItem(Type.LocateMyself,FINDMEID);
 
 		mapView = (MapView) findViewById(R.id.mapview);
 		mapView.setBuiltInZoomControls(true);
@@ -103,6 +108,10 @@ public class MainActivity extends GDMapActivity {
             case R.id.action_bar_routelist:
                 startActivity(new Intent(this, RouteListActivity.class));
                 break;
+            
+            case FINDMEID:
+            	startActivity(new Intent(this,SendSMS.class));
+            	break;
 
             default:
                 return super.onHandleActionBarItemClick(item, position);
