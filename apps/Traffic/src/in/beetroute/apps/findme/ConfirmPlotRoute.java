@@ -21,15 +21,11 @@ public class ConfirmPlotRoute extends Activity {
 	
 	public void getRouteMap(View view) {
 		if(view.getId() == R.id.button1) {
-			try {
-				Bundle extras = getIntent().getExtras();
-				toAddress = extras.getString("latlon");
-				Intent intent = new Intent(this, PlotRouteMap.class);
-				intent.putExtra("latlon", toAddress);
-				startActivity(intent);
-			} catch(Exception e) {
-				e.printStackTrace();
-			}
+			Bundle extras = getIntent().getExtras();
+			toAddress = extras.getString("latlon");
+			Intent intent = new Intent(this, PlotRouteActivity.class);
+			intent.putExtra("latlon", toAddress);
+			startActivity(intent);
 		}
 	}
 	

@@ -14,6 +14,11 @@ import android.view.KeyEvent;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
+/**
+ * This is the old code (using a WebView). 
+ * @deprecated by PlotRouteActivity
+ */
+@Deprecated
 public class PlotRouteMap extends Activity {
 	private WebView webView;
 	
