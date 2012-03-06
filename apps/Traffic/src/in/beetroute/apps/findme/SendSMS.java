@@ -5,10 +5,8 @@ import in.beetroute.apps.commonlib.Logger;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 
-import android.R;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ListActivity;
@@ -25,17 +23,9 @@ import android.location.Location;
 import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Bundle;
-import android.provider.Contacts.People;
 import android.provider.ContactsContract;
 import android.provider.Settings;
 import android.telephony.SmsManager;
-import android.util.Log;
-import android.view.View;
-import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemClickListener;
-import android.widget.ArrayAdapter;
-import android.widget.ListAdapter;
-import android.widget.ListView;
 import android.widget.Toast;
 
 /**
@@ -106,7 +96,7 @@ public class SendSMS extends ListActivity {
 		super.onActivityResult(requestCode, resultCode, data);
 		switch(requestCode) {
 		case PICK_CONTACT:
-			if(resultCode == Activity.RESULT_OK) {
+			if (resultCode == Activity.RESULT_OK) {
 				Uri contactData = data.getData();
 				Cursor c = managedQuery(contactData, null, null, null, null);
 				if(c.moveToFirst()) {
@@ -121,6 +111,9 @@ public class SendSMS extends ListActivity {
 					}
 					
 				}
+			} else {
+			    Logger.debug(TAG, "User didn't pick a contact.  End this activity");
+			    finish();
 			}
 		}
 	}
