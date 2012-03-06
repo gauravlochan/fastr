@@ -1,15 +1,8 @@
 package in.beetroute.apps.findme;
 
 
-import in.beetroute.PlotRouteMap;
-import in.beetroute.R;
-import in.beetroute.R.id;
-import in.beetroute.R.layout;
+import in.beetroute.apps.traffic.R;
 import android.app.Activity;
-import android.app.AlertDialog;
-import android.app.Dialog;
-import android.app.AlertDialog.Builder;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -21,7 +14,7 @@ public class ShowDialog extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.showdialog);
+		setContentView(in.beetroute.apps.traffic.R.layout.showdialog);
 		Bundle extras = getIntent().getExtras();
 		toAddress = extras.getString("latlon");
 		
