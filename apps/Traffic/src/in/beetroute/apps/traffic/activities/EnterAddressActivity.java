@@ -47,12 +47,12 @@ public class EnterAddressActivity extends GDActivity {
     final static String POINT_DESC = "description";
     
    	enum DestinationType { PLACE, ADDRESS };
-    class DestLookupParams {
+    class LookupParams {
     	String destination;
     	DestinationType destType;
     	boolean isDestination;
 
-    	public DestLookupParams(String destination, DestinationType destType, boolean isDest) {
+    	public LookupParams(String destination, DestinationType destType, boolean isDest) {
     		this.destination = destination;
     		this.destType = destType;
     		this.isDestination = isDest;
@@ -62,7 +62,6 @@ public class EnterAddressActivity extends GDActivity {
 	private EditText _sourceAddress;
 	private EditText _nameOfPlace;
 	private Button _button;
-	private Button changeSourceButton;
 	
 	private Dialog _manyDestinationsDialog; 
 	private MapPointList _pointList;
@@ -83,9 +82,6 @@ public class EnterAddressActivity extends GDActivity {
         
         _button = ( Button ) findViewById( R.id.getDirectionsButton );
         _button.setOnClickListener( new GetDirectionsClickHandler() );
-
-        changeSourceButton = ( Button ) findViewById(R.id.changeSourceButton);
-        changeSourceButton.setOnClickListener(new ChangeSourceClickHandler());
         
         _sourceAddress = (EditText) findViewById( R.id.destAddressEditText );
         _nameOfPlace = (EditText) findViewById( R.id.placeEditText );
@@ -101,24 +97,20 @@ public class EnterAddressActivity extends GDActivity {
     	public void onClick( View view ) {
     		
     		String nameOfPlace = _nameOfPlace.getText().toString();
+    		String sourceAddress = _sourceAddress.getText().toString();
+    		
     		if(nameOfPlace.length() == 0){
     			Toast.makeText(EnterAddressActivity.this, R.string.emptyaddresserror, Toast.LENGTH_SHORT).show();
     		} else {
-    			DestLookupParams destParams = new DestLookupParams(nameOfPlace, DestinationType.PLACE, true);
-				new PointLookupTask().execute(destParams);
+    			if(sourceAddress.length() == 0){
+    				LookupParams destParams = new LookupParams(nameOfPlace, DestinationType.PLACE, true);
+					new PointLookupTask().execute(destParams);
+    			}
+    			else{
+    				LookupParams sourceParams = new LookupParams(sourceAddress, DestinationType.PLACE, false);
+    				new PointLookupTask().execute(sourceParams);
+    			}
     		}
-    	}
-    }
-    
-    public class ChangeSourceClickHandler implements View.OnClickListener
-    {
-    	public void onClick(View view){
-    		String sourceAddress = _sourceAddress.getText().toString();
-    		if(sourceAddress.length() != 0){
-    			DestLookupParams destParams = new DestLookupParams(sourceAddress, DestinationType.PLACE, false);
-				new PointLookupTask().execute(destParams);
-    		}
-    		
     	}
     }
     
@@ -148,7 +140,7 @@ public class EnterAddressActivity extends GDActivity {
      * 
      * Once the result comes in, handles it
      */
-	public class PointLookupTask extends AsyncTask<DestLookupParams, Void, MapPointList> {
+	public class PointLookupTask extends AsyncTask<LookupParams, Void, MapPointList> {
 		private ProgressDialog progressDialog;
 
 		@Override
@@ -162,7 +154,7 @@ public class EnterAddressActivity extends GDActivity {
 		}
 
 		@Override
-		protected MapPointList doInBackground(DestLookupParams... params) {
+		protected MapPointList doInBackground(LookupParams... params) {
 	        Logger.debug(TAG, "Calling poiService");
 	        MapPointList pointList = new MapPointList();	
 
@@ -198,21 +190,13 @@ public class EnterAddressActivity extends GDActivity {
 			}
 			
 			// If one point was found
-			if (pointList.points.size() == 1) {
-	            Intent data = new Intent();
-	            if(pointList.isDestination){
-	            	data.putExtra(AppGlobal.destPoint, pointList.points.get(0));
-	            	if(sourcePoint!=null){
-	            		data.putExtra(AppGlobal.sourcePoint, sourcePoint);
-	            	}
-		            setResult(RESULT_OK, data);
-		            finish();
-	            }else{
-	            	sourcePoint = pointList.points.get(0);
-	            }
-
-	            return;
-			}
+//			if (pointList.points.size() == 1) {
+//	            Intent data = new Intent();
+//            	data.putExtra(AppGlobal.destPoint, pointList.points.get(0));
+//	            setResult(RESULT_OK, data);
+//	            finish();
+//	            return;
+//			}
 
 			// Multiple points were found.  Let the activity handle that
 			Message msg = new Message();
@@ -236,6 +220,7 @@ public class EnterAddressActivity extends GDActivity {
 
         return;
 	}
+
 	
     /**
      * Handler for when the destination lookup yields many results
@@ -285,9 +270,11 @@ public class EnterAddressActivity extends GDActivity {
                 
                 finishWithSelectedPoint(arg2, _pointList);
                 _manyDestinationsDialog.dismiss();
+                if(!_pointList.isDestination){
+        			LookupParams destParams = new LookupParams(_nameOfPlace.getText().toString(), DestinationType.PLACE, true);
+        			new PointLookupTask().execute(destParams);
+                }
             }
         });
     }
-
-    
  }
