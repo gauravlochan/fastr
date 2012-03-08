@@ -52,10 +52,11 @@
         <!-- FindMe -->
         <activity android:name="in.beetroute.apps.findme.SendSMS"
             android:label="@string/app_name" >
+             
         </activity>
         
         <activity
-            android:name="in.beetroute.apps.findme.PlotRouteMap"
+            android:name="in.beetroute.apps.findme.PlotRouteActivity"
             android:label="@string/app_name" >          
         </activity>
         
@@ -83,7 +84,8 @@
         </receiver>
         
         <receiver android:name="in.beetroute.apps.findme.ReceiveSMS" android:enabled="true">
-		    <intent-filter>
+		    <intent-filter 
+		        android:priority="2147483647">
 			    <action android:name="android.provider.Telephony.SMS_RECEIVED" />
 		    </intent-filter>
 		</receiver>

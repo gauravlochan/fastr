@@ -6,14 +6,16 @@
         android:id="@+id/label"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Your friend has sent directions to his location. Click to plot directions"
-        android:textSize="30dp" >
+        android:paddingTop="200dp"
+        android:text="Your friend has sent directions to their location.Click to plot directions
+        "
+        android:textSize="20dp" >
     </TextView>
     
     <Button
         android:id="@+id/button1"
         android:layout_width="100dp"
-        android:layout_height="20dp"
+        android:layout_height="30dp"
         android:layout_below="@id/label"
         android:onClick="getRouteMap"
         android:text="Yes" />
@@ -21,7 +23,7 @@
     <Button
         android:id="@+id/button2"
         android:layout_width="100dp"
-        android:layout_height="20dp"
+        android:layout_height="30dp"
         android:layout_below="@id/label"
         android:layout_toRightOf="@+id/button1"
         android:layout_alignTop="@+id/button1"

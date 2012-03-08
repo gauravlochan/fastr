@@ -2,6 +2,7 @@ package in.beetroute.apps.traffic.activities;
 
 import greendroid.widget.ActionBarItem;
 import greendroid.widget.ActionBarItem.Type;
+import greendroid.widget.QuickActionWidget;
 import in.beetroute.apps.commonlib.Global;
 import in.beetroute.apps.commonlib.Logger;
 import in.beetroute.apps.commonlib.SimpleGeoPoint;
@@ -30,6 +31,9 @@ import com.google.android.maps.MapView;
 
 public class MainActivity extends BRMapActivity {
     private static final String TAG = Global.COMPANY;
+    
+    //Trying out the quickaction for findme icon
+    private QuickActionWidget quickAction;
 
 	// Define a request code for the Enter address activity
 	private static final int ENTER_DESTINATION_REQUEST_CODE = 100;
@@ -61,7 +65,8 @@ public class MainActivity extends BRMapActivity {
         
         // Add the find me icon to the action bar
         addActionBarItem(Type.LocateMyself, R.id.action_bar_findme);
-
+       
+  
 		mapView = (MapView) findViewById(R.id.mapview);
 		mapView.setBuiltInZoomControls(true);
 		mapView.getController().setZoom(15);
@@ -100,6 +105,9 @@ public class MainActivity extends BRMapActivity {
                 break;
             
             case R.id.action_bar_findme:
+                //quickAction = new QuickActionGrid(this);
+                //quickAction.addQuickAction(new QuickAction(getApplicationContext(),R.drawable.gd_action_bar_locate_myself, new String("facebook")));
+                //quickAction.show(mapView);
             	startActivity(new Intent(this, SendSMS.class));
             	break;
 
