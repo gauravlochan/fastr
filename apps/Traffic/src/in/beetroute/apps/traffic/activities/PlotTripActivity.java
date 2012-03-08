@@ -1,13 +1,16 @@
 package in.beetroute.apps.traffic.activities;
 
-import greendroid.app.GDMapActivity;
 import in.beetroute.apps.commonlib.Global;
 import in.beetroute.apps.commonlib.Logger;
 import in.beetroute.apps.traffic.AppGlobal;
 import in.beetroute.apps.traffic.R;
+import in.beetroute.apps.traffic.Route;
+import in.beetroute.apps.traffic.db.TripDbHelper;
+import in.beetroute.apps.traffic.trip.Trip;
+import android.graphics.Color;
 import android.os.Bundle;
 
-public class ShowRouteActivity extends GDMapActivity {
+public class PlotTripActivity extends BRMapActivity {
     private static final String TAG = Global.COMPANY;
 
     @Override
@@ -25,9 +28,28 @@ public class ShowRouteActivity extends GDMapActivity {
         Bundle extras = getIntent().getExtras();
         if (extras !=null) {
             Integer tripId = extras.getInt(AppGlobal.TRIP_KEY);
+            plotTrip(tripId);
             
-            // TODO: Kick off task to get the route
         }
     }
+
+    // TODO: Call this asynchronously, so as not to block the map load
+    private void plotTrip(Integer tripId) {
+        TripDbHelper tripDbHelper = new TripDbHelper(this, null);
+        
+        Trip trip = tripDbHelper.getTrip(tripId);
+        
+        Route route = getRoute(tripId);
+        this.drawRoute(route, Color.DKGRAY);
+        
+    }
+    
+    private Route getRoute(Integer tripId) {
+        
+        // TODO Get a Route object
+        return null;
+    }
+    
+    
 
 }

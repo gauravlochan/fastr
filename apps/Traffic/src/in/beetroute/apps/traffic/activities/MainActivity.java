@@ -1,6 +1,5 @@
 package in.beetroute.apps.traffic.activities;
 
-import greendroid.app.GDMapActivity;
 import greendroid.widget.ActionBarItem;
 import greendroid.widget.ActionBarItem.Type;
 import in.beetroute.apps.commonlib.Global;
@@ -21,8 +20,6 @@ import java.util.List;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
-import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
@@ -30,19 +27,13 @@ import android.widget.Toast;
 
 import com.google.android.maps.GeoPoint;
 import com.google.android.maps.MapView;
-import com.google.android.maps.MyLocationOverlay;
-import com.google.android.maps.Overlay;
-import com.google.android.maps.OverlayItem;
 
-public class MainActivity extends GDMapActivity {
+public class MainActivity extends BRMapActivity {
     private static final String TAG = Global.COMPANY;
 
-	// Define a request code for the destination activity
+	// Define a request code for the Enter address activity
 	private static final int ENTER_DESTINATION_REQUEST_CODE = 100;
 	
-	MapView mapView;
-	MyLocationOverlay myLocationOverlay;
-
 	// These are all obtained as part of the activity, and are candidates to save
 	private MapPoint _destination;
 	private SimpleGeoPoint _source;
@@ -105,11 +96,11 @@ public class MainActivity extends GDMapActivity {
                 break;
                 
             case R.id.action_bar_routelist:
-                startActivity(new Intent(this, RouteListActivity.class));
+                startActivity(new Intent(this, TripListActivity.class));
                 break;
             
             case R.id.action_bar_findme:
-            	startActivity(new Intent(this,SendSMS.class));
+            	startActivity(new Intent(this, SendSMS.class));
             	break;
 
             default:
@@ -190,73 +181,7 @@ public class MainActivity extends GDMapActivity {
     }
 
     
-    /**
-     * Remove all the overlays and add a single 'MyLocationOverlay'
-     * 
-     * @return GeoPoint obtained from myLocationOverlay.  Can be null.
-     */
-    private void resetMapOverlays() {
-        mapView.getOverlays().clear();
-
-        // Add a 'MyLocationOverlay' to track the current location
-        myLocationOverlay = new MyLocationOverlay(this, mapView);
-        mapView.getOverlays().add(myLocationOverlay);
-        myLocationOverlay.enableMyLocation();
-       
-        return;
-    }
-    
-    /**
-     * Draws a point of interest
-     * 
-     * @param point
-     */
-    private void drawPointOfInterest(MapPoint point, boolean animateTo) {
-        OverlayItem overlayItem = new OverlayItem(point.getGeoPoint(), point.getName(), point.getDescription());
-        drawSinglePoint(R.drawable.gd_map_pin_pin, overlayItem);
-        
-        if (animateTo) {
-            mapView.getController().animateTo(point.getGeoPoint());
-        }
-		Toast.makeText(this, point.getName(), Toast.LENGTH_LONG).show();
-    }
-    
-    /**
-     * A generic method for drawing a point on the map
-     * 
-     * @param drawableId
-     * @param overlayItem
-     */
-    private void drawSinglePoint(int drawableId, OverlayItem overlayItem) {
-    	Drawable drawable = this.getResources().getDrawable(R.drawable.gd_map_pin_pin);
-        MapItemOverlay itemizedOverlay = new MapItemOverlay(drawable, this);
-        itemizedOverlay.addOverlayItem(overlayItem);
-        List<Overlay> listOfOverlays = mapView.getOverlays();
-        listOfOverlays.add(itemizedOverlay);
-        mapView.invalidate();
-    }
-    
-    
-    private void drawMultipleRoutes(List<Route> routes) {
-        // TODO: 3 for now since google returns only 3 routes
-        int colors[] = {Color.GREEN, Color.CYAN, Color.GRAY};
-        
-        for (int i = 0; i< routes.size(); i++) {
-            Route route = routes.get(i);
-            drawRoute(route, colors[i]);
-        }
-    }
-
-    
-    private void drawRoute(Route r, int color) {
-        MapRouteOverlay mapOverlay = new MapRouteOverlay(r, mapView, color);
-        
-        List<Overlay> listOfOverlays = mapView.getOverlays();
-        listOfOverlays.add(0, mapOverlay);
-        mapView.invalidate();
-    }
-    
-    
+     
  	private GeoPoint getLastKnownLocation() {
  	    GeoPoint geoPoint;
  	    

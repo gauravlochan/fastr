@@ -1,12 +1,12 @@
 package in.beetroute.apps.findme;
 
-import greendroid.app.GDMapActivity;
 import in.beetroute.apps.commonlib.Global;
 import in.beetroute.apps.commonlib.Logger;
 import in.beetroute.apps.traffic.R;
+import in.beetroute.apps.traffic.activities.BRMapActivity;
 import android.os.Bundle;
 
-public class PlotRouteActivity extends GDMapActivity {
+public class PlotRouteActivity extends BRMapActivity {
     private static final String TAG = Global.COMPANY;
 
     @Override
@@ -20,6 +20,11 @@ public class PlotRouteActivity extends GDMapActivity {
 
         super.onCreate(savedInstanceState);
         setActionBarContentView(R.layout.showroute);
+
+        // Get the destination address from the SMS
+        Bundle extras = getIntent().getExtras();
+        String toAddress = extras.getString("latlon");
+
     }
 
 }
