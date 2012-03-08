@@ -9,6 +9,7 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ListActivity;
 import android.app.PendingIntent;
+import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.ContentResolver;
@@ -34,6 +35,7 @@ import android.widget.Toast;
 public class SendSMS extends ListActivity {
 	private static final int PICK_CONTACT = 1;
 	private static final String TAG = Global.COMPANY;
+	private ProgressDialog progressdialog;
 
 	
 	@Override
@@ -84,6 +86,7 @@ public class SendSMS extends ListActivity {
 				public void onReceive(Context arg0, Intent arg1) {
 					switch(getResultCode()) {
 					case Activity.RESULT_OK:
+						progressdialog.dismiss();
 						Toast.makeText(getBaseContext(), "Your location information has been sent", Toast.LENGTH_LONG).show();
 						break;
 					}
@@ -93,6 +96,7 @@ public class SendSMS extends ListActivity {
 			},new IntentFilter(SENT));
 			SmsManager sms = SmsManager.getDefault();
 			sms.sendTextMessage(phoneNumber, null, textMessage, sentPi, null);
+			progressdialog = ProgressDialog.show(SendSMS.this, "", "Sending location information");
 			
 		} catch (Exception e) {
 			e.printStackTrace();
