@@ -11,6 +11,14 @@
     <string name="bothspecifiederror">You need to specify only one</string>
     <string name="TripList">Previous Trips</string>
     <string name="ViewTrip">View Trip</string>
+    <string name="helpString">
+        There are three icons on the beetroute action bar. 
+        First icon: Directions. Click on this and you will be prompted for a destination. On entering destination information,
+        three routes will be plotted in different colors. Currently the colors have no significance.
+        Second icon: My trips - brings up an applicaiton that lists all your previous trips.
+        Third icon: Find me - Send your location information to another beetroute user in your contacts list.Sends the location co-ordinates as an SMS.
+        At the other end, upon receiving the SMS, the application plots 3 possible routes from your contacts location to your location. 
+    </string>
         
         
 </resources>
