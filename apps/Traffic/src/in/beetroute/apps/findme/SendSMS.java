@@ -60,8 +60,11 @@ public class SendSMS extends ListActivity {
                     Logger.info(TAG, id);
                     String phoneNumber = getPhoneNumber(id);
                     Location location = getGpsData(this);
+                    
+                    // TODO: If location isn't accurate enough, warn the user
+
                     if (location != null) {
-                        String messageToSend = GeoSMS.constructSMS(location);
+                        String messageToSend = GeoSMS.constructSMS(this, location);
                         sendSms(phoneNumber, messageToSend);
                     } else {
                         Logger.warn(TAG, "Can't send SMS since location wasn't found");

@@ -1,5 +1,7 @@
 package in.beetroute.apps.findme;
 
+import in.beetroute.apps.commonlib.Global;
+import in.beetroute.apps.commonlib.Logger;
 import in.beetroute.apps.commonlib.ServiceProviders;
 import in.beetroute.apps.traffic.AppGlobal;
 import in.beetroute.apps.traffic.MapPoint;
@@ -11,6 +13,8 @@ import android.os.Bundle;
 import android.telephony.SmsMessage;
 
 public class ReceiveSMS extends BroadcastReceiver {
+    private static final String TAG = Global.COMPANY;
+
 	@Override
 	/*
 	 * (non-Javadoc)
@@ -34,14 +38,18 @@ public class ReceiveSMS extends BroadcastReceiver {
                 MapPoint mapPoint = new MapPoint(ServiceProviders.FINDME,
                         "Location of " + smsSource, message);
                 Location location = GeoSMS.extractLocation(message);
-                mapPoint.setLocation(location.getLatitude(), location.getLongitude());
-
-                Intent showDialogIntent = new Intent(context,
-                        ConfirmPlotRoute.class);
-                showDialogIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                showDialogIntent.putExtra(AppGlobal.LOCATION_FROM_SMS_KEY, mapPoint);
-
-                context.startActivity(showDialogIntent);
+                if (location == null) {
+                    Logger.warn(TAG, "Unable to extract location from SMS");
+                } else {
+                    mapPoint.setLocation(location.getLatitude(), location.getLongitude());
+    
+                    Intent showDialogIntent = new Intent(context,
+                            ConfirmPlotRoute.class);
+                    showDialogIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    showDialogIntent.putExtra(AppGlobal.LOCATION_FROM_SMS_KEY, mapPoint);
+    
+                    context.startActivity(showDialogIntent);
+                }
             }
         }
     }
