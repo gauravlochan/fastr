@@ -1,5 +1,7 @@
 package in.beetroute.apps.traffic.activities;
 
+import java.util.List;
+
 import greendroid.widget.ActionBarItem;
 import greendroid.widget.ActionBarItem.Type;
 import greendroid.widget.QuickActionWidget;
@@ -11,13 +13,24 @@ import in.beetroute.apps.traffic.AppGlobal;
 import in.beetroute.apps.traffic.MapPoint;
 import in.beetroute.apps.traffic.Preferences;
 import in.beetroute.apps.traffic.R;
+import in.beetroute.apps.traffic.Route;
+import in.beetroute.apps.traffic.google.directions.GoogleDirectionsService;
 import in.beetroute.apps.traffic.location.LocationService;
+import in.beetroute.apps.traffic.services.DirectionsService;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
+import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.maps.GeoPoint;
 import com.google.android.maps.MapView;
+
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 
 public class MainActivity extends BRMapActivity {
     private static final String TAG = Global.COMPANY;
@@ -120,21 +133,54 @@ public class MainActivity extends BRMapActivity {
             
             if (data.hasExtra(AppGlobal.destPoint)) {
                 // reset the map
+            	Log.v("logging:",AppGlobal.destPoint);
                 resetMapOverlays();
 
                 // The destination comes from the child activity
             	_destination = (MapPoint) data.getExtras().getSerializable(AppGlobal.destPoint);
             	
             	// Get the route from here to the destination
-            	GeoPoint source = getLastKnownLocation();
-            	_source = new SimpleGeoPoint(source);
             	
+            	if(data.hasExtra(AppGlobal.sourcePoint)){
+            		MapPoint sourceMapPoint = (MapPoint) data.getExtras().getSerializable(AppGlobal.sourcePoint);
+            		drawPointOfInterest(sourceMapPoint, false);
+            		_source = sourceMapPoint.getSimpleGeoPoint();
+            	} else{
+	            	GeoPoint source = getLastKnownLocation();
+	            	_source = new SimpleGeoPoint(source);
+            	}
             	getAndDrawRoutes(_source, _destination);
             	
                 // Call BTIS asynchronously to get congestion points and plot them on the map
                 // TODO: Eventually pass in the route that we care about
                 new GetCongestionTask(this, mapView).execute(null);
+            	
+            	// Acquire a reference to the system Location Manager
+            	LocationManager locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
 
+            	// Define a listener that responds to location updates
+            	LocationListener locationListener = new LocationListener() {
+            	    public void onLocationChanged(Location location) {
+            	      // Called when a new location is found by the network location provider.
+            	      TextView hud = (TextView)findViewById(R.id.textview);
+            	      findViewById(R.id.transparent_panel).setVisibility(0);
+            	      SimpleGeoPoint currentLocation = new SimpleGeoPoint(location.getLongitude(),location.getLatitude());
+            	      DirectionsService dir = new GoogleDirectionsService();
+            	      List<Route> routeList = dir.getRoutes(currentLocation, _destination.getSimpleGeoPoint());
+            	      if(routeList.size()!=0){
+            	    	  hud.setText("Remaining: " + routeList.get(0).drivingDistanceMeters/1000 + "km, " + routeList.get(0).estimatedTimeSeconds/60+ "min.");
+            	      }
+            	    }
+
+            	    public void onStatusChanged(String provider, int status, Bundle extras) {}
+
+            	    public void onProviderEnabled(String provider) {}
+
+            	    public void onProviderDisabled(String provider) {}
+            	  };
+
+            	locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 1000, locationListener);
+            	
             	// Call the server to send this route (happens in an async task)
 //            	ServerClient serverclient = new ServerClient();
 //            	serverclient.sendRoute(route);
