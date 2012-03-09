@@ -1,0 +1,19 @@
+/Users/roshanvid/Workspace/phonegap/lib/android/example/bin/MyApp.ap_ \
+ : /Users/roshanvid/Workspace/phonegap/lib/android/example/res/drawable/icon.png \
+/Users/roshanvid/Workspace/phonegap/lib/android/example/res/drawable-hdpi/ic_launcher.png \
+/Users/roshanvid/Workspace/phonegap/lib/android/example/res/drawable-ldpi/ic_launcher.png \
+/Users/roshanvid/Workspace/phonegap/lib/android/example/res/drawable-mdpi/ic_launcher.png \
+/Users/roshanvid/Workspace/phonegap/lib/android/example/res/layout/main.xml \
+/Users/roshanvid/Workspace/phonegap/lib/android/example/res/values/strings.xml \
+/Users/roshanvid/Workspace/phonegap/lib/android/example/res/xml/phonegap.xml \
+/Users/roshanvid/Workspace/phonegap/lib/android/example/res/xml/plugins.xml \
+/Users/roshanvid/Workspace/phonegap/lib/android/example/bin/res/drawable/icon.png \
+/Users/roshanvid/Workspace/phonegap/lib/android/example/bin/res/drawable-hdpi/ic_launcher.png \
+/Users/roshanvid/Workspace/phonegap/lib/android/example/bin/res/drawable-ldpi/ic_launcher.png \
+/Users/roshanvid/Workspace/phonegap/lib/android/example/bin/res/drawable-mdpi/ic_launcher.png \
+/Users/roshanvid/Workspace/phonegap/lib/android/example/assets/www \
+/Users/roshanvid/Workspace/phonegap/lib/android/example/assets/www/index.html \
+/Users/roshanvid/Workspace/phonegap/lib/android/example/assets/www/main.js \
+/Users/roshanvid/Workspace/phonegap/lib/android/example/assets/www/master.css \
+/Users/roshanvid/Workspace/phonegap/lib/android/example/assets/www/phonegap-1.4.1.js \
+/Users/roshanvid/Workspace/phonegap/lib/android/example/AndroidManifest.xml \

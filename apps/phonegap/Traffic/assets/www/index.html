@@ -1,0 +1,47 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <meta name="viewport" content="width=screen.width; user-scalable=no" />
+    <meta http-equiv="Content-type" content="text/html; charset=utf-8">
+    <title>Traffic</title>
+      <link rel="stylesheet" href="jquery.mobile/jquery.mobile-1.0.1.min.css" type="text/css">
+      <link rel="stylesheet" href="map.css" type="text/css">
+         <style type="text/css">
+      
+    </style>
+   <script type="text/javascript" src="jquery.mobile/jquery-1.6.4.min"></script>
+	<script type="text/javascript" src="jquery.mobile/jquery.mobile-1.0.1.min.js"></script>
+ <script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false"></script>
+	<script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?libraries=places&sensor=true"></script>
+  <script type="text/javascript" src="jquery.ui.map/jquery.ui.map.js"></script>
+ <script type="text/javascript" src="jquery.ui.map/jquery.ui.map.services.js"></script>
+	<script type="text/javascript" charset="utf-8" src="map.js"></script>
+	<script type="text/javascript" src="jquery.parse.js"></script>
+
+ 	</head>
+  <body>
+
+	<div id="basic_map" data-role="page">
+			<div data-role="header" data-position="inline">
+				<h1>Traffic</h1>
+				<a href="#search_box" data-role="button" data-icon="star" class="ui-btn-right">Find</a>
+			</div>
+					<div id="map_canvas"></div>
+					<!-- <div id="pos" style="position:absolute; top:450px">pos:</div> -->
+		</div>
+		
+	<div id="search_box" data-role="page">
+		<div data-role="header" data-position="inline">
+		<a href="#basic_map" data-role="button" data-icon="back">Back</a>
+				<h1>Find a place</h1>
+			</div>
+		<div data-role="content">
+			<input type="search" name="search" id="search_basic" />
+			<input type="button" value = "Search" id="search_button" onClick="findPlace();"></input>
+			<br>
+			<ul id="places_list" data-role="listview">
+			</ul>
+		</div>
+	</div>	
+  </body>
+</html>

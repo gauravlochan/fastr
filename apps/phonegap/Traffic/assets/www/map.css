@@ -1,0 +1,13 @@
+html { height: 100% }
+body { height: 100%; margin: 0; padding: 0 }
+
+#map_canvas 
+{ margin:0;
+padding:0;
+position:absolute;
+display:block;
+height:94%;
+width:100%; 
+} 
+
+ 

@@ -3,8 +3,6 @@
     <string name="hello">Hello World, TrafficActivity!</string>
     <string name="app_name">BeetRoute</string>
     <string name="clicked_on_direction">You have clicked on the directions button</string>
-    <string name="EnterAddress">Enter Address</string>
-    <string name="DestinationAddress">Destination Address</string>
     <string name="GetDirections">Get Directions</string>
     <string name="emptyaddresserror">You need to specify an address or place</string>
     <string name="bothspecifiederror">You need to specify only one</string>
