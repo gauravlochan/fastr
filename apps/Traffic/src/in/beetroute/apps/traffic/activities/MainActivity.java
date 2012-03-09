@@ -11,18 +11,8 @@ import in.beetroute.apps.traffic.AppGlobal;
 import in.beetroute.apps.traffic.MapPoint;
 import in.beetroute.apps.traffic.Preferences;
 import in.beetroute.apps.traffic.R;
-import in.beetroute.apps.traffic.Route;
-import in.beetroute.apps.traffic.google.directions.GoogleDirectionsService;
-import in.beetroute.apps.traffic.location.LocationHelper;
 import in.beetroute.apps.traffic.location.LocationService;
-import in.beetroute.apps.traffic.services.DirectionsService;
-
-import java.util.List;
-
-import android.content.Context;
 import android.content.Intent;
-import android.location.Location;
-import android.location.LocationManager;
 import android.os.Bundle;
 import android.widget.Toast;
 
@@ -38,8 +28,8 @@ public class MainActivity extends BRMapActivity {
 	// Define a request code for the Enter address activity
 	private static final int ENTER_DESTINATION_REQUEST_CODE = 100;
 	
-	// These are all obtained as part of the activity, and are candidates to save
-	private MapPoint _destination;
+	// These are preserved across recreations (OnSaveInstanceState)
+ 	private MapPoint _destination;
 	private SimpleGeoPoint _source;
 
     private static final String SAVE_SOURCE = "SaveSource";
@@ -65,9 +55,8 @@ public class MainActivity extends BRMapActivity {
         
         // Add the find me icon to the action bar
         addActionBarItem(Type.LocateMyself, R.id.action_bar_findme);
-       
-  
-		mapView = (MapView) findViewById(R.id.mapview);
+
+        mapView = (MapView) findViewById(R.id.mapview);
 		mapView.setBuiltInZoomControls(true);
 		mapView.getController().setZoom(15);
 		
@@ -141,6 +130,10 @@ public class MainActivity extends BRMapActivity {
             	_source = new SimpleGeoPoint(source);
             	
             	getAndDrawRoutes(_source, _destination);
+            	
+                // Call BTIS asynchronously to get congestion points and plot them on the map
+                // TODO: Eventually pass in the route that we care about
+                new GetCongestionTask(this, mapView).execute(null);
 
             	// Call the server to send this route (happens in an async task)
 //            	ServerClient serverclient = new ServerClient();
@@ -151,19 +144,6 @@ public class MainActivity extends BRMapActivity {
             	Logger.error(TAG, "Did not find point of interest in intent");
             }
     	}
-    }
-
-    private void getAndDrawRoutes(SimpleGeoPoint source, MapPoint dest) {
-        // TODO: Should draw the source with a marker too.  
-        drawPointOfInterest(dest, false);     
-
-        DirectionsService dir = new GoogleDirectionsService();
-        List<Route> routes = dir.getRoutes(source, new SimpleGeoPoint(dest.getGeoPoint()));
-        drawMultipleRoutes(routes);
-        
-        // Call BTIS asynchronously to get congestion points and plot them on the map
-        // TODO: Eventually pass in the route that we care about
-        new GetCongestionTask(this, mapView).execute(null);
     }
 
     
@@ -187,33 +167,5 @@ public class MainActivity extends BRMapActivity {
             getAndDrawRoutes(_source, _destination);
         }
     }
-
-    
-     
- 	private GeoPoint getLastKnownLocation() {
- 	    GeoPoint geoPoint;
- 	    
- 	    // First try to get current location from the MyLocationOverlay widget
- 	    if (myLocationOverlay != null) {
- 	       geoPoint = myLocationOverlay.getMyLocation();
- 	       if (geoPoint != null) {
- 	           return geoPoint;
- 	       }
- 	    }
- 	    
-        // Else try to call into location manager directly
-		// Acquire a reference to the system Location Manager
-		LocationManager locationManager = (LocationManager) this
-				.getSystemService(Context.LOCATION_SERVICE);
-		Location location = LocationHelper.getLastKnownLocation(locationManager);
-		if (location != null) {
-		    return LocationHelper.locationToGeoPoint(location);
-		}
-		
-        // HACK: In some phones (e.g. HTC Wildfire) our code to get the location fails
-	    // Center to Ashok Nagar police station :-)
-        SimpleGeoPoint sgPoint = new SimpleGeoPoint(12.971669, 77.610314);
-        return sgPoint.getGeoPoint();
-	}
 
 }

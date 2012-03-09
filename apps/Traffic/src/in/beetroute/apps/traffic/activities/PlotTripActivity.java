@@ -10,6 +10,8 @@ import in.beetroute.apps.traffic.trip.Trip;
 import android.graphics.Color;
 import android.os.Bundle;
 
+import com.google.android.maps.MapView;
+
 public class PlotTripActivity extends BRMapActivity {
     private static final String TAG = Global.COMPANY;
 
@@ -20,11 +22,12 @@ public class PlotTripActivity extends BRMapActivity {
     
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        Logger.debug(TAG, "Creating ShowRouteActivity");
-
+        Logger.debug(TAG, "Creating PlotTripActivity");
         super.onCreate(savedInstanceState);
-        setActionBarContentView(R.layout.showroute);
         
+        setActionBarContentView(R.layout.showroute);
+        mapView = (MapView) findViewById(R.id.mapview);
+
         Bundle extras = getIntent().getExtras();
         if (extras !=null) {
             Integer tripId = extras.getInt(AppGlobal.TRIP_KEY);
