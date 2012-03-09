@@ -1,6 +1,8 @@
 package in.beetroute.apps.findme;
 
 
+import in.beetroute.apps.traffic.AppGlobal;
+import in.beetroute.apps.traffic.MapPoint;
 import in.beetroute.apps.traffic.R;
 import android.app.Activity;
 import android.content.Intent;
@@ -9,25 +11,26 @@ import android.view.View;
 
 public class ConfirmPlotRoute extends Activity {
 
-    private String toAddress;
+    private MapPoint toAddress;
 	
     @Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.showdialog);
-		Bundle extras = getIntent().getExtras();
-		toAddress = extras.getString("latlon");
-	}
+    }
 	
-	public void getRouteMap(View view) {
-		if(view.getId() == R.id.button1) {
-			Bundle extras = getIntent().getExtras();
-			toAddress = extras.getString("latlon");
-			Intent intent = new Intent(this, PlotRouteActivity.class);
-			intent.putExtra("latlon", toAddress);
-			startActivity(intent);
-		}
-	}
+    public void getRouteMap(View view) {
+        if (view.getId() == R.id.button1) {
+            // The previous activity should have passed in the destination
+            // MapPoint.
+            // Pass it along to the new activity
+            Bundle extras = getIntent().getExtras();
+            MapPoint dest = (MapPoint) extras.getSerializable(AppGlobal.LOCATION_FROM_SMS_KEY);
+            Intent intent = new Intent(this, PlotRouteActivity.class);
+            intent.putExtra(AppGlobal.LOCATION_FROM_SMS_KEY, dest);
+            startActivity(intent);
+        }
+    }
 	
 	public void doNothing(View view) {
 		if(view.getId() == R.id.button2) {
