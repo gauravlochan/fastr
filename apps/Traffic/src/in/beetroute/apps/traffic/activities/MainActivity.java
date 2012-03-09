@@ -1,5 +1,7 @@
 package in.beetroute.apps.traffic.activities;
 
+import java.util.List;
+
 import greendroid.widget.ActionBarItem;
 import greendroid.widget.ActionBarItem.Type;
 import greendroid.widget.QuickActionWidget;
@@ -11,7 +13,11 @@ import in.beetroute.apps.traffic.AppGlobal;
 import in.beetroute.apps.traffic.MapPoint;
 import in.beetroute.apps.traffic.Preferences;
 import in.beetroute.apps.traffic.R;
+import in.beetroute.apps.traffic.Route;
+import in.beetroute.apps.traffic.google.directions.GoogleDirectionsService;
 import in.beetroute.apps.traffic.location.LocationService;
+import in.beetroute.apps.traffic.services.DirectionsService;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -21,7 +27,11 @@ import android.widget.Toast;
 
 import com.google.android.maps.GeoPoint;
 import com.google.android.maps.MapView;
+
+import android.location.Location;
 import android.location.LocationListener;
+import android.location.LocationManager;
+
 public class MainActivity extends BRMapActivity {
     private static final String TAG = Global.COMPANY;
     
@@ -182,18 +192,6 @@ public class MainActivity extends BRMapActivity {
     	}
     }
 
-    private void getAndDrawRoutes(SimpleGeoPoint source, MapPoint dest) {
-        // TODO: Should draw the source with a marker too.  
-        drawPointOfInterest(dest, false);     
-
-        DirectionsService dir = new GoogleDirectionsService();
-        List<Route> routes = dir.getRoutes(source, new SimpleGeoPoint(dest.getGeoPoint()));
-        drawMultipleRoutes(routes);
-        
-        // Call BTIS asynchronously to get congestion points and plot them on the map
-        // TODO: Eventually pass in the route that we care about
-        new GetCongestionTask(this, mapView).execute(null);
-    }
     
     @Override 
     protected void onSaveInstanceState(Bundle bundle) {
