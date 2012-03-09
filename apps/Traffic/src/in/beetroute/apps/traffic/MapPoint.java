@@ -21,7 +21,11 @@ public class MapPoint implements Serializable {
 	private ServiceProviders service;
 
 	/**
-	 * Each service has their own identifier for a point of interest
+	 * Some services have their own identifier for a point of interest.
+	 * This may be useful if we ever need to refer back to this place in that service.
+	 * e.g. Onze has an ID, Yahoo has WOEID
+	 * 
+	 * Optional.
 	 */
 	private String identifier;
 
@@ -39,15 +43,23 @@ public class MapPoint implements Serializable {
 	 * A short description for this point
 	 */
 	private String description;
+
+	/**
+	 * This map point accuracy
+	 * 
+     * Optional.
+	 */
+	private float accuracy;
 	
-	
-	public MapPoint(ServiceProviders sp) {
+	/**
+	 * 
+	 * @param sp Service Provider who's returning 
+	 * @param identifier
+	 * @param name
+	 * @param description
+	 */
+	public MapPoint(ServiceProviders sp, String name, String description) {
 		service = sp;
-	}
-	
-	public MapPoint(ServiceProviders sp, String identifier, String name, String description) {
-		service = sp;
-		this.identifier = identifier;
 		this.name = name;
 		this.description = description;
 	}
@@ -68,9 +80,19 @@ public class MapPoint implements Serializable {
 	    return location;
 	}
 	
+	/**
+	 * Set the service specific identifier.
+	 * @param identifier
+	 */
+	public void setIdentifier(String identifier) {
+	    this.identifier = identifier;
+	}
+	
 	public void setLocation(double latitude, double longitude) {
 		this.location = new SimpleGeoPoint(latitude, longitude);
 	}
 	
-
+	public void setAccuracyRadius(float accuracy) {
+	    this.accuracy = accuracy;
+	}
 }

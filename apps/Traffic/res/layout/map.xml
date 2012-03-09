@@ -1,4 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android" 
+			android:id="@+id/home_container"  
+			android:layout_width="fill_parent" 
+			android:layout_height="fill_parent">
+
 <com.google.android.maps.MapView
 	xmlns:android="http://schemas.android.com/apk/res/android"
 	android:id="@+id/mapview"
@@ -7,7 +12,38 @@
 	android:clickable="true"
 	android:apiKey="0wd9Ptxkcm9obiLO7Ra67w6dxy3uFgsDYi66pWg" />
     
- <!-- pradeep android:apiKey="0wd9Ptxkcm9obiLO7Ra67w6dxy3uFgsDYi66pWg" /> -->
 
+	<LinearLayout  	
+	    xmlns:android="http://schemas.android.com/apk/res/android" 
+	    android:layout_width="fill_parent" 
+		android:layout_height="fill_parent"
+		android:orientation="vertical"
+		android:gravity="bottom"
+		android:paddingLeft="5px"
+		android:paddingTop="5px"
+		android:paddingRight="5px">
+
+	</LinearLayout>
+
+	<in.beetroute.apps.traffic.view.TransparentPanel
+	    android:id="@+id/transparent_panel"
+	    android:layout_width="fill_parent"
+	    android:layout_height="wrap_content"
+	    android:paddingBottom="5px"
+	    android:paddingLeft="5px"
+	    android:paddingRight="5px"
+	    android:paddingTop="5px" 
+	    android:visibility="invisible">
+
+	    <TextView
+	        xmlns:android="http://schemas.android.com/apk/res/android"
+	        android:id="@+id/textview"
+	        android:layout_width="fill_parent"
+	        android:layout_height="fill_parent"
+	        android:textColor="#FFF" />
+	</in.beetroute.apps.traffic.view.TransparentPanel>
+
+</FrameLayout>
 <!-- release android:apiKey="0wylgYXVAFg7ZQg6PEvoqDcPmkPMmhAd_NLWLzw" -->
-<!-- debug android:apiKey="0HvLnBA5C5E8w7itCenvn6Q5ixcAfYQcBdy4epg" -->
+<!-- gaurav debug android:apiKey="0HvLnBA5C5E8w7itCenvn6Q5ixcAfYQcBdy4epg" -->
+<!-- pradeep debug android:apiKey="0wd9Ptxkcm9obiLO7Ra67w6dxy3uFgsDYi66pWg" -->

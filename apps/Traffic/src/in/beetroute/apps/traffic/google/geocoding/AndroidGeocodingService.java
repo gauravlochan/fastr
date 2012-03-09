@@ -33,7 +33,7 @@ public class AndroidGeocodingService implements GeocodingService {
 
 		ArrayList<MapPoint> list = new ArrayList<MapPoint>();
 		for (Address address : foundAdresses) {
-			MapPoint point = new MapPoint(ServiceProviders.ANDROID, "",
+			MapPoint point = new MapPoint(ServiceProviders.ANDROID, 
 					address.getFeatureName(), addressText);
 			point.setLocation(address.getLatitude(), address.getLongitude());
 			list.add(point);

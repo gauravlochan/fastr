@@ -39,12 +39,12 @@
             
         </activity>
         
-        <activity android:name=".activities.RouteListActivity"
+        <activity android:name=".activities.TripListActivity"
                   android:label="@string/TripList">
             
         </activity>
 
-        <activity android:name=".activities.ShowRouteActivity"
+        <activity android:name=".activities.PlotTripActivity"
                   android:label="@string/ViewTrip">
         </activity>
             

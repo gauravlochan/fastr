@@ -1,6 +1,8 @@
 package in.beetroute.apps.findme;
 
 
+import in.beetroute.apps.traffic.AppGlobal;
+import in.beetroute.apps.traffic.MapPoint;
 import in.beetroute.apps.traffic.R;
 import in.beetroute.apps.traffic.activities.MainActivity;
 import android.app.Activity;
@@ -14,18 +16,19 @@ import android.view.View;
 
 public class ConfirmPlotRoute extends Activity {
 
-    private String toAddress;
+    //private String toAddress;
     private static final int DIALOG_ALERT=10;
+    private MapPoint toAddress;
 	
     @Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.showdialog);
 		Bundle extras = getIntent().getExtras();
-		toAddress = extras.getString("latlon");	
+		//toAddress = extras.getString("latlon");	
 		showDialog(DIALOG_ALERT);
 	}
-	
+		
 	protected Dialog onCreateDialog(int id) {
 		
 		String formatString = "Your friend has sent their location information. Do you want to plot directions";
@@ -46,9 +49,11 @@ public class ConfirmPlotRoute extends Activity {
 	private final class OkOnClickListener implements DialogInterface.OnClickListener {
 		public void onClick(DialogInterface dialog, int which) {
 			Bundle extras = getIntent().getExtras();
-			toAddress = extras.getString("latlon");
+			MapPoint dest = (MapPoint) extras.getSerializable(AppGlobal.LOCATION_FROM_SMS_KEY);
+			
 			Intent intent = new Intent(ConfirmPlotRoute.this, PlotRouteActivity.class);
-			intent.putExtra("latlon", toAddress);
+			intent.putExtra(AppGlobal.LOCATION_FROM_SMS_KEY, dest);
+			
 			startActivity(intent);
 		}
 	}

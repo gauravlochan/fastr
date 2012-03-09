@@ -1,21 +1,28 @@
 package in.beetroute.apps.findme;
 
-import greendroid.app.GDMapActivity;
 import greendroid.widget.ActionBarItem;
 import greendroid.widget.ActionBarItem.Type;
 import in.beetroute.apps.commonlib.Global;
 import in.beetroute.apps.commonlib.Logger;
+import in.beetroute.apps.commonlib.SimpleGeoPoint;
+import in.beetroute.apps.traffic.AppGlobal;
+import in.beetroute.apps.traffic.MapPoint;
 import in.beetroute.apps.traffic.R;
+import in.beetroute.apps.traffic.activities.BRMapActivity;
 import in.beetroute.apps.traffic.activities.EnterAddressActivity;
 import in.beetroute.apps.traffic.activities.MainActivity;
-import in.beetroute.apps.traffic.activities.RouteListActivity;
+import in.beetroute.apps.traffic.activities.TripListActivity;
 import android.content.Intent;
 import android.os.Bundle;
 
-public class PlotRouteActivity extends GDMapActivity {
+import com.google.android.maps.GeoPoint;
+import com.google.android.maps.MapView;
+
+
+public class PlotRouteActivity extends BRMapActivity {
     private static final String TAG = Global.COMPANY;
     private static final int ENTER_DESTINATION_REQUEST_CODE = 100;
-
+    
     @Override
     protected boolean isRouteDisplayed() {
         return true;
@@ -24,8 +31,8 @@ public class PlotRouteActivity extends GDMapActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         Logger.debug(TAG, "Creating PlotRouteActivity");
-
         super.onCreate(savedInstanceState);
+        
         setActionBarContentView(R.layout.showroute);
         
         //Add a help screen
@@ -39,6 +46,19 @@ public class PlotRouteActivity extends GDMapActivity {
         
         // Add the find me icon to the action bar
         addActionBarItem(Type.LocateMyself, R.id.action_bar_findme);  
+        mapView = (MapView) findViewById(R.id.mapview);       
+        resetMapOverlays();
+
+        // Get the destination address from the SMS
+        Bundle extras = getIntent().getExtras();
+        MapPoint destination = (MapPoint) extras.getSerializable(AppGlobal.LOCATION_FROM_SMS_KEY);
+
+        // Get the route from here to the destination
+        GeoPoint sgPoint = getLastKnownLocation();
+        SimpleGeoPoint source = new SimpleGeoPoint(sgPoint);
+        
+        getAndDrawRoutes(source, destination);
+
     }
 
 	@Override
@@ -55,7 +75,7 @@ public class PlotRouteActivity extends GDMapActivity {
              break;
              
          case R.id.action_bar_routelist:
-             startActivity(new Intent(this, RouteListActivity.class));
+             startActivity(new Intent(this, TripListActivity.class));
              break;
          
          case R.id.action_bar_findme:

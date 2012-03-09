@@ -7,10 +7,10 @@
     <string name="DestinationAddress">Destination Address</string>
     <string name="GetDirections">Get Directions</string>
     <string name="emptyaddresserror">You need to specify an address or place</string>
-    <string name="NameOfPlace">Or Place</string>
     <string name="bothspecifiederror">You need to specify only one</string>
     <string name="TripList">Previous Trips</string>
     <string name="ViewTrip">View Trip</string>
+
     <string name="helpString">
         There are three icons on the beetroute action bar. 
         First icon: Directions. Click on this and you will be prompted for a destination. On entering destination information,
@@ -19,6 +19,9 @@
         Third icon: Find me - Send your location information to another beetroute user in your contacts list.Sends the location co-ordinates as an SMS.
         At the other end, upon receiving the SMS, the application plots 3 possible routes from your contacts location to your location. 
     </string>
-        
-        
+    <string name="SourceAddressLbl">Source</string>
+    <string name="DestAddressLbl">Destination</string>
+    <string name="MyLocation">My Location</string>
+    <string name="NameOfPlace">Name Of Place</string>
+
 </resources>

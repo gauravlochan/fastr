@@ -17,7 +17,7 @@ import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
 
 // TODO: Arrows like http://mfarhan133.wordpress.com/2010/10/14/list-view-tutorial-for-android/
-public class RouteListActivity extends Activity {
+public class TripListActivity extends Activity {
 
     protected ListView _listView;
 
@@ -73,7 +73,7 @@ public class RouteListActivity extends Activity {
         public void onItemClick(AdapterView<?> parent, View view, int position,
                 long id) {
             
-            Intent intent = new Intent(RouteListActivity.this, ShowRouteActivity.class);
+            Intent intent = new Intent(TripListActivity.this, PlotTripActivity.class);
             intent.putExtra(AppGlobal.TRIP_KEY, position);
             startActivity(intent);
         }

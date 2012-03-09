@@ -6,5 +6,6 @@ public enum ServiceProviders {
 	ANDROID, // Android libraries
 	GOOGLE,  // Google
 	ONZE,    // Onze technologies, ie latlong.in
-	BTIS     
+	BTIS,
+	FINDME   // The findMe app
 }
