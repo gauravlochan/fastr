@@ -15,11 +15,13 @@ import in.beetroute.apps.traffic.location.LocationService;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.maps.GeoPoint;
 import com.google.android.maps.MapView;
-
+import android.location.LocationListener;
 public class MainActivity extends BRMapActivity {
     private static final String TAG = Global.COMPANY;
     
@@ -142,7 +144,33 @@ public class MainActivity extends BRMapActivity {
                 // Call BTIS asynchronously to get congestion points and plot them on the map
                 // TODO: Eventually pass in the route that we care about
                 new GetCongestionTask(this, mapView).execute(null);
+            	
+            	// Acquire a reference to the system Location Manager
+            	LocationManager locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
 
+            	// Define a listener that responds to location updates
+            	LocationListener locationListener = new LocationListener() {
+            	    public void onLocationChanged(Location location) {
+            	      // Called when a new location is found by the network location provider.
+            	      TextView hud = (TextView)findViewById(R.id.textview);
+            	      findViewById(R.id.transparent_panel).setVisibility(0);
+            	      SimpleGeoPoint currentLocation = new SimpleGeoPoint(location.getLongitude(),location.getLatitude());
+            	      DirectionsService dir = new GoogleDirectionsService();
+            	      List<Route> routeList = dir.getRoutes(currentLocation, _destination.getSimpleGeoPoint());
+            	      if(routeList.size()!=0){
+            	    	  hud.setText("Remaining: " + routeList.get(0).drivingDistanceMeters/1000 + "km, " + routeList.get(0).estimatedTimeSeconds/60+ "min.");
+            	      }
+            	    }
+
+            	    public void onStatusChanged(String provider, int status, Bundle extras) {}
+
+            	    public void onProviderEnabled(String provider) {}
+
+            	    public void onProviderDisabled(String provider) {}
+            	  };
+
+            	locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 1000, locationListener);
+            	
             	// Call the server to send this route (happens in an async task)
 //            	ServerClient serverclient = new ServerClient();
 //            	serverclient.sendRoute(route);

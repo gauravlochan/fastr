@@ -31,7 +31,8 @@
 	    android:paddingBottom="5px"
 	    android:paddingLeft="5px"
 	    android:paddingRight="5px"
-	    android:paddingTop="5px" >
+	    android:paddingTop="5px" 
+	    android:visibility="invisible">
 
 	    <TextView
 	        xmlns:android="http://schemas.android.com/apk/res/android"
