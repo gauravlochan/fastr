@@ -131,9 +131,12 @@ public class TripDbHelper extends SQLiteOpenHelper {
             
             if (c != null) {
                 if (!c.moveToFirst()) {
+                    c.close();
                     return null;
                 }
-                return getCurrentTrip(c);
+                Trip trip = getCurrentTrip(c);
+                c.close();
+                return trip;
             }
         } finally {
             db.close();
@@ -159,9 +162,12 @@ public class TripDbHelper extends SQLiteOpenHelper {
                     );
             if (c != null) {
                 if (!c.moveToFirst()) {
+                    c.close();
                     return null;
                 }
-                return getCurrentTrip(c);
+                Trip trip = getCurrentTrip(c);
+                c.close();
+                return trip;
             }
         } finally {
             db.close();
@@ -172,10 +178,11 @@ public class TripDbHelper extends SQLiteOpenHelper {
 
     /**
      * Cursor with all trips.  
-     * Remember to close DB.
+     * Caller should manage the cursor and close it
      * @return
      */
     public Cursor getAll() {
+        // TODO: Need to close db
         SQLiteDatabase db = getReadableDatabase();
         return db.query(TripTable.TABLE_NAME,
                     TripTable.getColumnsStringArray(),
@@ -219,6 +226,7 @@ public class TripDbHelper extends SQLiteOpenHelper {
         try {
             Cursor c = db.rawQuery("SELECT * FROM " + TripTable.TABLE_NAME, null);
             // TODO: Print something!
+            c.close();
         } finally {
             db.close();
         }

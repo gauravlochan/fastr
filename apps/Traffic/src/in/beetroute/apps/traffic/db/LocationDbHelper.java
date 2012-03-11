@@ -139,6 +139,7 @@ public class LocationDbHelper extends SQLiteOpenHelper {
                     Logger.debug(TAG, point.toString());
                 } while (c.moveToNext());
             }
+            c.close();
         } finally {
             db.close();
         }
@@ -175,7 +176,7 @@ public class LocationDbHelper extends SQLiteOpenHelper {
         
         try {
             String query = "SELECT * FROM " + LocationTable.TABLE_NAME + " WHERE " + 
-                    LocationTable.COLUMN_NAME_UPLOAD_STATUS + "=" + UploadStatus.NOT_UPLOADED.ordinal() + ";";
+                    LocationTable.COLUMN_NAME_UPLOAD_STATUS + "=" + UploadStatus.NOT_UPLOADED.ordinal();
             Cursor c = db.rawQuery(query, null);
 
             if (c != null) {
@@ -200,6 +201,7 @@ public class LocationDbHelper extends SQLiteOpenHelper {
                     recordsLeft = c.moveToNext();
                 }
                 
+                c.close();
                 return points;
             } else {
                 Logger.debug(TAG, "Cursor is null");
@@ -212,7 +214,7 @@ public class LocationDbHelper extends SQLiteOpenHelper {
     
     /**
      * Gets all location updates after the specified timestamp
-     * Close the cursor when done.
+     * Caller should manage the cursor and close it when done.
      * 
      * @param timestamp
      */
@@ -220,7 +222,6 @@ public class LocationDbHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = getReadableDatabase();
         
         // http://www.vogella.de/articles/AndroidSQLite/article.html#sqliteoverview_query
-        // TODO: Need to close the db/cursor somehow.
         return db.query(LocationTable.TABLE_NAME,
                 LocationTable.getColumnsStringArray(),
                 LocationTable.COLUMN_NAME_TIMESTAMP + ">?",     // where clause
@@ -248,9 +249,12 @@ public class LocationDbHelper extends SQLiteOpenHelper {
             if (c != null) {
                 boolean recordsLeft = c.moveToFirst();
                 if (!recordsLeft) {
+                    c.close();
                     return null;
                 }
-                return getCurrentLocationUpdate(c);
+                LocationUpdate location = getCurrentLocationUpdate(c);
+                c.close();
+                return location;
             }
         } finally {
             db.close();

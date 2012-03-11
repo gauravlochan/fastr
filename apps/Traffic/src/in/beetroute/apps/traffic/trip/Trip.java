@@ -12,6 +12,7 @@ import in.beetroute.apps.traffic.services.GeocodingService;
 
 import java.util.List;
 
+import android.app.Activity;
 import android.content.Context;
 import android.database.Cursor;
 import android.location.Address;
@@ -78,7 +79,7 @@ public class Trip {
      * @param previous Previous Trip.  Null means look from the beginning
      * @return a valid trip, null if there is no newer trip
      */
-    public static Trip getNextTrip(Context context, Trip previous) {
+    public static Trip getNextTrip(Activity context, Trip previous) {
         LocationDbHelper locationDbHelper = new LocationDbHelper(context, null);
         
         // Get the timestamp of the end of the last trip
@@ -93,6 +94,7 @@ public class Trip {
 
         // Get all the location updates after the last trip
         Cursor c = locationDbHelper.getNewerLocationUpdates(timestamp);
+        context.startManagingCursor(c);
         
         int column_id = c.getColumnIndex(LocationTable._ID);
 
