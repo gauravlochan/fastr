@@ -6,9 +6,9 @@ import in.beetroute.apps.traffic.AppGlobal;
 import in.beetroute.apps.traffic.location.LocationUpdate;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -29,7 +29,6 @@ import android.provider.BaseColumns;
 public class LocationDbHelper extends SQLiteOpenHelper {
     private static final String TAG = Global.COMPANY;
 
-    
     /**
      * Status of the record in the server.  
      * DO NOT REORDER OR CHANGE otherwise it will screw up how all the existing 
@@ -45,36 +44,37 @@ public class LocationDbHelper extends SQLiteOpenHelper {
      * A class that defines the table
      */
     public static final class LocationTable implements BaseColumns {
-        // This class cannot be instantiated
-        private LocationTable() {}
-        
         public static final String TABLE_NAME = "locationUpdates";
 
         public static final String COLUMN_NAME_LATITUDE = "Latitude";
         public static final String COLUMN_NAME_LONGITUDE = "Longitude";
         public static final String COLUMN_NAME_TIMESTAMP = "Timestamp";
         public static final String COLUMN_NAME_SPEED = "Speed";
+        public static final String COLUMN_NAME_ACCURACY = "Accuracy";
+        
         public static final String COLUMN_NAME_UPLOAD_STATUS = "UploadStatus";
         
-        // TODO: Need to add accuracy column
-        
-        public static final String COLUMN_NAMES_FOR_INSERT = String.format(" (%s, %s, %s, %s, %s) ",
-                COLUMN_NAME_LATITUDE, COLUMN_NAME_LONGITUDE, COLUMN_NAME_TIMESTAMP,
-                COLUMN_NAME_SPEED, COLUMN_NAME_UPLOAD_STATUS);
-
-        public static String getSchema() {
+         public static String getSchema() {
             return _ID + " INTEGER PRIMARY KEY,"
                     + COLUMN_NAME_LATITUDE + " Double, "
                     + COLUMN_NAME_LONGITUDE+ " Double, "
                     + COLUMN_NAME_TIMESTAMP+ " Double, "        // TODO: Why double?
                     + COLUMN_NAME_SPEED + " Double, "
-                    + COLUMN_NAME_UPLOAD_STATUS + " Integer";
+                    + COLUMN_NAME_UPLOAD_STATUS + " Integer, "
+                    + COLUMN_NAME_ACCURACY + " Double";
         }
-        
-        public static String getColumns() {
-            return " (Latitude, Longitude, Timestamp, Speed, UploadStatus) ";
+         
+        public static String[] getColumnsStringArray() {
+            return new String[] { 
+                    LocationTable._ID, 
+                    LocationTable.COLUMN_NAME_LATITUDE,
+                    LocationTable.COLUMN_NAME_LONGITUDE, 
+                    LocationTable.COLUMN_NAME_TIMESTAMP,
+                    LocationTable.COLUMN_NAME_SPEED,
+                    LocationTable.COLUMN_NAME_UPLOAD_STATUS,
+                    LocationTable.COLUMN_NAME_ACCURACY
+            };
         }
-
     }
 
     
@@ -85,27 +85,13 @@ public class LocationDbHelper extends SQLiteOpenHelper {
     
     @Override
     public void onCreate(SQLiteDatabase db) {
-        Logger.debug(TAG, "Attempting to create table " + LocationTable.TABLE_NAME +
-                " in DB " + AppGlobal.dbName);
-
-        /* Create a Table in the Database. */
-        db.execSQL("CREATE TABLE IF NOT EXISTS " + LocationTable.TABLE_NAME +
-                "(" + LocationTable.getSchema() + ");");
-
-        Logger.debug(TAG, "Successfully created table");
+        UpgradeHelper.onCreate(db);
     }
 
     
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        Logger.info(TAG, "Request to upgrade " + LocationTable.TABLE_NAME
-                + " from version " + oldVersion 
-                + " to " + newVersion + ", which doesn't do anything");
-        
-        // TODO: Need to come up with a good upgrade script
-
-        // db.execSQL("DROP TABLE IF EXISTS " + LocationTable.TABLE_NAME);
-        // onCreate(db);
+        UpgradeHelper.onUpgrade(db, oldVersion, newVersion);
     }   
     
     
@@ -114,25 +100,24 @@ public class LocationDbHelper extends SQLiteOpenHelper {
      * @param uploaded TODO
      */
     public void insertPoint(LocationUpdate point, Boolean uploaded) {
-        Logger.debug(TAG, "Attempting write point to DB " + AppGlobal.dbName);
+        Logger.debug(TAG, "Attempting write point to table " + LocationTable.TABLE_NAME);
         SQLiteDatabase db = getWritableDatabase();
         
         Integer status = uploaded ? UploadStatus.UPLOADED.ordinal() :
                                    UploadStatus.NOT_UPLOADED.ordinal();
 
-        // TODO: Replace this with a db.insert
         try {
-            db.execSQL("INSERT INTO " + LocationTable.TABLE_NAME 
-                    + LocationTable.COLUMN_NAMES_FOR_INSERT
-                    + " VALUES ("
-                    + point.getLatitude() + ", " 
-                    + point.getLongitude() + ", " 
-                    + point.getEpochTime() + ", " 
-                    + point.getSpeed() + ", "
-                    + status + ");"
-                    );
+            ContentValues values = new ContentValues(4);
+            values.put(LocationTable.COLUMN_NAME_LATITUDE, point.getLatitude());
+            values.put(LocationTable.COLUMN_NAME_LONGITUDE, point.getLongitude());
+            values.put(LocationTable.COLUMN_NAME_TIMESTAMP, point.getEpochTime());
+            values.put(LocationTable.COLUMN_NAME_SPEED, point.getSpeed());
+            values.put(LocationTable.COLUMN_NAME_UPLOAD_STATUS, status);
+            values.put(LocationTable.COLUMN_NAME_ACCURACY, point.getAccuracy());
             
-            Logger.debug(TAG, "Succesfully inserted point into DB");
+            db.insertOrThrow(LocationTable.TABLE_NAME, null, values);
+            
+            Logger.debug(TAG, "Succesfully inserted trip into " + LocationTable.TABLE_NAME);
         } finally {
             db.close();
         }
@@ -147,23 +132,11 @@ public class LocationDbHelper extends SQLiteOpenHelper {
         
         try {
             Cursor c = db.rawQuery("SELECT * FROM " + LocationTable.TABLE_NAME, null);
-    
-            int latIndex = c.getColumnIndex(LocationTable.COLUMN_NAME_LATITUDE);
-            int longIndex = c.getColumnIndex(LocationTable.COLUMN_NAME_LONGITUDE);
-            int timeIndex = c.getColumnIndex(LocationTable.COLUMN_NAME_TIMESTAMP);
-            int speedIndex = c.getColumnIndex(LocationTable.COLUMN_NAME_SPEED);
-    
             if (c.moveToFirst()) {
                 // Loop through all Results
                 do {
-                    double lat = c.getDouble(latIndex);
-                    double lon = c.getDouble(longIndex);
-                    long epochTime = c.getLong(timeIndex);
-                    Date timeStamp = new Date(epochTime);
-                    float speed = c.getFloat(speedIndex);
-                    
-                    String coordinate = String.format("%s %f %f %f", timeStamp.toLocaleString(), lat, lon, speed);
-                    Logger.debug(TAG, coordinate);
+                    LocationUpdate point = getCurrentLocationUpdate(c);
+                    Logger.debug(TAG, point.toString());
                 } while (c.moveToNext());
             }
         } finally {
@@ -206,10 +179,6 @@ public class LocationDbHelper extends SQLiteOpenHelper {
             Cursor c = db.rawQuery(query, null);
 
             if (c != null) {
-                int latIndex = c.getColumnIndex(LocationTable.COLUMN_NAME_LATITUDE);
-                int longIndex = c.getColumnIndex(LocationTable.COLUMN_NAME_LONGITUDE);
-                int timestamp = c.getColumnIndex(LocationTable.COLUMN_NAME_TIMESTAMP);
-        
                 int i = c.getCount();
                 List<LocationUpdate> points = new ArrayList<LocationUpdate>(i);
 
@@ -224,10 +193,7 @@ public class LocationDbHelper extends SQLiteOpenHelper {
                         break;
                     } 
                     
-                    LocationUpdate point = new LocationUpdate(
-                            c.getLong(timestamp),
-                            c.getDouble(latIndex),
-                            c.getDouble(longIndex));
+                    LocationUpdate point = getCurrentLocationUpdate(c);
                     points.add(point);
                     count++;
                     Logger.debug(TAG, point.toString());
@@ -253,20 +219,15 @@ public class LocationDbHelper extends SQLiteOpenHelper {
     public Cursor getNewerLocationUpdates(Long timestamp) {       
         SQLiteDatabase db = getReadableDatabase();
         
-        // TODO: Currently not ordering it, since natural order should be fine
-        // if this doesn't work, then order by timestamp
-        
         // http://www.vogella.de/articles/AndroidSQLite/article.html#sqliteoverview_query
+        // TODO: Need to close the db/cursor somehow.
         return db.query(LocationTable.TABLE_NAME,
-                new String[] { LocationTable._ID, 
-                        LocationTable.COLUMN_NAME_LATITUDE,
-                        LocationTable.COLUMN_NAME_LONGITUDE, 
-                        LocationTable.COLUMN_NAME_SPEED,
-                        LocationTable.COLUMN_NAME_TIMESTAMP },
+                LocationTable.getColumnsStringArray(),
                 LocationTable.COLUMN_NAME_TIMESTAMP + ">?",     // where clause
                 new String[] {timestamp.toString()},        // argument to where clause
                 null, null, 
-                LocationTable.COLUMN_NAME_TIMESTAMP);
+                LocationTable.COLUMN_NAME_TIMESTAMP         // order by timestamp
+                );
     }
 
     /**
@@ -279,12 +240,7 @@ public class LocationDbHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = getReadableDatabase();
         try {
             Cursor c = db.query(LocationTable.TABLE_NAME,
-                    new String[] { LocationTable._ID, 
-                        LocationTable.COLUMN_NAME_LATITUDE,
-                        LocationTable.COLUMN_NAME_LONGITUDE, 
-                        LocationTable.COLUMN_NAME_SPEED,
-                        LocationTable.COLUMN_NAME_TIMESTAMP
-                        },
+                    LocationTable.getColumnsStringArray(),
                     LocationTable._ID + "=?",               // where clause
                     new String[] {locationId.toString()},   // where parameter
                     null, null, null);
@@ -316,13 +272,14 @@ public class LocationDbHelper extends SQLiteOpenHelper {
         int longIndex = c.getColumnIndex(LocationTable.COLUMN_NAME_LONGITUDE);
         int timeIndex = c.getColumnIndex(LocationTable.COLUMN_NAME_TIMESTAMP);
         int speedIndex = c.getColumnIndex(LocationTable.COLUMN_NAME_SPEED);
-        
+        int accuracyIndex = c.getColumnIndex(LocationTable.COLUMN_NAME_ACCURACY);
+
         LocationUpdate point = new LocationUpdate(
                 c.getLong(timeIndex),
                 c.getDouble(latIndex),
                 c.getDouble(longIndex),
                 c.getFloat(speedIndex),
-                0f                          // TODO: Accuracy!!!
+                c.getFloat(accuracyIndex)
                 );
         
         return point;

@@ -30,9 +30,6 @@ public class TripDbHelper extends SQLiteOpenHelper {
      * A class that defines the table
      */
     public static final class TripTable implements BaseColumns {
-        // This class cannot be instantiated
-        private TripTable() {}
-        
         public static final String TABLE_NAME = "trips";
 
         public static final String COLUMN_NAME_START_POINT = "StartPoint";
@@ -54,6 +51,17 @@ public class TripDbHelper extends SQLiteOpenHelper {
                 LocationDbHelper.LocationTable.TABLE_NAME+ "(" + LocationDbHelper.LocationTable._ID + ")"
                 ;
         }
+        
+        public static String[] getColumnsStringArray() {
+            return new String[] { 
+                    TripTable._ID,
+                    TripTable.COLUMN_NAME_START_POINT,
+                    TripTable.COLUMN_NAME_END_POINT,
+                    TripTable.COLUMN_NAME_START_NAME,
+                    TripTable.COLUMN_NAME_END_NAME
+            };
+        }
+
 
     }
         
@@ -63,30 +71,14 @@ public class TripDbHelper extends SQLiteOpenHelper {
     
     @Override
     public void onCreate(SQLiteDatabase db) {
-        Logger.debug(TAG, "Attempting to create table in db");
-
-        /* Create a Table in the Database. */
-        String sql = "CREATE TABLE IF NOT EXISTS " + TripTable.TABLE_NAME +
-                "(" + TripTable.getSchema() + ");";
-        Logger.debug(TAG, sql);
-        db.execSQL(sql);
-
-        Logger.debug(TAG, "Successfully created table");
+        UpgradeHelper.onCreate(db);
     }
-
     
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        Logger.info(TAG, "Request to upgrade " + TripTable.TABLE_NAME
-                + " from version " + oldVersion 
-                + " to " + newVersion + ", which doesn't do anything");
-
-        // TODO: Need to come up with a good upgrade script
-        
-        // db.execSQL("DROP TABLE IF EXISTS " + TripTable.TABLE_NAME);
-        // onCreate(db);
+        UpgradeHelper.onUpgrade(db, oldVersion, newVersion);
     }
-    
+
     
     public void deleteTable() {
         SQLiteDatabase db = getWritableDatabase();
@@ -96,8 +88,8 @@ public class TripDbHelper extends SQLiteOpenHelper {
         } finally {
             db.close();
         }
-
     }
+
     
     /**
      * Create a trip
@@ -132,12 +124,7 @@ public class TripDbHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = getReadableDatabase();
         try {
             Cursor c = db.query(TripTable.TABLE_NAME,
-                    new String[] {
-                        TripTable.COLUMN_NAME_START_POINT,
-                        TripTable.COLUMN_NAME_END_POINT,
-                        TripTable.COLUMN_NAME_START_NAME,
-                        TripTable.COLUMN_NAME_END_NAME
-                    },
+                    TripTable.getColumnsStringArray(),
                     TripTable._ID + "=?",   // where clause
                     new String[] { tripId.toString() }, // where param
                     null, null, null);
@@ -162,12 +149,7 @@ public class TripDbHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = getReadableDatabase();
         try {
             Cursor c = db.query(TripTable.TABLE_NAME,
-                    new String[] {
-                        TripTable.COLUMN_NAME_START_POINT,
-                        TripTable.COLUMN_NAME_END_POINT,
-                        TripTable.COLUMN_NAME_START_NAME,
-                        TripTable.COLUMN_NAME_END_NAME
-                    },
+                    TripTable.getColumnsStringArray(),
                     null,   // where
                     null,   // where param
                     null,   // groupBy
@@ -196,13 +178,7 @@ public class TripDbHelper extends SQLiteOpenHelper {
     public Cursor getAll() {
         SQLiteDatabase db = getReadableDatabase();
         return db.query(TripTable.TABLE_NAME,
-                    new String[] {
-                        TripTable._ID,
-                        TripTable.COLUMN_NAME_START_POINT,
-                        TripTable.COLUMN_NAME_END_POINT,
-                        TripTable.COLUMN_NAME_START_NAME,
-                        TripTable.COLUMN_NAME_END_NAME
-                    },
+                    TripTable.getColumnsStringArray(),
                     null,   // where
                     null,   // where param
                     null,   // groupBy
@@ -242,6 +218,7 @@ public class TripDbHelper extends SQLiteOpenHelper {
         // TODO: 
         try {
             Cursor c = db.rawQuery("SELECT * FROM " + TripTable.TABLE_NAME, null);
+            // TODO: Print something!
         } finally {
             db.close();
         }

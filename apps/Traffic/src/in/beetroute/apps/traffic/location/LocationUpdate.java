@@ -1,5 +1,7 @@
 package in.beetroute.apps.traffic.location;
 
+import java.util.Date;
+
 import android.location.Location;
 
 /** 
@@ -22,12 +24,6 @@ public class LocationUpdate {
         epochTime = location.getTime();
     }
     
-    public LocationUpdate(long epochTime, double latitude, double longitude) {
-        this.latitude = latitude;
-        this.longitude = longitude;
-        this.epochTime = epochTime;
-    }
-
     public LocationUpdate(long epochTime, double latitude, double longitude, 
             float speed, float accuracy) { 
         this.epochTime = epochTime;
@@ -37,6 +33,10 @@ public class LocationUpdate {
         this.accuracy = accuracy;
     }
 
+    public float getAccuracy() {
+        return accuracy;
+    }
+    
     public float getSpeed() {
         return speed;
     }
@@ -55,8 +55,9 @@ public class LocationUpdate {
 
     @Override
     public String toString() {
-        return String.format("LocationUpdate: time=%d lat=%f long=%f", 
-                epochTime, latitude, longitude);
+        Date timeStamp = new Date(epochTime);
+        return String.format("LocationUpdate: time=%s lat=%f long=%f speed=%f accuracy=%f", 
+                timeStamp.toLocaleString(), latitude, longitude, speed, accuracy);
     }
 
 }

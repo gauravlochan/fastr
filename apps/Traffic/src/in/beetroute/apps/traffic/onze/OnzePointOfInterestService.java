@@ -36,6 +36,10 @@ public class OnzePointOfInterestService implements PointOfInterestService {
 		String result = RESTHelper.simpleGet(request);
 		
 		ArrayList<MapPoint> list = new ArrayList<MapPoint>();
+		if (result == null) { 
+		    return list;
+		}
+		
 		
         JSONArray jsonArray;
 		try {
