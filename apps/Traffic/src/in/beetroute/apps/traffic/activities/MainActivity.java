@@ -168,12 +168,6 @@ public class MainActivity extends BRMapActivity {
                 // TODO: Eventually pass in the route that we care about
                 new GetCongestionTask(this, mapView).execute(null);
                 
-                // Start a timer to periodically update the remaining time/distance
-                if (timerTask != null) {
-                    unscheduleTimerTask();
-                }
-                scheduleTimerTask();
-            	
             	// Call the server to send this route (happens in an async task)
 //            	ServerClient serverclient = new ServerClient();
 //            	serverclient.sendRoute(route);
@@ -204,7 +198,6 @@ public class MainActivity extends BRMapActivity {
             source = (MapPoint) _source;
             destination = (MapPoint) _destination;
             getAndDrawRoutes(source, destination);
-            scheduleTimerTask();
         }
     }
 
@@ -229,7 +222,8 @@ public class MainActivity extends BRMapActivity {
     
     private void scheduleTimerTask() {
         timerTask = new RouteTimerTask();
-        timer.schedule(timerTask, 60*1000, 60*1000);
+        int cancelled = timer.purge();
+        timer.schedule(timerTask, 300*1000, 300*1000);
         Logger.debug(TAG, "Scheduled timerTask");
     }
     
