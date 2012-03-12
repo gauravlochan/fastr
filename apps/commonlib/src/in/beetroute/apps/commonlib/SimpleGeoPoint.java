@@ -25,10 +25,14 @@ public class SimpleGeoPoint implements Serializable {
 		this.longitude = longitude;
 	}
 	
-	// constructor that takes in GeoPoint
 	public SimpleGeoPoint(GeoPoint geoPoint) {
 		latitude = geoPoint.getLatitudeE6() / 1000000F;
 		longitude = geoPoint.getLongitudeE6() / 1000000F;
+	}
+	
+	public SimpleGeoPoint(String latitude, String longitude) {
+	    this.latitude = new Double(latitude);
+	    this.longitude = new Double(longitude);
 	}
 
 	public GeoPoint getGeoPoint() {

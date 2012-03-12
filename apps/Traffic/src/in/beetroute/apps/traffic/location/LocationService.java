@@ -75,7 +75,7 @@ public class LocationService extends Service {
     }
     
     
-    public class GpsLocationListener implements LocationListener {
+    private class GpsLocationListener implements LocationListener {
         public void startGpsListening() {
             Logger.debug(TAG, "Start GPS Listener");
 

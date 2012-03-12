@@ -3,7 +3,7 @@ package in.beetroute.apps.traffic.onze;
 import in.beetroute.apps.commonlib.Global;
 import in.beetroute.apps.commonlib.Logger;
 import in.beetroute.apps.commonlib.RESTHelper;
-import in.beetroute.apps.commonlib.ServiceProviders;
+import in.beetroute.apps.commonlib.SimpleGeoPoint;
 import in.beetroute.apps.traffic.MapPoint;
 import in.beetroute.apps.traffic.services.PointOfInterestService;
 
@@ -72,16 +72,15 @@ public class OnzePointOfInterestService implements PointOfInterestService {
 		String id = jsonObject.getString(id_key);
 		String desc = extractDescription(jsonObject.getString(ls_key));
 
-		MapPoint point = new MapPoint(ServiceProviders.ONZE, name, desc);
-		point.setIdentifier(id);
+        // Now to extract the latlong
+        String coordinates = jsonObject.getString(point_key);
+        int comma = coordinates.indexOf(',');
+        String longitude = coordinates.substring(0, comma);
+        String latitude = coordinates.substring(comma+1);
+        SimpleGeoPoint location = new SimpleGeoPoint(latitude, longitude);
 
-		// Now to extract the latlong
-		String coordinates = jsonObject.getString(point_key);
-		int comma = coordinates.indexOf(',');
-		String longitude = coordinates.substring(0, comma);
-		String latitude = coordinates.substring(comma+1);
-		
-		point.setLocation(new Double(latitude), new Double(longitude));
+        // Get a MapPoint from this data
+		MapPoint point = new MapPoint(name, desc, location);
 
 		return point;
     }

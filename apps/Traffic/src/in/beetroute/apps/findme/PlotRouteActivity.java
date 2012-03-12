@@ -15,7 +15,6 @@ import in.beetroute.apps.traffic.activities.TripListActivity;
 import android.content.Intent;
 import android.os.Bundle;
 
-import com.google.android.maps.GeoPoint;
 import com.google.android.maps.MapView;
 
 
@@ -42,7 +41,7 @@ public class PlotRouteActivity extends BRMapActivity {
         addActionBarItem(Type.Export, R.id.action_bar_directions);
         
         // Add the route history button
-        addActionBarItem(Type.List, R.id.action_bar_routelist);
+        addActionBarItem(Type.List, R.id.action_bar_triplist);
         
         // Add the find me icon to the action bar
         addActionBarItem(Type.LocateMyself, R.id.action_bar_findme);  
@@ -54,9 +53,9 @@ public class PlotRouteActivity extends BRMapActivity {
         MapPoint destination = (MapPoint) extras.getSerializable(AppGlobal.LOCATION_FROM_SMS_KEY);
 
         // Get the route from here to the destination
-        GeoPoint sgPoint = getLastKnownLocation();
-        SimpleGeoPoint source = new SimpleGeoPoint(sgPoint);
-        
+        SimpleGeoPoint location = new SimpleGeoPoint(getLastKnownLocation());
+        MapPoint source = new MapPoint("Current Location", "", location);
+
         getAndDrawRoutes(source, destination);
 
     }
@@ -74,7 +73,7 @@ public class PlotRouteActivity extends BRMapActivity {
              		ENTER_DESTINATION_REQUEST_CODE);
              break;
              
-         case R.id.action_bar_routelist:
+         case R.id.action_bar_triplist:
              startActivity(new Intent(this, TripListActivity.class));
              break;
          

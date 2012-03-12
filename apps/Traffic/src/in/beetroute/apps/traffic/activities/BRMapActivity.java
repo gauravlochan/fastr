@@ -92,12 +92,12 @@ public abstract class BRMapActivity extends GDMapActivity {
     }
 
     
-    protected void getAndDrawRoutes(SimpleGeoPoint source, MapPoint dest) {
-        // TODO: Should draw the source with a marker too.  
+    protected void getAndDrawRoutes(MapPoint source, MapPoint dest) {
+        drawPointOfInterest(source, false);
         drawPointOfInterest(dest, false);     
 
         DirectionsService dir = new GoogleDirectionsService();
-        List<Route> routes = dir.getRoutes(source, new SimpleGeoPoint(dest.getGeoPoint()));
+        List<Route> routes = dir.getRoutes(source.getSimpleGeoPoint(), dest.getSimpleGeoPoint());
         drawMultipleRoutes(routes);
     }
 

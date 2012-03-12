@@ -2,7 +2,6 @@ package in.beetroute.apps.findme;
 
 import in.beetroute.apps.commonlib.Global;
 import in.beetroute.apps.commonlib.Logger;
-import in.beetroute.apps.commonlib.ServiceProviders;
 import in.beetroute.apps.traffic.AppGlobal;
 import in.beetroute.apps.traffic.MapPoint;
 import android.content.BroadcastReceiver;
@@ -34,14 +33,14 @@ public class ReceiveSMS extends BroadcastReceiver {
             String smsSource = sms[i].getOriginatingAddress();
             String message = sms[i].getMessageBody().toString();
             if (GeoSMS.matchMessage(message)) {
-                // Extract the location and info and stick it into a MapPoint
-                MapPoint mapPoint = new MapPoint(ServiceProviders.FINDME,
-                        "Location of " + smsSource, message);
+                // Extract the location to use for plotting on the map
                 Location location = GeoSMS.extractLocation(message);
                 if (location == null) {
                     Logger.warn(TAG, "Unable to extract location from SMS");
                 } else {
-                    mapPoint.setLocation(location.getLatitude(), location.getLongitude());
+                    MapPoint mapPoint = new MapPoint("Location of " + smsSource,
+                            message, location.getLatitude(), 
+                            location.getLongitude());
     
                     Intent showDialogIntent = new Intent(context,
                             ConfirmPlotRoute.class);

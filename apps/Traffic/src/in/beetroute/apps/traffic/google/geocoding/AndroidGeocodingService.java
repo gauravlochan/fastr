@@ -1,6 +1,5 @@
 package in.beetroute.apps.traffic.google.geocoding;
 
-import in.beetroute.apps.commonlib.ServiceProviders;
 import in.beetroute.apps.commonlib.SimpleGeoPoint;
 import in.beetroute.apps.traffic.MapPoint;
 import in.beetroute.apps.traffic.services.GeocodingService;
@@ -33,9 +32,9 @@ public class AndroidGeocodingService implements GeocodingService {
 
 		ArrayList<MapPoint> list = new ArrayList<MapPoint>();
 		for (Address address : foundAdresses) {
-			MapPoint point = new MapPoint(ServiceProviders.ANDROID, 
-					address.getFeatureName(), addressText);
-			point.setLocation(address.getLatitude(), address.getLongitude());
+			MapPoint point = new MapPoint(address.getFeatureName(), 
+					addressText, address.getLatitude(),
+					address.getLongitude());
 			list.add(point);
 		}
 		

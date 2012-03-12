@@ -1,7 +1,6 @@
 package in.beetroute.apps.traffic;
 
 
-import in.beetroute.apps.commonlib.ServiceProviders;
 import in.beetroute.apps.commonlib.SimpleGeoPoint;
 
 import java.io.Serializable;
@@ -15,20 +14,6 @@ import com.google.android.maps.GeoPoint;
  *
  */
 public class MapPoint implements Serializable {
-	/**
-	 * Identifies which service this Point of Interest came from. 
-	 */
-	private ServiceProviders service;
-
-	/**
-	 * Some services have their own identifier for a point of interest.
-	 * This may be useful if we ever need to refer back to this place in that service.
-	 * e.g. Onze has an ID, Yahoo has WOEID
-	 * 
-	 * Optional.
-	 */
-	private String identifier;
-
 	/** 
 	 * The Geo point (lat long) for this point
 	 */
@@ -51,19 +36,31 @@ public class MapPoint implements Serializable {
 	 */
 	private float accuracy;
 	
-	/**
-	 * 
-	 * @param sp Service Provider who's returning 
-	 * @param identifier
-	 * @param name
-	 * @param description
-	 */
-	public MapPoint(ServiceProviders sp, String name, String description) {
-		service = sp;
-		this.name = name;
-		this.description = description;
-	}
-	
+    /**
+     * 
+     * @param name
+     * @param description
+     * @param identifier
+     */
+    public MapPoint(String name, String description, SimpleGeoPoint location) {
+        this.name = name;
+        this.description = description;
+        this.location = location;
+    }
+
+
+   /**
+     * 
+     * @param name
+     * @param description
+     * @param identifier
+     */
+    public MapPoint(String name, String description, double latitude, double longitude) {
+        this.name = name;
+        this.description = description;
+        this.location = new SimpleGeoPoint(latitude, longitude);
+    }
+
 	public String getName() {
 		return name;
 	}
@@ -80,19 +77,7 @@ public class MapPoint implements Serializable {
 	    return location;
 	}
 	
-	/**
-	 * Set the service specific identifier.
-	 * @param identifier
-	 */
-	public void setIdentifier(String identifier) {
-	    this.identifier = identifier;
-	}
-	
-	public void setLocation(double latitude, double longitude) {
-		this.location = new SimpleGeoPoint(latitude, longitude);
-	}
-	
-	public void setAccuracyRadius(float accuracy) {
+	public void setAccuracy(float accuracy) {
 	    this.accuracy = accuracy;
 	}
 }

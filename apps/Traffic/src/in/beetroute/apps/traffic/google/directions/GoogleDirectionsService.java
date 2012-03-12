@@ -19,8 +19,13 @@ public class GoogleDirectionsService implements DirectionsService {
 
 	@Override
 	public Route getFirstRoute(SimpleGeoPoint source, SimpleGeoPoint destination) {
+	    // TODO: Optimize this to only get a single route from the API
 		List<Route> routes = getRoutes(source, destination);
-		return routes.get(0);
+		if (routes.size() > 0) {
+		    return routes.get(0);
+		} else {
+		    return null;
+		}
 	}
 	
 	@Override
