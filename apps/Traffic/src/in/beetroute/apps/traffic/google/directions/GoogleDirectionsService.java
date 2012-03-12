@@ -29,14 +29,22 @@ public class GoogleDirectionsService implements DirectionsService {
 	
 	@Override
 	public List<Route> getRoutes(SimpleGeoPoint source, SimpleGeoPoint destination) {
-		String jsonResult = getRoutesJson(source, destination);
-	
+        List<Route> routes = new ArrayList<Route>();
+
+	    String jsonResult = getRoutesJson(source, destination);
+	    if (jsonResult == null) {
+	        return routes;
+	    }
+	    
 		Gson gson = new Gson();
 		Result result = gson.fromJson(jsonResult, Result.class);
-		List<DirectionsRoute> dirRoutes = result.routes;
+		if (result == null) {
+		    return routes;
+		}
 		
+		List<DirectionsRoute> dirRoutes = result.routes;
+
 		// Convert Googles DirectionsRoutes to our Routes
-		List<Route> routes = new ArrayList<Route>();
 		for (DirectionsRoute dr: dirRoutes) {
 			// Create a route object for each directionRoute
 			Route route = new Route(ServiceProviders.GOOGLE);

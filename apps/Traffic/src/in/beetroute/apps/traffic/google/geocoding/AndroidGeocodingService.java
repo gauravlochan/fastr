@@ -22,15 +22,15 @@ public class AndroidGeocodingService implements GeocodingService {
 	@Override
 	public List<MapPoint> resolveAddress(String addressText) {
 		Geocoder gc = new Geocoder(context);
+        ArrayList<MapPoint> list = new ArrayList<MapPoint>();
 		
         List<Address> foundAdresses = null;
 		try {
 			foundAdresses = gc.getFromLocationName(addressText, 5);
 		} catch (IOException e) {
-			e.printStackTrace();
+		    return list;
 		}
 
-		ArrayList<MapPoint> list = new ArrayList<MapPoint>();
 		for (Address address : foundAdresses) {
 			MapPoint point = new MapPoint(address.getFeatureName(), 
 					addressText, address.getLatitude(),
