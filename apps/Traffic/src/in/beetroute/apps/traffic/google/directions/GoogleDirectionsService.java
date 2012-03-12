@@ -1,7 +1,6 @@
 package in.beetroute.apps.traffic.google.directions;
 
 import in.beetroute.apps.commonlib.Global;
-import in.beetroute.apps.commonlib.Logger;
 import in.beetroute.apps.commonlib.RESTHelper;
 import in.beetroute.apps.commonlib.ServiceProviders;
 import in.beetroute.apps.commonlib.SimpleGeoPoint;
@@ -65,40 +64,33 @@ public class GoogleDirectionsService implements DirectionsService {
 	}
 	
 	private void addStepToRoute(Route route, Step step, boolean isLastStep) {
+	    float THRESHOLD = 0.010f; // 10 meters
+	    
 		// This is where we can choose what points we want to add
 		// For now i'm simply going to add the points from the polyline
 		String points = step.polyline.points;
 		
 		List<SimpleGeoPoint> simpleGeoPoints = PolylineDecoder.decodePoly(points);
+		SimpleGeoPoint previous = null;
+		
 		for (SimpleGeoPoint sgPoint: simpleGeoPoints) {
-		    // filter out points that are too close.  It slows down the map
-		    // rendering on the phone.
-		    if (!isTooClose(route, sgPoint)) { 
+		    if (previous == null) {
 		        route.addPoint(sgPoint);
+		        previous = sgPoint;
+		    } else {
+	            // Only keep points that are not too close.  It slows down the map
+	            // rendering on the phone.
+    		    if (previous.getDistanceFrom(sgPoint) > THRESHOLD) {
+    		        route.addPoint(sgPoint);
+    		        // Note: Only update previous to a point that was added to the route
+    		        previous = sgPoint;
+    		    } else {
+    		          //Logger.debug(TAG, "Dropping point " + sgPoint.toString());
+    		    }
 		    }
 		}
 	}
 
-	// TODO: Instead of a generic function like this, we could add code in
-	// the calling loop that saves the last point or something. (optimization)
-	private boolean isTooClose(Route route, SimpleGeoPoint sgPoint) {
-	    // Distance between previous point to ignore (in km)
-	    float THRESHOLD = 0.010f; // 10 meters
-	    
-	    List<SimpleGeoPoint> routePoints = route.getPoints();
-	    if (routePoints.size() == 0) {
-	        return false;
-	    }
-	    
-	    SimpleGeoPoint lastPoint = routePoints.get(routePoints.size()-1);
-	    // Check if distance is less than 5 metres
-	    if (lastPoint.getDistanceFrom(sgPoint) < THRESHOLD) {
-	        Logger.debug(TAG, "Dropping point " +sgPoint.toString());
-	        return true;
-	    }
-	    
-	    return false;
-	}
 
 	/**
 	 * Call the REST service with the source and destination, and get back the JSON

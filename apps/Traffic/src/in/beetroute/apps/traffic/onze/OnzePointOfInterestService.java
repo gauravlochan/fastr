@@ -49,7 +49,9 @@ public class OnzePointOfInterestService implements PointOfInterestService {
 			for (int i = 0; i < jsonArray.length(); i++) {
 				JSONObject jsonObject = jsonArray.getJSONObject(i);
 				MapPoint point = getPointOfInterest(jsonObject);
-				list.add(point);
+				if (point != null) {
+				    list.add(point);
+				}
 			}
 		} catch (JSONException e) {
 			// TODO Auto-generated catch block
@@ -69,12 +71,15 @@ public class OnzePointOfInterestService implements PointOfInterestService {
 	 */
     private MapPoint getPointOfInterest(JSONObject jsonObject) throws JSONException {
 		String name = jsonObject.getString(name_key);
-		String id = jsonObject.getString(id_key);
 		String desc = extractDescription(jsonObject.getString(ls_key));
 
         // Now to extract the latlong
         String coordinates = jsonObject.getString(point_key);
         int comma = coordinates.indexOf(',');
+        if (comma == -1) {
+            Logger.warn(TAG, "getPOI didn't have coordinates for "+name);
+            return null;
+        }
         String longitude = coordinates.substring(0, comma);
         String latitude = coordinates.substring(comma+1);
         SimpleGeoPoint location = new SimpleGeoPoint(latitude, longitude);

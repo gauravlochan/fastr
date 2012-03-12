@@ -17,6 +17,7 @@ import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.location.LocationManager;
+import android.util.DisplayMetrics;
 import android.widget.Toast;
 
 import com.google.android.maps.GeoPoint;
@@ -127,7 +128,11 @@ public abstract class BRMapActivity extends GDMapActivity {
 
     
     protected void drawRoute(Route r, int color) {
-        MapRouteOverlay mapOverlay = new MapRouteOverlay(r, mapView, color);
+        DisplayMetrics metrics = new DisplayMetrics(); 
+        getWindowManager().getDefaultDisplay().getMetrics(metrics);
+
+        MapRouteOverlay mapOverlay = new MapRouteOverlay(r, mapView, color, 
+                metrics.widthPixels, metrics.heightPixels);
         
         List<Overlay> listOfOverlays = mapView.getOverlays();
         listOfOverlays.add(0, mapOverlay);
