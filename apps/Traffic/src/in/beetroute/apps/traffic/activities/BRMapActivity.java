@@ -52,6 +52,11 @@ public abstract class BRMapActivity extends GDMapActivity {
     protected void resetMapOverlays() {
         mapView.getOverlays().clear();
 
+        if (myLocationOverlay != null) {
+            myLocationOverlay.disableMyLocation();
+            myLocationOverlay = null;
+        }
+        
         // Add a 'MyLocationOverlay' to track the current location
         myLocationOverlay = new MyLocationOverlay(this, mapView);
         mapView.getOverlays().add(myLocationOverlay);
