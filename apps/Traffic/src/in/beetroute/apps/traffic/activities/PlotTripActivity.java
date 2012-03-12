@@ -43,12 +43,11 @@ public class PlotTripActivity extends BRMapActivity {
         Trip trip = tripDbHelper.getTrip(tripId);
         
         Route route = getRoute(tripId);
-        this.drawRoute(route, Color.DKGRAY);
+        // this.drawRoute(route, Color.DKGRAY);
         
     }
     
     private Route getRoute(Integer tripId) {
-        
         // TODO Get a Route object
         return null;
     }
