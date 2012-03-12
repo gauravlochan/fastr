@@ -15,12 +15,13 @@ import in.beetroute.apps.traffic.Route;
 import in.beetroute.apps.traffic.google.directions.GoogleDirectionsService;
 import in.beetroute.apps.traffic.location.LocationService;
 import in.beetroute.apps.traffic.services.DirectionsService;
-import android.content.Context;
+
+import java.util.Timer;
+import java.util.TimerTask;
+
 import android.content.Intent;
-import android.location.Location;
-import android.location.LocationListener;
-import android.location.LocationManager;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -39,7 +40,8 @@ public class MainActivity extends BRMapActivity {
     // These are preserved across recreations (OnSaveInstanceState)
     private MapPoint destination;
     private MapPoint source;
-    private RouteRemainingLocationListener locationListener;
+    private Timer timer;
+    private RouteTimerTask timerTask = null;
 
     private static final String SAVE_SOURCE = "SaveSource";
     private static final String SAVE_DESTINATION = "SaveDestination";	
@@ -82,14 +84,17 @@ public class MainActivity extends BRMapActivity {
         // Start the service in case it is already not running
         Intent i=new Intent(this, LocationService.class);
         startService(i);
+
+        timer = new Timer();
 	}
+	
 	
 	@Override
 	public void onResume() {
 	    super.onResume();
         // If a route has been plotted, add a location listener for that route
 	    if (destination != null) {
-	        startRouteListener();
+	        scheduleTimerTask();
 	    }
 	}
 	
@@ -99,9 +104,10 @@ public class MainActivity extends BRMapActivity {
 	    super.onPause();
 	    // If a route has been plotted, remove the location listener for that route
 	    if (destination != null) {
-	        stopRouteListener();
+	        unscheduleTimerTask();
 	    }
 	}
+	
 	
     @Override
     public boolean onHandleActionBarItemClick(ActionBarItem item, int position) {
@@ -142,11 +148,11 @@ public class MainActivity extends BRMapActivity {
             Logger.info(TAG, "resultCode: " + resultCode );
             
             if (data.hasExtra(AppGlobal.destPoint)) {
-                // reset the map and plot the new route
+                // Clear any previous route
                 resetMapOverlays();
 
-            	destination = (MapPoint) data.getExtras().getSerializable(AppGlobal.destPoint);
-            	
+                // Plot the new route
+                destination = (MapPoint) data.getExtras().getSerializable(AppGlobal.destPoint);
             	if (data.hasExtra(AppGlobal.sourcePoint)) {
                     // If the user specified a source, plot that route
             	    source = (MapPoint) data.getExtras().getSerializable(AppGlobal.sourcePoint);
@@ -155,22 +161,19 @@ public class MainActivity extends BRMapActivity {
 	            	SimpleGeoPoint location = new SimpleGeoPoint(getLastKnownLocation());
 	            	source = new MapPoint("Current Location", "", location);
             	}
+            	
             	getAndDrawRoutes(source, destination);
             	
                 // Call BTIS asynchronously to get congestion points and plot them on the map
                 // TODO: Eventually pass in the route that we care about
                 new GetCongestionTask(this, mapView).execute(null);
-            	
-                // TODO: Do we need to unregister the listener if we were currently
-                // driving towards a route?
-                if (locationListener == null) {
-                    locationListener = new RouteRemainingLocationListener();
-                    startRouteListener();
-                } else {
-                    // If we are already driving on a route and the listener is on
-                    Logger.debug(TAG, "No need to start RouteLocationListener");
-                }
                 
+                // Start a timer to periodically update the remaining time/distance
+                if (timerTask != null) {
+                    unscheduleTimerTask();
+                }
+                scheduleTimerTask();
+            	
             	// Call the server to send this route (happens in an async task)
 //            	ServerClient serverclient = new ServerClient();
 //            	serverclient.sendRoute(route);
@@ -201,62 +204,75 @@ public class MainActivity extends BRMapActivity {
             source = (MapPoint) _source;
             destination = (MapPoint) _destination;
             getAndDrawRoutes(source, destination);
-            
-            locationListener = new RouteRemainingLocationListener();
-            startRouteListener();
+            scheduleTimerTask();
         }
     }
-    
-    // Assumes a locationListener has already been created
-    private void startRouteListener() {
-        // Get updates no sooner than 1 minutes, and each time the user moves 300 meters
-        LocationManager locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
-        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 60*1000, 300, locationListener);
-        Logger.debug(TAG, "Started RouteLocationListener");
+
+    @Override
+    protected void resetMapOverlays() {
+        super.resetMapOverlays();
+        findViewById(R.id.transparent_panel).setVisibility(View.INVISIBLE);
     }
 
-    private void stopRouteListener() {
-        LocationManager locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
-        locationManager.removeUpdates(locationListener);
-        Logger.debug(TAG, "Stopped RouteLocationListener");
+    // TODO: This is being called in the UI thread.  Fix this?
+    @Override
+    protected Route getAndDrawRoutes(MapPoint source, MapPoint dest) {
+        Route route = super.getAndDrawRoutes(source, dest);
+
+        // Now make the panel visible and update it
+        findViewById(R.id.transparent_panel).setVisibility(View.VISIBLE);
+        runOnUiThread(new UpdateTimeRunnable(route));
+        return route;
+    }
+
+
+    
+    private void scheduleTimerTask() {
+        timerTask = new RouteTimerTask();
+        timer.schedule(timerTask, 60*1000, 60*1000);
+        Logger.debug(TAG, "Scheduled timerTask");
+    }
+    
+    private void unscheduleTimerTask() {
+        timerTask.cancel();
+        timerTask = null;
+        Logger.debug(TAG, "Unscheduled timerTask");
+    }
+    
+    // http://stackoverflow.com/questions/7010951/error-updating-textview-from-timertasks-run-method
+    private class UpdateTimeRunnable implements Runnable {
+        Route route;
+        public UpdateTimeRunnable(Route route) {
+            this.route = route;
+        }
+        
+        @Override
+        public void run() {
+            TextView hud = (TextView)findViewById(R.id.textview);
+            hud.setText("Remaining: " + route.drivingDistanceMeters/1000 + "km, " 
+                + route.estimatedTimeSeconds/60+ "min.");
+        }
     }
     
     /**
-     * This is what generates updates to populate the grey box on the top
-     * @author gauravlochan, roshan
+     * This timerTask is responsible for updating the Remaining time/distance
+     * display on the map
+     * 
+     * @author gauravlochan
      */
-    private class RouteRemainingLocationListener implements LocationListener {
+    private class RouteTimerTask extends TimerTask {
 
         @Override
-        public void onLocationChanged(Location location) {
-            // Called when a new location is found by the network location provider.
-            Logger.debug(TAG, "Received update for Remaining Route");
-            TextView hud = (TextView)findViewById(R.id.textview);
-            findViewById(R.id.transparent_panel).setVisibility(0);
-            SimpleGeoPoint currentLocation = new SimpleGeoPoint(location.getLongitude(),location.getLatitude());
-
+        public void run() {
+            // TODO: get current location from DB instead
+            SimpleGeoPoint currentLocation = new SimpleGeoPoint(getLastKnownLocation());
+            
+            // Get route
             DirectionsService dir = new GoogleDirectionsService();
             Route route = dir.getFirstRoute(currentLocation, destination.getSimpleGeoPoint());
-            if (route != null) {
-                Logger.debug(TAG, "Calculated route for RouteRemaining display");
 
-                hud.setText("Remaining: " + route.drivingDistanceMeters/1000 + "km, " 
-                        + route.estimatedTimeSeconds/60+ "min.");
-            } else {
-                Logger.warn(TAG, "Update RouteRemaining display failed since route was null");
-            }
-        }
-
-        @Override
-        public void onStatusChanged(String provider, int status, Bundle extras) {
-        }
-
-        @Override
-        public void onProviderEnabled(String provider) {
-        }
-
-        @Override
-        public void onProviderDisabled(String provider) {
+            // Update textView
+            runOnUiThread(new UpdateTimeRunnable(route));
         }
         
     }

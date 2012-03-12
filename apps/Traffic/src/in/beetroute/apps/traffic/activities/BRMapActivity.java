@@ -92,13 +92,26 @@ public abstract class BRMapActivity extends GDMapActivity {
     }
 
     
-    protected void getAndDrawRoutes(MapPoint source, MapPoint dest) {
+    /**
+     * Draws routes and returns the shortest route.   
+     * 
+     * @param source
+     * @param dest
+     * @return Shortest route. This can be null.
+     */
+    protected Route getAndDrawRoutes(MapPoint source, MapPoint dest) {
         drawPointOfInterest(source, false);
         drawPointOfInterest(dest, false);     
 
         DirectionsService dir = new GoogleDirectionsService();
         List<Route> routes = dir.getRoutes(source.getSimpleGeoPoint(), dest.getSimpleGeoPoint());
         drawMultipleRoutes(routes);
+        
+        if (routes.size()>0) {
+            return routes.get(0);
+        } else {
+            return null;
+        }
     }
 
     
