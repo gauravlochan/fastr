@@ -33,7 +33,6 @@ class UpgradeHelper {
         
         switch (oldVersion) {
             case 1: 
-            case 2:
                 // We are now on version 2, so there the only older version is 1
                 upgradev1tov2(db);
                 break;
