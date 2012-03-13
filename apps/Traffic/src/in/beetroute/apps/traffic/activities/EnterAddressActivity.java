@@ -181,7 +181,17 @@ public class EnterAddressActivity extends GDActivity {
 
 		@Override
 		protected void onPostExecute(MapPointList pointList) {
-			this.progressDialog.cancel();
+		    // Temporary fix for the "View not attached to window manager" issue
+		    // This still leaks a window.  Better fixes:
+            // http://blog.doityourselfandroid.com/2010/11/14/handling-progress-dialogs-and-screen-orientation-changes/
+            // http://stackoverflow.com/questions/2224676/android-view-not-attached-to-window-manager
+            // http://stackoverflow.com/questions/1111980/how-to-handle-screen-orientation-change-when-progress-dialog-and-background-thre
+		    try {
+			    this.progressDialog.cancel();
+		    } catch (IllegalArgumentException e) {
+		        // The original activity has been killed, don't crash the app
+		        return;
+		    }
 			
 			// If nothing was found, stay on the activity and let user try again
 			if (pointList.points.size() == 0) {
