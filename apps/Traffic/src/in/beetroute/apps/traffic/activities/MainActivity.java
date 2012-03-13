@@ -62,7 +62,8 @@ public class MainActivity extends BRMapActivity {
         addActionBarItem(Type.Export, R.id.action_bar_directions);
         
         // Add the route history button
-        addActionBarItem(Type.List, R.id.action_bar_triplist);
+        // TODO: Enable this in a future release
+        // addActionBarItem(Type.List, R.id.action_bar_triplist);
         
         // Add the find me icon to the action bar
         addActionBarItem(Type.LocateMyself, R.id.action_bar_findme);
@@ -223,7 +224,8 @@ public class MainActivity extends BRMapActivity {
     private void scheduleTimerTask() {
         timerTask = new RouteTimerTask();
         int cancelled = timer.purge();
-        timer.schedule(timerTask, 300*1000, 300*1000);
+        // First execution after 10 seconds, subsequent after 3 minutes
+        timer.schedule(timerTask, 10*1000, 180*1000);
         Logger.debug(TAG, "Scheduled timerTask");
     }
     
@@ -242,6 +244,10 @@ public class MainActivity extends BRMapActivity {
         
         @Override
         public void run() {
+            String text = "Remaining: " + route.drivingDistanceMeters/1000 + "km, " 
+                    + route.estimatedTimeSeconds/60+ "min.";
+            Logger.debug(TAG, "Updated Route " + text);
+
             TextView hud = (TextView)findViewById(R.id.textview);
             hud.setText("Remaining: " + route.drivingDistanceMeters/1000 + "km, " 
                 + route.estimatedTimeSeconds/60+ "min.");
@@ -260,6 +266,7 @@ public class MainActivity extends BRMapActivity {
         public void run() {
             // TODO: get current location from DB instead
             SimpleGeoPoint currentLocation = new SimpleGeoPoint(getLastKnownLocation());
+            Logger.debug(TAG, "Timer invoked, found location as "+currentLocation);
             
             // Get route
             DirectionsService dir = new GoogleDirectionsService();
