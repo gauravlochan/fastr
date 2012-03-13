@@ -15,6 +15,9 @@ import in.beetroute.apps.traffic.google.directions.GoogleDirectionsService;
 import in.beetroute.apps.traffic.location.LocationService;
 import in.beetroute.apps.traffic.services.DirectionsService;
 
+import java.math.BigDecimal;
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.util.Date;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -274,13 +277,17 @@ public class MainActivity extends BRMapActivity {
         
         @Override
         public void run() {
-            String text = "Remaining: " + route.drivingDistanceMeters/1000 + "km, " 
-                    + route.estimatedTimeSeconds/60+ "min.";
-            Logger.debug(TAG, "Updated Route " + text);
+           // String text = "Remaining: " + route.drivingDistanceMeters/1000 + "km, " 
+            //        + route.estimatedTimeSeconds/60+ "min.";
+            //Removing the remaining time for now.
+        	BigDecimal bd = new BigDecimal(route.drivingDistanceMeters/1000);
+        	Double drivingDistance = bd.setScale(2, BigDecimal.ROUND_UP).doubleValue();
+        	
+        	String text = "Remaining distance: " + drivingDistance + "KM";
+        	Logger.debug(TAG, "Updated Route " + text);
 
             TextView hud = (TextView)findViewById(R.id.textview);
-            hud.setText("Remaining: " + route.drivingDistanceMeters/1000 + "km, " 
-                + route.estimatedTimeSeconds/60+ "min.");
+            hud.setText(text);
         }
     }
     

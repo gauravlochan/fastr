@@ -31,7 +31,7 @@ public class Route {
 	// and so gson couldn't convert it to json.  (ummm, i think)
 	protected ArrayList<SimpleGeoPoint> points;
 	
-	public int drivingDistanceMeters = 0;
+	public float drivingDistanceMeters = 0;
 	public int estimatedTimeSeconds = 0;
 
 	public Route(ServiceProviders service) {
