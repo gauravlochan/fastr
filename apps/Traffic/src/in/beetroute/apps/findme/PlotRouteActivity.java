@@ -34,14 +34,16 @@ public class PlotRouteActivity extends BRMapActivity {
         
         setActionBarContentView(R.layout.showroute);
         
-        //Add a help screen
-       // addActionBarItem(Type.Help, R.id.action_bar_help);
+        // Add a help screen
+        // TODO: Bring this back
+        // addActionBarItem(Type.Help, R.id.action_bar_help);
 
         // Add the direction button
         addActionBarItem(Type.Export, R.id.action_bar_directions);
         
         // Add the route history button
-        addActionBarItem(Type.List, R.id.action_bar_triplist);
+        // TODO: Bring this back
+        // addActionBarItem(Type.List, R.id.action_bar_triplist);
         
         // Add the find me icon to the action bar
         addActionBarItem(Type.LocateMyself, R.id.action_bar_findme);  
