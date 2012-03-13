@@ -18,6 +18,7 @@ public class ConfirmPlotRoute extends Activity {
 
     //private String toAddress;
     private static final int DIALOG_ALERT=10;
+    private static final int PLOT_ROUTE_ACTIVITY=1;
    // private MapPoint toAddress;
     private MapPoint fromAddress;
     private Bundle extras;
@@ -50,12 +51,25 @@ public class ConfirmPlotRoute extends Activity {
 		return super.onCreateDialog(id);
 	}
 	
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		// TODO Auto-generated method stub
+		super.onActivityResult(requestCode, resultCode, data);
+		if(requestCode == PLOT_ROUTE_ACTIVITY) {
+			if (resultCode == Activity.RESULT_CANCELED) {
+				ConfirmPlotRoute.this.finish();
+			}
+		}
+	}
+
+
+
 	private final class OkOnClickListener implements DialogInterface.OnClickListener {
 		public void onClick(DialogInterface dialog, int which) {
 			//Bundle extras = getIntent().getExtras();
 			Intent intent = new Intent(ConfirmPlotRoute.this, PlotRouteActivity.class);
 			intent.putExtra(AppGlobal.LOCATION_FROM_SMS_KEY, fromAddress);
-			startActivity(intent);
+			startActivityForResult(intent, PLOT_ROUTE_ACTIVITY);
 		}
 	}
 

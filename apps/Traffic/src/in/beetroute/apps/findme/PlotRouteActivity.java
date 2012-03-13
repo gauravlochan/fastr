@@ -97,11 +97,4 @@ public class PlotRouteActivity extends BRMapActivity {
 		
 	}
 
-	@Override
-	public void onBackPressed() {
-		// TODO Auto-generated method stub
-		super.onBackPressed();
-		startActivity( new Intent(this,MainActivity.class));
-	}
-
 }
