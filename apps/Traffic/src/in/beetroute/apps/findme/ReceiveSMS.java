@@ -13,6 +13,7 @@ import android.telephony.SmsMessage;
 
 public class ReceiveSMS extends BroadcastReceiver {
     private static final String TAG = Global.COMPANY;
+ 
 
 	@Override
 	/*
@@ -46,6 +47,7 @@ public class ReceiveSMS extends BroadcastReceiver {
                             ConfirmPlotRoute.class);
                     showDialogIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     showDialogIntent.putExtra(AppGlobal.LOCATION_FROM_SMS_KEY, mapPoint);
+                    showDialogIntent.putExtra(AppGlobal.SMS_PHONE_NUMBER, smsSource);
     
                     context.startActivity(showDialogIntent);
                 }

@@ -20,22 +20,22 @@ public class ConfirmPlotRoute extends Activity {
     private static final int DIALOG_ALERT=10;
    // private MapPoint toAddress;
     private MapPoint fromAddress;
+    private Bundle extras;
 	
     @Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.showdialog);
-		Bundle extras = getIntent().getExtras();
+		extras = getIntent().getExtras();
+		
 		fromAddress = (MapPoint) extras.getSerializable(AppGlobal.LOCATION_FROM_SMS_KEY);
 		//toAddress = extras.getString("latlon");	
 		showDialog(DIALOG_ALERT);
 	}
 		
 	protected Dialog onCreateDialog(int id) {
-		String fromPhoneNumber = fromAddress.getName();
-		String[] phoneNumberArray = fromPhoneNumber.split(" ");
-		
-		String formatString = "Your friend " + phoneNumberArray[2] + " has sent their location information. Do you want to plot directions";
+		String fromPhoneNumber = extras.getString(AppGlobal.SMS_PHONE_NUMBER);	
+		String formatString = "Your friend " + fromPhoneNumber + " has sent their location information. Do you want to plot directions";
 		switch (id) {
 		case DIALOG_ALERT:
 			Builder builder = new AlertDialog.Builder(this);
