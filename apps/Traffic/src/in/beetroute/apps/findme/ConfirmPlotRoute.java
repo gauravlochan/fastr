@@ -18,20 +18,24 @@ public class ConfirmPlotRoute extends Activity {
 
     //private String toAddress;
     private static final int DIALOG_ALERT=10;
-    private MapPoint toAddress;
+   // private MapPoint toAddress;
+    private MapPoint fromAddress;
 	
     @Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.showdialog);
 		Bundle extras = getIntent().getExtras();
+		fromAddress = (MapPoint) extras.getSerializable(AppGlobal.LOCATION_FROM_SMS_KEY);
 		//toAddress = extras.getString("latlon");	
 		showDialog(DIALOG_ALERT);
 	}
 		
 	protected Dialog onCreateDialog(int id) {
+		String fromPhoneNumber = fromAddress.getName();
+		String[] phoneNumberArray = fromPhoneNumber.split(" ");
 		
-		String formatString = "Your friend has sent their location information. Do you want to plot directions";
+		String formatString = "Your friend " + phoneNumberArray[2] + " has sent their location information. Do you want to plot directions";
 		switch (id) {
 		case DIALOG_ALERT:
 			Builder builder = new AlertDialog.Builder(this);
@@ -48,12 +52,9 @@ public class ConfirmPlotRoute extends Activity {
 	
 	private final class OkOnClickListener implements DialogInterface.OnClickListener {
 		public void onClick(DialogInterface dialog, int which) {
-			Bundle extras = getIntent().getExtras();
-			MapPoint dest = (MapPoint) extras.getSerializable(AppGlobal.LOCATION_FROM_SMS_KEY);
-			
+			//Bundle extras = getIntent().getExtras();
 			Intent intent = new Intent(ConfirmPlotRoute.this, PlotRouteActivity.class);
-			intent.putExtra(AppGlobal.LOCATION_FROM_SMS_KEY, dest);
-			
+			intent.putExtra(AppGlobal.LOCATION_FROM_SMS_KEY, fromAddress);
 			startActivity(intent);
 		}
 	}
