@@ -16,8 +16,6 @@ import in.beetroute.apps.traffic.location.LocationService;
 import in.beetroute.apps.traffic.services.DirectionsService;
 
 import java.math.BigDecimal;
-import java.text.DecimalFormat;
-import java.text.NumberFormat;
 import java.util.Date;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -36,6 +34,7 @@ public class MainActivity extends BRMapActivity {
     
 	// Define a request code for the Enter address activity
 	private static final int ENTER_DESTINATION_REQUEST_CODE = 100;
+	private static final int DISTANCE_PRECISION = 1;
 	
     // These are preserved across recreations (OnSaveInstanceState)
     private MapPoint destination;
@@ -281,7 +280,7 @@ public class MainActivity extends BRMapActivity {
             //        + route.estimatedTimeSeconds/60+ "min.";
             //Removing the remaining time for now.
         	BigDecimal bd = new BigDecimal(route.drivingDistanceMeters/1000);
-        	Double drivingDistance = bd.setScale(2, BigDecimal.ROUND_UP).doubleValue();
+        	Double drivingDistance = bd.setScale(DISTANCE_PRECISION, BigDecimal.ROUND_UP).doubleValue();
         	
         	String text = "Remaining distance: " + drivingDistance + "KM";
         	Logger.debug(TAG, "Updated Route " + text);

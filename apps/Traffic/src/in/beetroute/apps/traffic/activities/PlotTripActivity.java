@@ -7,7 +7,6 @@ import in.beetroute.apps.traffic.R;
 import in.beetroute.apps.traffic.Route;
 import in.beetroute.apps.traffic.db.TripDbHelper;
 import in.beetroute.apps.traffic.trip.Trip;
-import android.graphics.Color;
 import android.os.Bundle;
 
 import com.google.android.maps.MapView;
