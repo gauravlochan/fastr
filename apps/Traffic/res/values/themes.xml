@@ -19,17 +19,17 @@
 
 <resources>
 
-	<style name="Theme.GDCatalog" parent="@style/Theme.GreenDroid.NoTitleBar">
+	<style name="Theme.BeetRoute" parent="@style/Theme.GreenDroid.NoTitleBar">
 	
 		<item name="gdActionBarTitleColor">@android:color/white</item>
 		<item name="gdActionBarBackground">@drawable/action_bar_background</item>
 		<item name="gdActionBarDividerDrawable">@drawable/action_bar_divider</item>
 		<item name="gdActionBarDividerWidth">2px</item>
-		<item name="gdActionBarApplicationDrawable">@drawable/browser</item>
+		<item name="gdActionBarApplicationDrawable">@drawable/gd_action_bar_home</item>
 	
 	</style>
 
-    <style name="Theme.GDCatalog.TweakedItems" parent="@style/Theme.GDCatalog">
+    <style name="Theme.GDCatalog.TweakedItems" parent="@style/Theme.BeetRoute">
         
         <item name="gdTextAppearanceLarge">@style/TextAppearanceLarge</item>
         <item name="gdItemViewPreferredHeight">45dp</item>       

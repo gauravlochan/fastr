@@ -2,6 +2,8 @@
 <resources>
     <string name="hello">Hello World, TrafficActivity!</string>
     <string name="app_name">BeetRoute</string>
+    <string name="FindMe">Find Me</string>
+        
     <string name="clicked_on_direction">You have clicked on the directions button</string>
     <string name="GetDirections">Get Directions</string>
     <string name="emptyaddresserror">You need to specify an address or place</string>
