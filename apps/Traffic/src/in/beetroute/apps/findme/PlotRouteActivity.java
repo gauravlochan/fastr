@@ -35,7 +35,7 @@ public class PlotRouteActivity extends BRMapActivity {
         setActionBarContentView(R.layout.showroute);
         
         //Add a help screen
-        addActionBarItem(Type.Help, R.id.action_bar_help);
+       // addActionBarItem(Type.Help, R.id.action_bar_help);
 
         // Add the direction button
         addActionBarItem(Type.Export, R.id.action_bar_directions);
