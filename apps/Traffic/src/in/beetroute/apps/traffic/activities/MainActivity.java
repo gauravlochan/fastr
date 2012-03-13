@@ -2,7 +2,6 @@ package in.beetroute.apps.traffic.activities;
 
 import greendroid.widget.ActionBarItem;
 import greendroid.widget.ActionBarItem.Type;
-import greendroid.widget.QuickActionWidget;
 import in.beetroute.apps.commonlib.Global;
 import in.beetroute.apps.commonlib.Logger;
 import in.beetroute.apps.commonlib.SimpleGeoPoint;
@@ -16,6 +15,7 @@ import in.beetroute.apps.traffic.google.directions.GoogleDirectionsService;
 import in.beetroute.apps.traffic.location.LocationService;
 import in.beetroute.apps.traffic.services.DirectionsService;
 
+import java.util.Date;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -31,9 +31,6 @@ import com.google.android.maps.MapView;
 public class MainActivity extends BRMapActivity {
     private static final String TAG = Global.COMPANY;
     
-    // Trying out the quickaction for findme icon
-    private QuickActionWidget quickAction;
-
 	// Define a request code for the Enter address activity
 	private static final int ENTER_DESTINATION_REQUEST_CODE = 100;
 	
@@ -70,25 +67,61 @@ public class MainActivity extends BRMapActivity {
 
         mapView = (MapView) findViewById(R.id.mapview);
 		mapView.setBuiltInZoomControls(true);
-		mapView.getController().setZoom(15);
-		
-		resetMapOverlays();
-		
-		// Try to center around current location
+        mapView.getController().setZoom(15);
+
+        // TODO: Do we really need to call this? Test this some more.
+        resetMapOverlays();
+
+        // Try to center around current location
+        // TODO: Once we center routes properly, this can be moved down to onCreateEmpty
         GeoPoint geoPoint = getLastKnownLocation();
         mapView.getController().setCenter(geoPoint);
-		Toast.makeText(this, "You are here", Toast.LENGTH_SHORT).show();
-		
-		// Setup the installation ID
-		Preferences.getInstallationId(this);
-		
+
+        // Setup the installation ID
+        Preferences.getInstallationId(this);
+
         // Start the service in case it is already not running
         Intent i=new Intent(this, LocationService.class);
         startService(i);
 
         timer = new Timer();
+
+        // All the code above was common initialization code
+        // Now decide what to render based on what was passed into the Intent
+        Bundle extras = getIntent().getExtras();
+        if (extras!= null) {
+            Object smsDest = extras.getSerializable(AppGlobal.LOCATION_FROM_SMS_KEY);
+            if (smsDest != null) {
+                onCreateFindMe((MapPoint) smsDest, geoPoint);
+                return;
+            }
+        }
+        
+        onCreateEmpty();
+
 	}
+
+	/**
+	 * This is called when the activity is invoked from the SMS receiver
+	 * @param destination
+	 */
+	private void onCreateFindMe(MapPoint destination, GeoPoint geoPoint) {
+        // Get the route from here to the destination
+        SimpleGeoPoint location = new SimpleGeoPoint(geoPoint);
+        Date date = new Date();
+        MapPoint source = new MapPoint("Starting Location", "Your location at time "+date.toLocaleString(), 
+                location);
+
+        getAndDrawRoutes(source, destination);
+	}
+
 	
+	/**
+	 * This is called when the activity is started from the home screen
+	 */
+	private void onCreateEmpty() {
+        Toast.makeText(this, "You are here", Toast.LENGTH_SHORT).show();
+	}
 	
 	@Override
 	public void onResume() {
@@ -124,9 +157,6 @@ public class MainActivity extends BRMapActivity {
                 break;
             
             case R.id.action_bar_findme:
-                //quickAction = new QuickActionGrid(this);
-                //quickAction.addQuickAction(new QuickAction(getApplicationContext(),R.drawable.gd_action_bar_locate_myself, new String("facebook")));
-                //quickAction.show(mapView);
             	startActivity(new Intent(this, SendSMS.class));
             	break;
 

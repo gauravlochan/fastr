@@ -45,6 +45,9 @@ public class ConfirmPlotRoute extends Activity {
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		super.onActivityResult(requestCode, resultCode, data);
+		
+		// Unroll the stack when someone comes back from the plotted route
+		// Need to finish this activity, otherwise it stays like a black screen
 		if(requestCode == PLOT_ROUTE_ACTIVITY) {
 			if (resultCode == Activity.RESULT_CANCELED) {
 				ConfirmPlotRoute.this.finish();
@@ -57,7 +60,7 @@ public class ConfirmPlotRoute extends Activity {
 		    MapPoint fromAddress = (MapPoint) 
 		            getIntent().getExtras().getSerializable(AppGlobal.LOCATION_FROM_SMS_KEY);
 
-			Intent intent = new Intent(ConfirmPlotRoute.this, PlotRouteActivity.class);
+			Intent intent = new Intent(ConfirmPlotRoute.this, MainActivity.class);
 			intent.putExtra(AppGlobal.LOCATION_FROM_SMS_KEY, fromAddress);
 			startActivityForResult(intent, PLOT_ROUTE_ACTIVITY);
 		}

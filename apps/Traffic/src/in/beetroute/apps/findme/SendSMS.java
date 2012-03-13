@@ -1,16 +1,11 @@
 package in.beetroute.apps.findme;
 
 import greendroid.app.GDActivity;
-import greendroid.app.GDMapActivity;
-import greendroid.widget.ActionBarItem.Type;
 import in.beetroute.apps.commonlib.Global;
 import in.beetroute.apps.commonlib.Logger;
 import in.beetroute.apps.traffic.R;
-import in.beetroute.apps.traffic.activities.MainActivity;
 
 import java.util.List;
-
-import com.google.android.maps.MapView;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -52,18 +47,15 @@ public class SendSMS extends GDActivity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
     	setActionBarContentView(R.layout.findme);
-    	// Add the direction button
-    			//addActionBarItem(Type.Export, R.id.action_bar_directions);
     			
         super.onCreate(savedInstanceState);
         initBroadcastReceiver();
         location = getGpsData(this);
-       //setContentView(in.beetroute.apps.traffic.R.layout.findme);
-        	Intent intent = new Intent(Intent.ACTION_PICK,
-                ContactsContract.Contacts.CONTENT_URI);
-        	if(location != null) {
-        		startActivityForResult(intent, PICK_CONTACT);
-        	}
+    	Intent intent = new Intent(Intent.ACTION_PICK,
+            ContactsContract.Contacts.CONTENT_URI);
+    	if (location != null) {
+    		startActivityForResult(intent, PICK_CONTACT);
+    	}
         
     }
     

@@ -23,7 +23,7 @@ public class ReceiveSMS extends BroadcastReceiver {
 	 */
     public void onReceive(Context context, Intent intent) {
         Bundle bundle = intent.getExtras();
-        System.out.println("In the SMS Receive body");
+        Logger.debug(TAG, "In the SMS Receive body");
         Object[] messages = (Object[]) bundle.get("pdus");
         SmsMessage[] sms = new SmsMessage[messages.length];
         for (int i = 0; i < messages.length; ++i) {

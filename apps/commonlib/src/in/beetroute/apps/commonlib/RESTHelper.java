@@ -58,7 +58,7 @@ public class RESTHelper {
                 if (entity != null) {
                     InputStream instream = entity.getContent();
                     result = convertStreamToString(instream);
-                    Logger.debug(TAG, "Result of conversation: [" + result + "]");
+                    // Logger.debug(TAG, "Result of conversation: [" + result + "]");
                     instream.close();
                 } else {
                     Logger.debug(TAG, "Empty Http response");
@@ -99,7 +99,7 @@ public class RESTHelper {
                 if (entity != null) {
                     InputStream instream = entity.getContent();
                     result = convertStreamToString(instream);
-                    Logger.info(TAG, "Result of converstion: [" + result + "]");
+                    // Logger.info(TAG, "Result of conversation: [" + result + "]");
                     instream.close();
                 } else {
                     Logger.debug(TAG, "Empty Http response");
