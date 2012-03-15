@@ -20,6 +20,8 @@ import java.util.Date;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -56,6 +58,9 @@ public class MainActivity extends BRMapActivity {
 
 		super.onCreate(savedInstanceState);
         setActionBarContentView(R.layout.map);
+        
+        //Add a help button
+        addActionBarItem(Type.Help,R.id.action_bar_help);
 
         // Add the direction button
         addActionBarItem(Type.Export, R.id.action_bar_directions);
@@ -161,6 +166,29 @@ public class MainActivity extends BRMapActivity {
             case R.id.action_bar_findme:
             	startActivity(new Intent(this, SendSMS.class));
             	break;
+            	
+            case R.id.action_bar_help:
+            	//startActivity(new Intent(this, HelpActivity.class));
+            	//TextView hu = (TextView)findViewById(R.id.textview);
+                //hu.setText("text");
+                
+                final AlertDialog.Builder builder = new AlertDialog.Builder(this);
+           
+                builder.setMessage(
+                        R.string.helpString)
+                        .setCancelable(false)
+                        .setTitle(new String("Help"))
+                        .setPositiveButton("OK",
+                                new DialogInterface.OnClickListener() {
+                                    public void onClick(
+                                            @SuppressWarnings("unused") final DialogInterface dialog,
+                                            @SuppressWarnings("unused") final int id) {
+                                    	
+                             
+                                    }
+                                });
+                final AlertDialog alert = builder.create();
+                alert.show();
 
             default:
                 return super.onHandleActionBarItemClick(item, position);

@@ -164,6 +164,7 @@ public class SendSMS extends GDActivity {
 
     // TODO: Use LocationHelper code instead
     public Location getGpsData(Context context) {
+    	Location location = null;
         try {
             LocationManager locationManager = (LocationManager) context
                     .getSystemService(Context.LOCATION_SERVICE);
@@ -174,8 +175,8 @@ public class SendSMS extends GDActivity {
 
             if (!providers.isEmpty()) {
                 if (locationManager.isProviderEnabled(locationManager.GPS_PROVIDER)) {
-                    Location location = locationManager.getLastKnownLocation(locationManager.GPS_PROVIDER);
-                    return location;
+                    location = locationManager.getLastKnownLocation(locationManager.GPS_PROVIDER);
+                    float accuracy = location.getAccuracy();
                 } else {
                     buildAlertMessageNoGps();
                 }
@@ -183,7 +184,7 @@ public class SendSMS extends GDActivity {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return null;
+        return location;
     }
 
     private void buildAlertMessageNoGps() {
