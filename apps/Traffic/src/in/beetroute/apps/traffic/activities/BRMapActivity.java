@@ -2,6 +2,7 @@ package in.beetroute.apps.traffic.activities;
 
 import greendroid.app.GDMapActivity;
 import in.beetroute.apps.commonlib.Global;
+import in.beetroute.apps.commonlib.Logger;
 import in.beetroute.apps.commonlib.SimpleGeoPoint;
 import in.beetroute.apps.traffic.MapPoint;
 import in.beetroute.apps.traffic.R;
@@ -12,11 +13,9 @@ import in.beetroute.apps.traffic.services.DirectionsService;
 
 import java.util.List;
 
-import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.location.Location;
-import android.location.LocationManager;
 import android.util.DisplayMetrics;
 import android.widget.Toast;
 
@@ -157,16 +156,14 @@ public abstract class BRMapActivity extends GDMapActivity {
         }
         
         // Else try to call into location manager directly
-        // Acquire a reference to the system Location Manager
-        LocationManager locationManager = (LocationManager) this
-                .getSystemService(Context.LOCATION_SERVICE);
-        Location location = LocationHelper.getLastKnownLocation(locationManager);
+        Location location = LocationHelper.getBestLocation(this);
         if (location != null) {
             return LocationHelper.locationToGeoPoint(location);
         }
-        
+
         // HACK: In some phones (e.g. HTC Wildfire) our code to get the location fails
         // Center to Ashok Nagar police station :-)
+        Logger.warn(TAG, "Unable to get a location from the phone.  Use default");
         SimpleGeoPoint sgPoint = new SimpleGeoPoint(12.971669, 77.610314);
         return sgPoint.getGeoPoint();
     }

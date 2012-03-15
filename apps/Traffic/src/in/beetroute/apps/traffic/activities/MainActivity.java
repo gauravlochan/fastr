@@ -150,7 +150,7 @@ public class MainActivity extends BRMapActivity {
 
         switch (item.getItemId()) {
             case R.id.action_bar_directions:
-                 startActivityForResult(new Intent(this, EnterAddressActivity.class), 
+                startActivityForResult(new Intent(this, EnterAddressActivity.class), 
                 		ENTER_DESTINATION_REQUEST_CODE);
                 break;
                 
