@@ -18,9 +18,9 @@
 
     <application android:icon="@drawable/logo" 
                  android:label="@string/app_name"
-                 android:theme="@style/Theme.GDCatalog"
+                 android:theme="@style/Theme.BeetRoute"
                  android:name=".TrafficApplication"
-                 android:debuggable="true">
+                 >
                  
 		<uses-library android:name="com.google.android.maps" />
 		
@@ -51,13 +51,7 @@
             
         <!-- FindMe -->
         <activity android:name="in.beetroute.apps.findme.SendSMS"
-            android:label="@string/app_name" >
-             
-        </activity>
-        
-        <activity
-            android:name="in.beetroute.apps.findme.PlotRouteActivity"
-            android:label="@string/app_name" >          
+            android:label="@string/FindMe" >
         </activity>
         
         <activity

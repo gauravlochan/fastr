@@ -38,7 +38,7 @@ public class MapRouteOverlay extends Overlay {
 
 		if (numPoints > 0) {
             // TODO: Set a zoom level that is appropriate for the route length
-
+			setZoomLevel(route,mv);
 		    // Don't center when there are 3 routes.
 		    // centerToRouteMidPoint(mv);
 		}
@@ -110,6 +110,7 @@ public class MapRouteOverlay extends Overlay {
 	    return false;
 	}
 	
+	
 	private void centerToRouteMidPoint(MapView mv) {
         int numPoints = sgPoints.size();
 
@@ -125,5 +126,27 @@ public class MapRouteOverlay extends Overlay {
 
         MapController mapController = mv.getController();
         mapController.animateTo(moveTo);
+	}
+	
+	/**
+	 * @param route
+	 * @param mv
+	 * The algorithm for setting the zoom level according to distance:
+	 * Find the midpoint of the distance.
+	 * Make this the center of the Map.
+	 * Restriction - Can't use any of the mapController methods involving GeoPoints as we are using an alternative SimpleGeoPoint
+	 * Then set the zoom level according to the distance by trial and error.
+	 */
+	private void setZoomLevel(Route route, MapView mv){
+		int totalDistance = (int)route.drivingDistanceMeters;
+		int sourceLat = route.source.getGeoPoint().getLatitudeE6();
+		int sourceLong = route.source.getGeoPoint().getLongitudeE6();
+	
+		int destLat = route.destination.getGeoPoint().getLatitudeE6();
+		int destLong = route.destination.getGeoPoint().getLongitudeE6();
+		
+		mv.getController().zoomToSpan(Math.abs(sourceLat-destLat), Math.abs(sourceLong-destLong));
+		mv.getController().animateTo(new GeoPoint((sourceLat+destLat)/2, (sourceLong+destLong)/2));
+		
 	}
 }

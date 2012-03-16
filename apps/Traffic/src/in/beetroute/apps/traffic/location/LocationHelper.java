@@ -1,9 +1,11 @@
 package in.beetroute.apps.traffic.location;
 
 import in.beetroute.apps.commonlib.Global;
+
+import java.util.Date;
+import java.util.List;
+
 import android.content.Context;
-import android.content.pm.PackageManager;
-import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationManager;
 
@@ -16,58 +18,90 @@ import com.google.android.maps.GeoPoint;
  */
 public class LocationHelper {
     private static final String TAG = Global.COMPANY;
-	
-    /**
-     * Gets a location provider, without any criteria
-     * @param locationManager
-     * @return
-     */
-	public static String getDefaultProvider(LocationManager locationManager) {
-		Criteria criteria = new Criteria();
-		String provider = locationManager.getBestProvider(criteria, false);
-		return provider;
-	}
+    private static final int ACCEPTABLE_AGE = 1000 * 60 * 5; // 5 minutes
 
+    // TODO: Need to refine this function some more
+    // http://developer.android.com/guide/topics/location/obtaining-user-location.html#BestEstimate
+    public static Location getBestLocation(Context context) {
+        Location location = getLastGpsLocation(context);
+        if (location != null) {
+            Date date = new Date();
+            if (date.getTime() - location.getTime() < ACCEPTABLE_AGE) {
+                return location;
+            }
+        }
+        
+        return getLastNetworkLocation(context);
+    }
 
 	/**
-     * Get the last known location
+     * Get the last known location using the network provider
      * 
-     * @param locationManager
+     * @param context
      */
-    public static Location getLastKnownLocation(LocationManager locationManager) {
-        String provider = LocationHelper.getDefaultProvider(locationManager);
-        return locationManager.getLastKnownLocation(provider);
+    public static Location getLastNetworkLocation(Context context) {
+        LocationManager locationManager = (LocationManager) context.
+                getSystemService(Context.LOCATION_SERVICE);
+        return locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
     }
 
     
-	/**
-	 * Gets a provider, depending on what permissions the application has.
-	 * (This is kinda useless for us)
-	 * 
-	 * @param context
-	 * @param locManager
-	 * @return
-	 */
-    public static String getAvailableProvider(Context context, 
-            LocationManager locManager) {
-        
-        Context cntx = context;
-        LocationManager locationManager = locManager;
-
-        String provider = "";
-        Criteria criteria = new Criteria();
-        if (cntx.checkCallingOrSelfPermission(android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            criteria.setAccuracy(Criteria.ACCURACY_FINE);
-            criteria.setPowerRequirement(Criteria.POWER_HIGH);
-            criteria.setSpeedRequired(true);
-            criteria.setBearingRequired(true);
-        } else if (cntx.checkCallingOrSelfPermission(android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            criteria.setAccuracy(Criteria.ACCURACY_COARSE);
-        }
-        criteria.setCostAllowed(false);
-        provider = locationManager.getBestProvider(criteria, true);
-        return provider;
+    /**
+     * Get the last known location using the GPS provider
+     * 
+     * @param context
+     * @return
+     */
+    public static Location getLastGpsLocation(Context context) {
+        LocationManager locationManager = (LocationManager) context.
+                getSystemService(Context.LOCATION_SERVICE);
+        return locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
     }
+    
+    
+    /**
+     * Gets the current location using the GPS provider.
+     * This is a long running operation, so never call this on the UI thread.
+     * 
+     * @param context
+     * @return
+     */
+    public static Location waitForGpsLocation(Context context) {
+        // TODO: Change the code to do the right thing.
+        LocationManager locationManager = (LocationManager) context.
+                getSystemService(Context.LOCATION_SERVICE);
+        return locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+    }
+
+    
+    /**
+     * checks to see if the GPS provider is enabled
+     * 
+     * @param context
+     * @return
+     */
+    public static boolean isGpsEnabled(Context context) {
+        LocationManager locationManager = (LocationManager) context.
+                getSystemService(Context.LOCATION_SERVICE);
+        
+        return (locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) ? true : false;
+    }
+
+
+    /**
+     * Checks to see if the device even supports a GPS provider
+     * 
+     * @param context
+     * @return
+     */
+    public static boolean doesDeviceHaveGps(Context context) {
+        LocationManager locationManager = (LocationManager) context.
+                getSystemService(Context.LOCATION_SERVICE);
+        
+        List<String> providers = locationManager.getAllProviders();
+        return (providers.contains(LocationManager.GPS_PROVIDER)) ? true : false;
+    }
+    
     
     /**
      * Helper function to convert a Location to a GeoPoint

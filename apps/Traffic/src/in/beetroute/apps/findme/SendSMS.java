@@ -4,15 +4,12 @@ import greendroid.app.GDActivity;
 import in.beetroute.apps.commonlib.Global;
 import in.beetroute.apps.commonlib.Logger;
 import in.beetroute.apps.traffic.R;
-
-import java.util.List;
-
+import in.beetroute.apps.traffic.location.LocationHelper;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.PendingIntent;
 import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
-import android.content.ComponentName;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -20,8 +17,8 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.database.Cursor;
 import android.location.Location;
-import android.location.LocationManager;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.provider.Settings;
@@ -37,35 +34,48 @@ import android.widget.Toast;
 
 public class SendSMS extends GDActivity {
     private static final int PICK_CONTACT = 1;
-    private static final int GPS_POSITION = 0;
+    private static final int ENABLE_GPS = 0;
+    
     private static final String TAG = Global.COMPANY;
     private static final String SENT = "SMS_SENT";
+    
     private ProgressDialog progressdialog;
     private BroadcastReceiver smsReceiver;
     private Location location;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
-    	setActionBarContentView(R.layout.findme);
-    			
         super.onCreate(savedInstanceState);
-        initBroadcastReceiver();
-        location = getGpsData(this);
-    	Intent intent = new Intent(Intent.ACTION_PICK,
-            ContactsContract.Contacts.CONTENT_URI);
-    	if (location != null) {
-    		startActivityForResult(intent, PICK_CONTACT);
-    	}
+        setActionBarContentView(R.layout.findme);
         
+        initBroadcastReceiver();
+
+        if (!LocationHelper.doesDeviceHaveGps(this)) {
+            // TODO: Need to warn user that device doesn't have GPS at all.  For now, go back
+            Logger.warn(TAG,  "Device doesn't have GPS.  Can't send FindMe SMS");
+        }
+
+        if (!LocationHelper.isGpsEnabled(this)) {
+            // Pop up a dialog asking the user if they want to enable GPS
+            buildAlertMessageNoGps();
+        } else {
+            // Everything is good. Kick off a task to get the current location
+            new LocationLookupTask().execute((Void)null);
+        }
     }
     
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        unregisterReceiver(smsReceiver);
+    }
+
     
     /**
-     * Separating the broadcast receiver out of the sendSMS method. This has to be called by the onCreate method.
+     * Initialize the broadcast receiver to figure out when the SMS was sent
+     * successfully
      */
     private void initBroadcastReceiver() {
-        //Initialize the broadcast receiver;
-    	
          try {
         	 smsReceiver = new BroadcastReceiver() {
          		public void onReceive(Context arg0, Intent arg1) {
@@ -84,15 +94,17 @@ public class SendSMS extends GDActivity {
          		}
         	 };
              registerReceiver(smsReceiver, new IntentFilter(SENT));
-            } catch (Exception e) {
-            	e.printStackTrace();
-            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
+    
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         switch (requestCode) {
+        
         case PICK_CONTACT:
             if (resultCode == Activity.RESULT_OK) {
                 Uri contactData = data.getData();
@@ -101,30 +113,27 @@ public class SendSMS extends GDActivity {
                     String id = c.getString(c.getColumnIndex(ContactsContract.Contacts._ID));
                     Logger.info(TAG, id);
                     String phoneNumber = getPhoneNumber(id);
-                   // Location location = getGpsData(this);
-                    
-                    // TODO: If location isn't accurate enough, warn the user
 
-                    if (location != null) {
-                        String messageToSend = GeoSMS.constructSMS(this, location);
-                        sendSms(phoneNumber, messageToSend);
-                        //this.finish();
-                    } else {
-                        Logger.warn(TAG, "Can't send SMS since location wasn't found");
-                    }
+                    String messageToSend = GeoSMS.constructSMS(this, location);
+                    sendSms(phoneNumber, messageToSend);
                 }
             } else {
                 Logger.debug(TAG, "User didn't pick a contact.  End this activity");
-                SendSMS.this.finish();
+                finish();
             }
-            break;        
-        case GPS_POSITION:
-        	System.out.println(resultCode);
-        	//Uri gpsData = data.getData();
-        	//System.out.println(gpsData.toString());
-        	if(resultCode == Activity.RESULT_CANCELED) {
-        		SendSMS.this.finish();
-        	}
+            break;
+            
+        case ENABLE_GPS:
+            // Doublecheck that the user actually enabled the GPS
+            if (LocationHelper.isGpsEnabled(this)) {
+                // Since we've *just* enabled the GPS, wait to get a good location
+                new LocationLookupTask().execute((Void) null);
+            } else {
+                Logger.debug(TAG, "User didn't enable GPS.  End this activity");
+                finish();
+            }
+            break;
+
         default:
             // Just checking to see if the enableGPS activity is coming back here
             Logger.debug(TAG, "Ignore result from activity with request code " + requestCode);
@@ -132,6 +141,13 @@ public class SendSMS extends GDActivity {
         }
     }
 
+    
+    /**
+     * Have got the location and contact. Now just fire off the SMS
+     * 
+     * @param phoneNumber
+     * @param textMessage
+     */
     private void sendSms(String phoneNumber, String textMessage) {
         String SENT = "SMS_SENT";
         try {
@@ -145,6 +161,7 @@ public class SendSMS extends GDActivity {
         }
     }
 
+    
     private String getPhoneNumber(String displayName) {
         String phoneNumber = new String("");
         ContentResolver resolver = getContentResolver();
@@ -162,31 +179,10 @@ public class SendSMS extends GDActivity {
         return phoneNumber;
     }
 
-    // TODO: Use LocationHelper code instead
-    public Location getGpsData(Context context) {
-    	Location location = null;
-        try {
-            LocationManager locationManager = (LocationManager) context
-                    .getSystemService(Context.LOCATION_SERVICE);
-            List<String> providers = locationManager.getAllProviders();
-            // Add code to check if GPS is on and if it's not, provide a popup
-            // with the message
-            // "Can we turn on and turn off the GPS just to get your location"
 
-            if (!providers.isEmpty()) {
-                if (locationManager.isProviderEnabled(locationManager.GPS_PROVIDER)) {
-                    location = locationManager.getLastKnownLocation(locationManager.GPS_PROVIDER);
-                    float accuracy = location.getAccuracy();
-                } else {
-                    buildAlertMessageNoGps();
-                }
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return location;
-    }
-
+    /**
+     * If the GPS is disabled, ask the user to enable it.
+     */
     private void buildAlertMessageNoGps() {
         try {
             final AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -219,25 +215,56 @@ public class SendSMS extends GDActivity {
     }
 
     private void launchGPSOptions() {
-        final ComponentName toLaunch = new ComponentName(
-                "com.android.settings", "com.android.settings.SecuritySettings");
-        final Intent intent = new Intent(
-                Settings.ACTION_LOCATION_SOURCE_SETTINGS);
-        intent.addCategory(Intent.CATEGORY_LAUNCHER);
-        intent.setComponent(toLaunch);
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        startActivityForResult(intent, GPS_POSITION);
+        final Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+        startActivityForResult(intent, ENABLE_GPS);
     }
+    
+ 
+    /**
+     * Task to get an accurate location.  Assumes that the GPS is enabled.
+     * 
+     * Once the result comes in, handles it
+     */
+    class LocationLookupTask extends AsyncTask<Void, Void, Location> {
+        private ProgressDialog progressDialog;
 
-	/* (non-Javadoc)
-	 * @see android.app.Activity#onDestroy()
-	 * Overridden onDestroy to call unregisterReceiver for the previously registered broadcastreceiver for receiving SMS messages.
-	 */
-	@Override
-	protected void onDestroy() {
-		// TODO Auto-generated method stub
-		super.onDestroy();
-		unregisterReceiver(smsReceiver);
-	}
+        @Override
+        protected void onPreExecute() {
+            this.progressDialog = ProgressDialog.show(
+                    SendSMS.this,
+                    "Please wait...", // title
+                    "Getting the current location", // message
+                    true // indeterminate
+                    );
+        }
+
+        @Override
+        protected Location doInBackground(Void... params) {
+            Logger.debug(TAG, "Starting to get a good location");
+            return LocationHelper.waitForGpsLocation(SendSMS.this);
+        }
+
+        @Override
+        protected void onPostExecute(Location gotLocation) {
+            // TODO: Temporary fix for the "View not attached to window manager" issue
+            try {
+                this.progressDialog.cancel();
+            } catch (IllegalArgumentException e) {
+                // The original activity has been killed, don't crash the app
+                return;
+            }
+            
+            if (gotLocation == null) {
+                // TODO: Tell the user we couldn't get a fix in time
+                SendSMS.this.finish();
+            } else {
+                location = gotLocation;
+                // Invoke the contacts intent to move along
+                Intent intent = new Intent(Intent.ACTION_PICK, ContactsContract.Contacts.CONTENT_URI);
+                startActivityForResult(intent, PICK_CONTACT);
+            }
+        }
+    }
+    
 
 }
