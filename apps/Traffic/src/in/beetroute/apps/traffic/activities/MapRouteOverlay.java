@@ -131,21 +131,19 @@ public class MapRouteOverlay extends Overlay {
 	/**
 	 * @param route
 	 * @param mv
-	 * The algorithm for setting the zoom level according to distance:
-	 * Find the midpoint of the distance.
-	 * Make this the center of the Map.
-	 * Restriction - Can't use any of the mapController methods involving GeoPoints as we are using an alternative SimpleGeoPoint
+	 * It's very simple - Set the source and destination co-ordinates as the bounds co-ordinates and set the center of the map at the 
 	 * Then set the zoom level according to the distance by trial and error.
 	 */
 	private void setZoomLevel(Route route, MapView mv){
-		int totalDistance = (int)route.drivingDistanceMeters;
+		
 		int sourceLat = route.source.getGeoPoint().getLatitudeE6();
 		int sourceLong = route.source.getGeoPoint().getLongitudeE6();
 	
 		int destLat = route.destination.getGeoPoint().getLatitudeE6();
 		int destLong = route.destination.getGeoPoint().getLongitudeE6();
-		
-		mv.getController().zoomToSpan(Math.abs(sourceLat-destLat), Math.abs(sourceLong-destLong));
+		int spanLat = (int) (Math.abs(sourceLat-destLat) + 0.2 * Math.abs(sourceLat-destLat));
+		int spanLong = (int) (Math.abs(sourceLong-destLong) + 0.2 * Math.abs(sourceLat-destLat));
+		mv.getController().zoomToSpan(spanLat, spanLong);
 		mv.getController().animateTo(new GeoPoint((sourceLat+destLat)/2, (sourceLong+destLong)/2));
 		
 	}

@@ -12,12 +12,9 @@
     <string name="ViewTrip">View Trip</string>
 
     <string name="helpString">
-        There are three icons on the beetroute action bar. 
-        First icon: Directions. Click on this and you will be prompted for a destination. On entering destination information,
-        three routes will be plotted in different colors. Currently the colors have no significance.
-        Second icon: My trips - brings up an applicaiton that lists all your previous trips.
-        Third icon: Find me - Send your location information to another beetroute user in your contacts list.Sends the location co-ordinates as an SMS.
-        At the other end, upon receiving the SMS, the application plots 3 possible routes from your contacts location to your location. 
+        First icon: Directions. Displays 3 routes in different colors, between a pair of points. Colors have no significance.
+        Second icon: Find me. Sends location information to the selected contact. Plots 3 routes to the address, once the SMS is received
+        SMS contents - LatLon, Address and beetroute android market URL. 
     </string>
     <string name="SourceAddressLbl">Source</string>
     <string name="DestAddressLbl">Destination</string>
