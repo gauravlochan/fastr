@@ -2,9 +2,9 @@ package in.beetroute.apps.traffic.location;
 
 import in.beetroute.apps.commonlib.Global;
 import in.beetroute.apps.commonlib.Logger;
-import in.beetroute.apps.commonlib.SimpleGeoPoint;
 import in.beetroute.apps.traffic.Preferences;
 import in.beetroute.apps.traffic.db.LocationDbHelper;
+import in.beetroute.apps.traffic.trip.Trip;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
@@ -12,7 +12,9 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.IBinder;
+import android.os.Message;
 
 import com.parse.Parse;
 
@@ -27,11 +29,6 @@ import com.parse.Parse;
 public class LocationService extends Service {
     private static final String TAG = Global.COMPANY;
     
-    // The thresholds that are used to calculate the end of the trip
-    private static final int TIME_CUTOFF = 10 * 60 * 1000; // 10 minutes
-    private static final float DIST_THRESHOLD = 0.500f; // 500 meters
-    private static final float SPEED_THRESHOLD = 1.0f; // 1 m/s = 3.6 km/hr 
-
     LowFrequencyListener lowFrequencyListener;
     
     LocationDbHelper dbHelper = new LocationDbHelper(this, null);
@@ -69,37 +66,6 @@ public class LocationService extends Service {
         
         lowFrequencyListener.stopListening();
     }
-    
-    
-    /**
-     * Algo: How to decide whether a user was moving, by looking at 2 location updates
-     *    (point2.distance(point1) > cutoff, point2.speed = 0)
-     * 
-     * @param lastMovingPoint
-     * @param currentPoint
-     * @return
-     */
-    public static boolean isMoving(Location lastMovingPoint, Location currentPoint) {
-        double distance = SimpleGeoPoint.getDistance(
-                lastMovingPoint.getLatitude(), lastMovingPoint.getLongitude(),
-                currentPoint.getLatitude(), currentPoint.getLongitude() );
-
-        Logger.debug(TAG, String.format("Distance = %f between %f,%f to %f,%f", 
-                distance,
-                lastMovingPoint.getLatitude(), lastMovingPoint.getLongitude(),
-                currentPoint.getLatitude(), currentPoint.getLongitude()));
-
-        if (distance > DIST_THRESHOLD) {
-            return true;
-        }
-        
-        if (currentPoint.getSpeed() > SPEED_THRESHOLD) {
-            return true;
-        }
-        
-        return false;
-    }
-    
 
     
     /** 
@@ -118,9 +84,21 @@ public class LocationService extends Service {
         /** This is the assumed trip starting point */
         Location tripStartingPoint = null;
         
+        // Instantiating the Handler associated with the main thread.
+        private Handler messageHandler = new Handler() {
+            @Override
+            public void handleMessage(Message msg) {  
+                switch(msg.what) {
+                case 0:
+                    LowFrequencyListener.this.startListening();
+                    break;
+                }
+            }
+
+        };
         
         public LowFrequencyListener(Context context) {
-            highFrequencyUpdater = new HighFrequencyUpdates(context, this, dbHelper);
+            highFrequencyUpdater = new HighFrequencyUpdates(context, messageHandler, dbHelper);
             locationManager = (LocationManager)
                     LocationService.this.getSystemService(Context.LOCATION_SERVICE);
         }
@@ -152,36 +130,34 @@ public class LocationService extends Service {
             }
 
             // Check to see whether we should start a HFL
-            // boolean startHFL = false;
-            // TODO TESTING
-            boolean startHFL = true;
+            boolean startHFL = false;
             
             if (tripStartingPoint == null) {
+                Logger.info(TAG,  "LFL: First update "+ location);
                 tripStartingPoint = location;
             } else {
                 // If this update is much newer than the trip starting point
                 // then ignore that and start a new trip here
-                if (tripStartingPoint.getTime() + TIME_CUTOFF < location.getTime()) {
+                if (tripStartingPoint.getTime() + Trip.TIME_CUTOFF < location.getTime()) {
+                    Logger.debug(TAG,  "LFL: ignore old location");
                     tripStartingPoint = location;
                 } else {
                     // check to see if we moved since the 'trip' started
-                    if (LocationService.isMoving(tripStartingPoint, location)) {
+                    if (Trip.isMoving(tripStartingPoint, location)) {
+                        Logger.debug(TAG,  "LFL: we're moving");
                         startHFL = true;
                         tripStartingPoint = null;
+                        // User is moving.  Start HFL and stop LFL
+                        highFrequencyUpdater.startListening();
+                        locationManager.removeUpdates(this);
+                        Logger.debug(TAG, "LFL: unregister LFL updates");
                     }
                 }
-            }
-
-            if (startHFL) {
-                // User is moving.  Start HFL and stop LFL
-                highFrequencyUpdater.startListening();
-                locationManager.removeUpdates(this);
-                Logger.debug(TAG, "LFL: unregister LFL updates");
             }
             
             // Write this to the DB and Upload this location
             // TODO: Should we only upload locations from HFL?
-            new StoreLocationTask(installationId, dbHelper).doInBackground(location);
+            // new StoreLocationTask(installationId, dbHelper).doInBackground(location);
         }
 
         

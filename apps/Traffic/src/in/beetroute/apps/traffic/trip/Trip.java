@@ -16,15 +16,18 @@ import android.app.Activity;
 import android.content.Context;
 import android.database.Cursor;
 import android.location.Address;
+import android.location.Location;
 
 
 public class Trip {
     private static final String TAG = Global.COMPANY;
 
     // The thresholds that are used to calculate the end of the trip
-    private static final int TIME_CUTOFF = 10 * 60 * 1000; // 10 minutes
-    private static final float DIST_THRESHOLD = 0.500f; // 500 meters
-    private static final float SPEED_THRESHOLD = 1.0f; // 1 m/s = 3.6 km/hr 
+    public static final int TIME_CUTOFF = 10 * 60 * 1000; // 10 minutes
+    public static final float DIST_THRESHOLD = 0.500f; // 500 meters
+    public static final float SPEED_THRESHOLD = 1.0f; // 1 m/s = 3.6 km/hr 
+    
+    public static final float MIN_ACCURACY = 500f; // 500 meters
     
     // TODO: Don't leave it public
     public Integer startPointId;
@@ -215,6 +218,36 @@ public class Trip {
         return false;
     }
     
+    /**
+     * Algo: How to decide whether a user was moving, by looking at 2 location updates
+     *    (point2.distance(point1) > cutoff, point2.speed = 0)
+     * 
+     * @param lastMovingPoint
+     * @param currentPoint
+     * @return
+     */
+    public static boolean isMoving(Location lastMovingPoint, Location currentPoint) {
+        double distance = SimpleGeoPoint.getDistance(
+                lastMovingPoint.getLatitude(), lastMovingPoint.getLongitude(),
+                currentPoint.getLatitude(), currentPoint.getLongitude() );
+
+        Logger.debug(TAG, String.format("Distance = %f between %f,%f to %f,%f", 
+                distance,
+                lastMovingPoint.getLatitude(), lastMovingPoint.getLongitude(),
+                currentPoint.getLatitude(), currentPoint.getLongitude()));
+
+        if (distance > DIST_THRESHOLD) {
+            return true;
+        }
+        
+        if (currentPoint.getSpeed() > SPEED_THRESHOLD) {
+            return true;
+        }
+        
+        return false;
+    }
+    
+
     
     private static boolean hasTripEnded(LocationUpdate lastMovingPoint, LocationUpdate currentPoint) {
         if (lastMovingPoint.getEpochTime() + TIME_CUTOFF > currentPoint.getEpochTime()) {

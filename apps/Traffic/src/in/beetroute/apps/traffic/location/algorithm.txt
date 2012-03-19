@@ -20,7 +20,7 @@ Remaining updates imply (1).  For them, if high frequency listener not started, 
 1) Create a new Trip in the DB
 2) Kick off high frequency listener (60s, 100m)
 - If GPS is enabled - use GPS
-- If GPS is disabled - use network
+- If GPS is disabled - use network, sniff for when GPS is turned on
 3) Create a 10 minute timer
 
 On updates, 

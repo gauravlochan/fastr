@@ -32,7 +32,8 @@ public class ParseHelper {
     }
     
     private static ParseObject createParseObject(Location location, String installationId) {
-        ParseObject testObject = new ParseObject("LocationUpdate");
+        // TODO TESTING DONT RELEASE WITH THIS
+        ParseObject testObject = new ParseObject("LocationUpdateTest");
         ParseGeoPoint geoPoint = new ParseGeoPoint(location.getLatitude(), location.getLongitude());
         
         testObject.put("location", geoPoint);
