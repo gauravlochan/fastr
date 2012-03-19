@@ -1,0 +1,53 @@
+Algorithm
+
+// What i'm closest to picking
+// http://devdiscoveries.wordpress.com/2010/02/04/android-use-location-services/
+
+Have a low frequency location listener (300s, 500m).  
+
+If it receives an update, then it means
+1) the user has moved 500m. 
+2) the cell tower triangulation has innacurately guessed the location beyond 500m
+3) the locationProvider is sending us updates unnecessarily (even if location is same)
+
+To filter out 2, ignore updates that are less accurate than 500m.  
+   (But what if the phone ONLY gets low accuracny updates.  Then we'll ignore everything!)
+To filter out 3, check previous update, ignore if new update is within 500m
+   (If we see a lot of 3, then we are perhaps better polling every 5 minutes than creating
+    a listener)
+
+Remaining updates imply (1).  For them, if high frequency listener not started, then:
+1) Create a new Trip in the DB
+2) Kick off high frequency listener (60s, 100m)
+- If GPS is enabled - use GPS
+- If GPS is disabled - use network
+3) Create a 10 minute timer
+
+On updates, 
+-> Ignore updates of accuracy less than X
+-> Store updates.  If location moved, restart 10 min timer
+
+On Timer:
+-> turn high frequency listener off
+-> End the trip in DB
+
+
+
+// Overview from google:
+// http://developer.android.com/guide/topics/location/obtaining-user-location.html
+//
+
+// Solution from CommonsWare:
+// http://stackoverflow.com/questions/5849197/best-way-to-constantly-monitor-location
+// https://github.com/commonsguy/cwac-locpoll
+//
+// Problem with too many GPS updates, suggests using a timer
+// http://stackoverflow.com/questions/3879290/gps-update-interval-is-faster-with-good-signal
+//
+// Adjust locationProvider on detecting motion:
+// http://stackoverflow.com/questions/3541384/android-locationmanager-dynamically-adjust-mintime-mindistance-thresholds
+// http://stackoverflow.com/questions/5341749/detect-when-android-device-is-in-a-moving-car
+// http://www.devx.com/wireless/Article/43005/1954
+// http://stackoverflow.com/questions/2981426/detect-car-acceleration-in-android-app
+//
+// Also look at MyTracks adaptive algorithm

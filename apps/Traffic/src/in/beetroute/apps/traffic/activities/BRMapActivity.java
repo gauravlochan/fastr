@@ -60,6 +60,13 @@ public abstract class BRMapActivity extends GDMapActivity {
         myLocationOverlay = new MyLocationOverlay(this, mapView);
         mapView.getOverlays().add(myLocationOverlay);
         myLocationOverlay.enableMyLocation();
+        
+        // Center when we get a fix.  This might cause a change in behavior 
+//        myLocationOverlay.runOnFirstFix(new Runnable() {
+//            public void run() {
+//                mapView.getController().animateTo(myLocationOverlay.getMyLocation());
+//            }
+//        });
        
         return;
     }
