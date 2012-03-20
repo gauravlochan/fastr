@@ -1,0 +1,134 @@
+Flurry Android SDK v2.2.4
+Build: 121
+Released: 12/8/11
+
+Release notes for v2.2.4:
+------------------------------------------------
+The Flurry Android 2.2.4 provides the following changes:
+
+- Fix to event timing
+- Records prior session getOffer ads if they've been reactivated in the current session
+
+Release notes for v2.2.3:
+------------------------------------------------
+The Flurry Android 2.2.3 provides the following changes:
+
+Update Session timeOffset logic to avoid possible ad id collisions within a session.
+
+Properly reset all AppCircleModule session-related data on each valid session start.
+
+Refactors generating of urls from BannerView.
+
+Release notes for v2.2.2:
+------------------------------------------------
+The Flurry Android 2.2.2 provides the following changes:
+
+Fixes a timing parameter for buy click links for getOffer.
+
+Increases the image cache.
+
+Adds more debug logging for logEvent methods.
+
+The Flurry Android 2.2.1 provides the following changes:
+
+Fixes NullPointerException when event for failed Android Market
+launch does not have an AppCircleCallback set.
+
+The Flurry Android 2.2 provides the following changes:
+
+Adds API to optionally set session reporting request to HTTPS.
+
+Detects and report devices with non-unique device IDs.
+
+
+Release notes for v2.2.1:
+------------------------------------------------
+The Flurry Android 2.2.1 provides the following additional changes to Flurry Android 2.2:
+
+Fixes NullPointerException when event for failed Android Market launch does not have an
+AppCircleCallback set.
+
+The Flurry Android 2.2 provides the following changes:
+
+Adds API to optionally set session reporting request to HTTPS.
+
+Detects and report devices with non-unique device IDs.
+
+Fixes NullPointerException, ArrayOutOfBoundsException, ConcurrentModificationException on resume
+of session.
+
+
+Release notes for v2.2:
+------------------------------------------------
+Add API to optionally set session reporting request to HTTPS.
+
+Detect and report devices with non-unique device IDs.
+
+Fixed NullPointerException, ArrayOutOfBoundsException, ConcurrentModificationException on resume of session.
+
+
+Release notes for v2.1:
+------------------------------------------------
+<Offer API>
+The process of accepting an Offer is significantly easier. Instead of processing a raw URL, the 
+developer merely has to pass an offer ID to the SDK which automatically handles the process of
+communicating with Flurry servers and launching the Android Market page for the recommended
+application.
+
+In addition to the Offer ID, the price and description of the app are also available.   
+
+Rather than retrieving one random Offer, developers will have access to all the Offers that is 
+available in the SDK at that time.
+
+<Banner>
+The SDK now backfills banners if they are displayed while ads are in the process of downloading.  
+The ads will automatically be placed in the banner when they are available.
+
+<Catalog>
+The showCatalog() previously would not launch if there are no ads available (e.g. if there was a 
+lack of network connectivity) without feedback to the user. It will now launch with the message 
+"No recommendations available".
+
+There is support for customizing the Intent name for launching the catalog. Previously a user 
+opening a catalog would be forced to choose from a list of applications integrated with Flurry 
+AppCircle due to these applications sharing the same Intent name for launching the catalog.  
+
+<Availability of Ads>
+There is now a simple method, hasAds(), to determine whether the SDK can supply any ads to 
+be displayed. The new AppCircleCallback interface also allows the developer to determine the 
+moment when new ads have been downloaded and are available.
+
+<Android Market>
+Some devices sold by certain carriers or in some countries do not include the Android Market app. 
+The SDK will now check for this condition and launches the web version of the Android Market if 
+the app is not available.
+
+<New Callback Interface>
+The developer can implement the new AppCircleCallback interface to receive AppCircle-type events.
+These events are 
+- ads have been downloaded from the network
+- ads have been loaded from cache
+- there is an error when launching the Android Market app
+
+<STRICTMODE>
+Google introduced a set of tests to check for conditions detrimental to user experience. Previous
+versions of the SDK violated one of these tests -- writing and reading from the file system using 
+the UI thread. This version passes all the tests.
+
+<Bug fixes>
+- the logEvent(String eventId, boolean timed) for timed events no longer ignores the "timed" 
+  parameter
+- the gender constants are now of byte type to match the setGender(byte gender) method
+
+Release notes for v2.01:
+------------------------------------------------
+Fixed potential race condition.
+
+Release notes for v2.0:
+------------------------------------------------
+Initial release with AppCircle
+
+Release notes for v1.24:
+------------------------------------------------
+- Page View tracking added
+

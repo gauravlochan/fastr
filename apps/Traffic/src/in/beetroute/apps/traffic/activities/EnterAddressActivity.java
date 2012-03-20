@@ -15,6 +15,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import com.flurry.android.FlurryAgent;
+
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.ProgressDialog;
@@ -86,6 +88,21 @@ public class EnterAddressActivity extends GDActivity {
         _sourceAddress = (EditText) findViewById( R.id.destAddressEditText );
         _nameOfPlace = (EditText) findViewById( R.id.placeEditText );
 
+	}
+	
+	@Override
+	protected void onStart() {
+		// TODO Auto-generated method stub
+		super.onStart();
+		FlurryAgent.onStartSession(this, "3K4UUTXNPWWT1GPGHC6L");
+	}
+
+
+	@Override
+	protected void onStop() {
+		// TODO Auto-generated method stub
+		super.onStop();
+		FlurryAgent.onEndSession(this);
 	}
 
 	/**

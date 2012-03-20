@@ -1,5 +1,7 @@
 package in.beetroute.apps.traffic.activities;
 
+import com.flurry.android.FlurryAgent;
+
 import in.beetroute.apps.traffic.AppGlobal;
 import in.beetroute.apps.traffic.R;
 import in.beetroute.apps.traffic.db.TripDbHelper;
@@ -62,6 +64,21 @@ public class TripListActivity extends Activity {
         
         _listView.setOnItemClickListener( new SelectTripClickHandler() );
     }
+    
+    @Override
+	protected void onStart() {
+		// TODO Auto-generated method stub
+		super.onStart();
+		FlurryAgent.onStartSession(this, "3K4UUTXNPWWT1GPGHC6L");
+	}
+
+
+	@Override
+	protected void onStop() {
+		// TODO Auto-generated method stub
+		super.onStop();
+		FlurryAgent.onEndSession(this);
+	}
 
     /**
      * Validates the input address/place.  If something is wrong, asks the user to fix it
