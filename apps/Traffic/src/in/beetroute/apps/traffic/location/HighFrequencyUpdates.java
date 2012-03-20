@@ -2,6 +2,7 @@ package in.beetroute.apps.traffic.location;
 
 import in.beetroute.apps.commonlib.Global;
 import in.beetroute.apps.commonlib.Logger;
+import in.beetroute.apps.commonlib.SimpleGeoPoint;
 import in.beetroute.apps.traffic.Preferences;
 import in.beetroute.apps.traffic.db.LocationDbHelper;
 import in.beetroute.apps.traffic.trip.Trip;
@@ -115,7 +116,7 @@ public class HighFrequencyUpdates {
             lastMovingPoint = location;
         } else {
             // if the user is actually moving, then save the last moving point
-            if (Trip.isMoving(lastMovingPoint, location)) {
+            if (isMoving(lastMovingPoint, location)) {
                 Logger.debug(TAG, "Detected movement from " + lastMovingPoint + " to "+ location);
                 lastMovingPoint = location;
                 resetTimerTask();
@@ -146,7 +147,40 @@ public class HighFrequencyUpdates {
             HighFrequencyUpdates.this.stopListening();
         }
     }
+    
+    
+    /**
+     * Determine whether a trip has ended
+     * 
+     * @param lastMovingPoint
+     * @param currentPoint
+     * @return
+     */
+    static boolean isMoving(Location lastMovingPoint, Location currentPoint) {
+        final float DIST_THRESHOLD = 0.300f; // 300 meters
+        final float SPEED_THRESHOLD = 2.0f; // 2 m/s = 7.2 km/hr 
 
+        double distance = SimpleGeoPoint.getDistance(
+                lastMovingPoint.getLatitude(), lastMovingPoint.getLongitude(),
+                currentPoint.getLatitude(), currentPoint.getLongitude() );
+
+        Logger.debug(TAG, String.format("Distance = %f between %f,%f to %f,%f", 
+                distance,
+                lastMovingPoint.getLatitude(), lastMovingPoint.getLongitude(),
+                currentPoint.getLatitude(), currentPoint.getLongitude()));
+
+        if (distance > DIST_THRESHOLD) {
+            return true;
+        }
+        
+        Logger.debug(TAG, "Speed = " + currentPoint.getSpeed() );
+        if (currentPoint.getSpeed() > SPEED_THRESHOLD) {
+            return true;
+        }
+        
+        return false;
+    }
+    
     
     /**
      * GPS Listener is always on (when we are in high frequency mode) since this is the

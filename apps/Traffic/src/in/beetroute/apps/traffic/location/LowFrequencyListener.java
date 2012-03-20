@@ -2,6 +2,7 @@ package in.beetroute.apps.traffic.location;
 
 import in.beetroute.apps.commonlib.Global;
 import in.beetroute.apps.commonlib.Logger;
+import in.beetroute.apps.commonlib.SimpleGeoPoint;
 import in.beetroute.apps.traffic.Preferences;
 import in.beetroute.apps.traffic.db.LocationDbHelper;
 import in.beetroute.apps.traffic.trip.Trip;
@@ -94,7 +95,7 @@ class LowFrequencyListener implements LocationListener {
                 tripStartingPoint = location;
             } else {
                 // check to see if we moved since the 'trip' started
-                if (Trip.isMoving(tripStartingPoint, location)) {
+                if (isMoving(tripStartingPoint, location)) {
                     Logger.debug(TAG,  "LFL: we're moving");
                     startHFL = true;
                     tripStartingPoint = null;
@@ -129,5 +130,32 @@ class LowFrequencyListener implements LocationListener {
         Logger.debug(TAG, "LFL: OnProviderDisabled");
         // No need to do anything here.
     }
+    
+    /**
+     * Determine whether a trip has started
+     * 
+     * @param lastMovingPoint
+     * @param currentPoint
+     * @return
+     */
+    static boolean isMoving(Location lastMovingPoint, Location currentPoint) {
+        final float DIST_THRESHOLD = 0.500f; // 500 meters
+
+        double distance = SimpleGeoPoint.getDistance(
+                lastMovingPoint.getLatitude(), lastMovingPoint.getLongitude(),
+                currentPoint.getLatitude(), currentPoint.getLongitude() );
+
+        Logger.debug(TAG, String.format("Distance = %f between %f,%f to %f,%f", 
+                distance,
+                lastMovingPoint.getLatitude(), lastMovingPoint.getLongitude(),
+                currentPoint.getLatitude(), currentPoint.getLongitude()));
+
+        if (distance > DIST_THRESHOLD) {
+            return true;
+        }
+        
+        return false;
+    }
+
 }
 

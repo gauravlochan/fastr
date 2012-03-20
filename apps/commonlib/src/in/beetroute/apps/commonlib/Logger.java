@@ -10,11 +10,14 @@ import android.util.Log;
  */
 
 public class Logger {
-    public static final boolean DEBUG = false;   // Change this when releasing the product
+    // Only log statements that are higher than this level
+    // Development: set this to Log.DEBUG
+    // Release: Set this to Log.INFO
+    public static final int LOG_LEVEL = Log.INFO;
     public static final boolean JVM = false;    // Change this when testing in eclipse
     
     public static int verbose(String tag, String message) {
-        if (DEBUG) {
+        if (LOG_LEVEL <= Log.VERBOSE) {
             if (JVM) {
                 // don't log
                 return 0;
@@ -28,7 +31,7 @@ public class Logger {
 
     
     public static int debug(String tag, String message) {
-        if (DEBUG) {
+        if (LOG_LEVEL <= Log.DEBUG) {
             if (JVM) {
                 // don't log
                 return 0;
@@ -42,7 +45,7 @@ public class Logger {
 
     
     public static int info(String tag, String message) {
-        if (DEBUG) {
+        if (LOG_LEVEL <= Log.INFO) {
             if (JVM) {
                 // don't log
                 return 0;
