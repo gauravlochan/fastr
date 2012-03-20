@@ -28,6 +28,7 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.flurry.android.FlurryAgent;
 import com.google.android.maps.GeoPoint;
 import com.google.android.maps.MapView;
 
@@ -147,6 +148,21 @@ public class MainActivity extends BRMapActivity {
 	    if (destination != null) {
 	        unscheduleTimerTask();
 	    }
+	}
+	
+	@Override
+	protected void onStart() {
+		// TODO Auto-generated method stub
+		super.onStart();
+		FlurryAgent.onStartSession(this, "3K4UUTXNPWWT1GPGHC6L");
+	}
+
+
+	@Override
+	protected void onStop() {
+		// TODO Auto-generated method stub
+		super.onStop();
+		FlurryAgent.onEndSession(this);
 	}
 	
 	

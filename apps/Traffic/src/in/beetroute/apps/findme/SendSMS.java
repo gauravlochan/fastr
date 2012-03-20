@@ -1,5 +1,7 @@
 package in.beetroute.apps.findme;
 
+import com.flurry.android.FlurryAgent;
+
 import greendroid.app.GDActivity;
 import in.beetroute.apps.commonlib.Global;
 import in.beetroute.apps.commonlib.Logger;
@@ -63,6 +65,21 @@ public class SendSMS extends GDActivity {
             new LocationLookupTask().execute((Void)null);
         }
     }
+    
+    @Override
+   	protected void onStart() {
+   		// TODO Auto-generated method stub
+   		super.onStart();
+   		FlurryAgent.onStartSession(this, "3K4UUTXNPWWT1GPGHC6L");
+   	}
+
+
+   	@Override
+   	protected void onStop() {
+   		// TODO Auto-generated method stub
+   		super.onStop();
+   		FlurryAgent.onEndSession(this);
+   	}
     
     @Override
     protected void onDestroy() {

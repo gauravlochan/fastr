@@ -1,6 +1,8 @@
 package in.beetroute.apps.findme;
 
 
+import com.flurry.android.FlurryAgent;
+
 import in.beetroute.apps.traffic.AppGlobal;
 import in.beetroute.apps.traffic.MapPoint;
 import in.beetroute.apps.traffic.R;
@@ -23,6 +25,21 @@ public class ConfirmPlotRoute extends Activity {
 		setContentView(R.layout.showdialog);
 		showDialog(DIALOG_ALERT);
 	}
+    
+    @Override
+   	protected void onStart() {
+   		// TODO Auto-generated method stub
+   		super.onStart();
+   		FlurryAgent.onStartSession(this, "3K4UUTXNPWWT1GPGHC6L");
+   	}
+
+
+   	@Override
+   	protected void onStop() {
+   		// TODO Auto-generated method stub
+   		super.onStop();
+   		FlurryAgent.onEndSession(this);
+   	}
 		
 	protected Dialog onCreateDialog(int id) {
 		String fromPhoneNumber = getIntent().getExtras().getString(AppGlobal.SMS_PHONE_NUMBER);	
