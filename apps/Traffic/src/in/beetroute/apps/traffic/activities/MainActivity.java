@@ -132,23 +132,6 @@ public class MainActivity extends BRMapActivity {
 	}
 	
 	@Override
-	public void onStart() {
-	    super.onStart();
-        if (myLocationOverlay != null) {
-            myLocationOverlay.enableMyLocation();
-        }
-	}
-	
-	@Override 
-	public void onStop() {
-	    super.onStop();
-	    // this overlay is a location listener and is sucking the battery dry!
-        if (myLocationOverlay != null) {
-            myLocationOverlay.disableMyLocation();
-        }
-	}
-	
-	@Override
 	public void onResume() {
 	    super.onResume();
         // If a route has been plotted, add a timer to update the remaining distance for it
@@ -168,17 +151,22 @@ public class MainActivity extends BRMapActivity {
 	
 	@Override
 	protected void onStart() {
-		// TODO Auto-generated method stub
 		super.onStart();
 		FlurryAgent.onStartSession(this, "3K4UUTXNPWWT1GPGHC6L");
+        if (myLocationOverlay != null) {
+            myLocationOverlay.enableMyLocation();
+        }
 	}
 
 
 	@Override
 	protected void onStop() {
-		// TODO Auto-generated method stub
 		super.onStop();
 		FlurryAgent.onEndSession(this);
+        // this overlay is a location listener and is sucking the battery dry!
+        if (myLocationOverlay != null) {
+            myLocationOverlay.disableMyLocation();
+        }
 	}
 	
 	

@@ -19,7 +19,6 @@ import android.location.Location;
 import android.util.DisplayMetrics;
 import android.widget.Toast;
 
-import com.flurry.android.FlurryAgent;
 import com.google.android.maps.GeoPoint;
 import com.google.android.maps.MapView;
 import com.google.android.maps.MyLocationOverlay;
@@ -35,38 +34,14 @@ import com.google.android.maps.OverlayItem;
  *
  */
 public abstract class BRMapActivity extends GDMapActivity {
-    @Override
-	protected boolean isRouteDisplayed() {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-
-	@Override
-	protected void onStart() {
-		// TODO Auto-generated method stub
-		super.onStart();
-		FlurryAgent.onStartSession(this, "3K4UUTXNPWWT1GPGHC6L");
-	}
-
-
-	@Override
-	protected void onStop() {
-		// TODO Auto-generated method stub
-		super.onStop();
-		FlurryAgent.onEndSession(this);
-	}
-
-
-	private static final String TAG = Global.COMPANY;
+    private static final String TAG = Global.COMPANY;
     
-    /*
+    /**
      * This needs to be set in the onCreate for each subclass.
      */
     protected MapView mapView;
     protected MyLocationOverlay myLocationOverlay;
 
-    
     /**
      * Remove all the overlays and add a single 'MyLocationOverlay'
      * 
@@ -198,8 +173,6 @@ public abstract class BRMapActivity extends GDMapActivity {
         SimpleGeoPoint sgPoint = new SimpleGeoPoint(12.971669, 77.610314);
         return sgPoint.getGeoPoint();
     }
-
-
 
 
 }

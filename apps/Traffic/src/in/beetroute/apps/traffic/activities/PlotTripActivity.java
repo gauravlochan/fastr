@@ -9,6 +9,7 @@ import in.beetroute.apps.traffic.db.TripDbHelper;
 import in.beetroute.apps.traffic.trip.Trip;
 import android.os.Bundle;
 
+import com.flurry.android.FlurryAgent;
 import com.google.android.maps.MapView;
 
 public class PlotTripActivity extends BRMapActivity {
@@ -19,6 +20,19 @@ public class PlotTripActivity extends BRMapActivity {
         return true;
     }
     
+    @Override
+    protected void onStart() {
+        super.onStart();
+        FlurryAgent.onStartSession(this, "3K4UUTXNPWWT1GPGHC6L");
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        FlurryAgent.onEndSession(this);
+    }
+
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         Logger.debug(TAG, "Creating PlotTripActivity");
@@ -50,7 +64,6 @@ public class PlotTripActivity extends BRMapActivity {
         // TODO Get a Route object
         return null;
     }
-    
     
 
 }
