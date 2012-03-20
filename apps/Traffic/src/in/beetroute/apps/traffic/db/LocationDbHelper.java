@@ -100,7 +100,7 @@ public class LocationDbHelper extends SQLiteOpenHelper {
      * @param uploaded TODO
      */
     public void insertPoint(LocationUpdate point, Boolean uploaded) {
-        Logger.debug(TAG, "Attempting write point to table " + LocationTable.TABLE_NAME);
+        Logger.verbose(TAG, "Attempting write point to table " + LocationTable.TABLE_NAME);
         SQLiteDatabase db = getWritableDatabase();
         
         Integer status = uploaded ? UploadStatus.UPLOADED.ordinal() :
@@ -117,7 +117,7 @@ public class LocationDbHelper extends SQLiteOpenHelper {
             
             db.insertOrThrow(LocationTable.TABLE_NAME, null, values);
             
-            Logger.debug(TAG, "Succesfully inserted trip into " + LocationTable.TABLE_NAME);
+            Logger.verbose(TAG, "Succesfully inserted point into " + LocationTable.TABLE_NAME);
         } finally {
             db.close();
         }
@@ -186,7 +186,7 @@ public class LocationDbHelper extends SQLiteOpenHelper {
                 boolean recordsLeft = c.moveToFirst();
                 int count = 0;
 
-                Logger.debug(TAG, "Print all NOT_UPLOADED location updates");
+                Logger.verbose(TAG, "Print all NOT_UPLOADED location updates");
                 // Loop through all Results
                 while (recordsLeft) {
                     // Break out if there was a record limit and we've exceeded it
@@ -204,7 +204,7 @@ public class LocationDbHelper extends SQLiteOpenHelper {
                 c.close();
                 return points;
             } else {
-                Logger.debug(TAG, "Cursor is null");
+                Logger.verbose(TAG, "Cursor is null");
                 return null;
             }
         } finally {
@@ -231,6 +231,7 @@ public class LocationDbHelper extends SQLiteOpenHelper {
                 );
     }
 
+    
     /**
      * Gets the location object for the given locationId.
      * 
@@ -263,6 +264,39 @@ public class LocationDbHelper extends SQLiteOpenHelper {
         return null;
     }
     
+    
+    /**
+     * Get the newest locationUpdate (TODO: UNTESTED)
+     * 
+     * @param locationId
+     * @return
+     */
+    public LocationUpdate getNewestLocationUpdate() {
+        SQLiteDatabase db = getReadableDatabase();
+        try {
+            Cursor c = db.query(LocationTable.TABLE_NAME,
+                    LocationTable.getColumnsStringArray(),
+                    LocationTable._ID + "=?",               // where clause
+                    new String[] {"(select max("+LocationTable._ID+") from "+LocationTable.TABLE_NAME+")"},
+                    null, null, null);
+            
+            if (c != null) {
+                boolean recordsLeft = c.moveToFirst();
+                if (!recordsLeft) {
+                    c.close();
+                    return null;
+                }
+                LocationUpdate location = getCurrentLocationUpdate(c);
+                c.close();
+                return location;
+            }
+        } finally {
+            db.close();
+        }
+
+        return null;
+
+    }
 
     /**
      * Gets the locationUpdate from the cursors current position.

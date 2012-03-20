@@ -13,6 +13,20 @@ public class Logger {
     public static final boolean DEBUG = false;   // Change this when releasing the product
     public static final boolean JVM = false;    // Change this when testing in eclipse
     
+    public static int verbose(String tag, String message) {
+        if (DEBUG) {
+            if (JVM) {
+                // don't log
+                return 0;
+            } else {
+                return Log.v(tag, message);
+            }
+        }
+        // don't log for release builds
+        return 0;
+    }
+
+    
     public static int debug(String tag, String message) {
         if (DEBUG) {
             if (JVM) {

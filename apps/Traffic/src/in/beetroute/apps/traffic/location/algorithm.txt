@@ -3,12 +3,12 @@ Algorithm
 // What i'm closest to picking
 // http://devdiscoveries.wordpress.com/2010/02/04/android-use-location-services/
 
-Have a low frequency location listener (300s, 500m).  
+Have a low frequency location listener (3 min, 500m).  
 
 If it receives an update, then it means
-1) the user has moved 500m. 
-2) the cell tower triangulation has innacurately guessed the location beyond 500m
-3) the locationProvider is sending us updates unnecessarily (even if location is same)
+1) we have genuinely moved 500m. 
+2) the network location provider thinks we've moved 500m but we havent
+3) the locationProvider is sending us unnecessary updates (even if location is same)
 
 To filter out 2, ignore updates that are less accurate than 500m.  
    (But what if the phone ONLY gets low accuracny updates.  Then we'll ignore everything!)
@@ -30,7 +30,6 @@ On updates,
 On Timer:
 -> turn high frequency listener off
 -> End the trip in DB
-
 
 
 // Overview from google:

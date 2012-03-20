@@ -25,9 +25,9 @@ public class Trip {
     // The thresholds that are used to calculate the end of the trip
     public static final int TIME_CUTOFF = 10 * 60 * 1000; // 10 minutes
     public static final float DIST_THRESHOLD = 0.500f; // 500 meters
-    public static final float SPEED_THRESHOLD = 1.0f; // 1 m/s = 3.6 km/hr 
+    public static final float SPEED_THRESHOLD = 2.0f; // 2 m/s = 7.2 km/hr 
     
-    public static final float MIN_ACCURACY = 500f; // 500 meters
+    public static final float MIN_ACCURACY = 2000f; // 2kms
     
     // TODO: Don't leave it public
     public Integer startPointId;
@@ -240,6 +240,7 @@ public class Trip {
             return true;
         }
         
+        Logger.debug(TAG, "Speed = " + currentPoint.getSpeed() );
         if (currentPoint.getSpeed() > SPEED_THRESHOLD) {
             return true;
         }

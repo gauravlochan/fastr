@@ -18,10 +18,18 @@ public class StoreLocationTask extends AsyncTask<Location, Void, Void> {
     
     private String installationId;
     private LocationDbHelper dbHelper;
+    private String listener;
     
     public StoreLocationTask(String _installationId, LocationDbHelper _dbHelper) {
         installationId = _installationId;
         dbHelper = _dbHelper;
+        listener = null;
+    }
+    
+    public StoreLocationTask(String _installationId, LocationDbHelper _dbHelper, String _listener) {
+        installationId = _installationId;
+        dbHelper = _dbHelper;
+        listener = _listener;
     }
 
     @Override
@@ -35,7 +43,11 @@ public class StoreLocationTask extends AsyncTask<Location, Void, Void> {
         // But the alternative (storing it in DB first, then uploading, then updating the DB status)
         // is more work 
         try {
-            ParseHelper.eventualLocationUpdate(location, installationId);
+            if (listener == null) {
+                ParseHelper.eventualLocationUpdate(location, installationId);
+            } else {
+                ParseHelper.eventualLocationUpdate(location, installationId, listener);
+            }
             
             // Mark in DB with success
             dbHelper.insertPoint(point, true);

@@ -131,19 +131,35 @@ public class MainActivity extends BRMapActivity {
 	}
 	
 	@Override
+	public void onStart() {
+	    super.onStart();
+        if (myLocationOverlay != null) {
+            myLocationOverlay.enableMyLocation();
+        }
+	}
+	
+	@Override 
+	public void onStop() {
+	    super.onStop();
+	    // this overlay is a location listener and is sucking the battery dry!
+        if (myLocationOverlay != null) {
+            myLocationOverlay.disableMyLocation();
+        }
+	}
+	
+	@Override
 	public void onResume() {
 	    super.onResume();
-        // If a route has been plotted, add a location listener for that route
+        // If a route has been plotted, add a timer to update the remaining distance for it
 	    if (destination != null) {
 	        scheduleTimerTask();
 	    }
 	}
 	
-	
 	@Override
 	public void onPause() {
-	    super.onPause();
-	    // If a route has been plotted, remove the location listener for that route
+        super.onPause();
+        // If a route has been plotted, remove the remaining distance timer
 	    if (destination != null) {
 	        unscheduleTimerTask();
 	    }

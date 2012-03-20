@@ -58,7 +58,7 @@ public class HighFrequencyUpdates {
     }
     
     public void startListening() {
-        Logger.debug(TAG, "Start HighFrequencyUpdates");
+        Logger.info(TAG, "Start HighFrequencyUpdates");
 
         // Register for GPS provider updates
         gpsListener.start();
@@ -74,7 +74,7 @@ public class HighFrequencyUpdates {
     
     
     public void stopListening() {
-        Logger.debug(TAG, "Stop HighFrequencyUpdates");
+        Logger.info(TAG, "Stop HighFrequencyUpdates");
         
         gpsListener.stop();
         netListener.stop();
@@ -126,7 +126,7 @@ public class HighFrequencyUpdates {
         }
         
         // Write this to the DB and Upload this location
-        new StoreLocationTask(installationId, dbHelper).doInBackground(location);
+        new StoreLocationTask(installationId, dbHelper, "HFL").doInBackground(location);
     }
     
     
@@ -209,7 +209,7 @@ public class HighFrequencyUpdates {
         public void onLocationChanged(Location location) {
             Logger.debug(TAG, "NetListener: Got an update");
             
-            if (location.getAccuracy() < Trip.MIN_ACCURACY) {
+            if (location.getAccuracy() > Trip.MIN_ACCURACY) {
                 Logger.debug(TAG,  "Ignoring update with accuracy = "+location.getAccuracy());
                 return;
             }
