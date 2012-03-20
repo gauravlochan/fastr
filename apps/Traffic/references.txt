@@ -1,0 +1,10 @@
+References:
+
+One OSM version of google-maps-api:
+http://gitorious.org/android-maps-api/android-maps-api/blobs/42614538ffda1a6985c398933a85fcd9afc752ee/src/com/google/android/maps/MyLocationOverlay.java
+
+Another OSM replacement for MapView: http://code.google.com/p/osmdroid/source/browse/trunk/OpenStreetMapViewer
+
+
+About GPS listener
+http://blog.doityourselfandroid.com/2010/12/25/understanding-locationlistener-android/

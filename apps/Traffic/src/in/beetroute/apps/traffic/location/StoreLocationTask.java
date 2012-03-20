@@ -40,7 +40,6 @@ public class StoreLocationTask extends AsyncTask<Location, Void, Void> {
             // Mark in DB with success
             dbHelper.insertPoint(point, true);
             
-            Logger.debug(TAG, "Inserted to DB as 'Uploaded'");
         } catch (Exception e) {
             // Mark in DB with failure
             dbHelper.insertPoint(point, false);

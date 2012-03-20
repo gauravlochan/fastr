@@ -312,7 +312,7 @@ public class MainActivity extends BRMapActivity {
     }
     
     // http://stackoverflow.com/questions/7010951/error-updating-textview-from-timertasks-run-method
-    private class UpdateTimeRunnable implements Runnable {
+    class UpdateTimeRunnable implements Runnable {
         Route route;
         public UpdateTimeRunnable(Route route) {
             this.route = route;
@@ -340,7 +340,7 @@ public class MainActivity extends BRMapActivity {
      * 
      * @author gauravlochan
      */
-    private class RouteTimerTask extends TimerTask {
+    class RouteTimerTask extends TimerTask {
 
         @Override
         public void run() {
