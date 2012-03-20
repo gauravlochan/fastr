@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:id="@+id/layout_root"
+              android:orientation="vertical"
+              android:layout_width="fill_parent"
+              android:layout_height="fill_parent"
+              android:padding="10dp"
+              >
+              
+    <LinearLayout
+	    android:id="@+id/linearLayout1"
+	    android:layout_width="fill_parent"
+	    android:layout_height="wrap_content">
+
+        <ImageView android:id="@+id/image1"
+	               android:layout_width="wrap_content"
+	               android:layout_height="wrap_content"
+	               android:layout_marginRight="10dp"
+	               android:src="@drawable/gd_action_bar_export"
+	               />
+	    <TextView android:id="@+id/text1"
+	              android:layout_width="wrap_content"
+	              android:layout_height="wrap_content"
+	              android:textColor="#FFF"
+	              android:text="@string/helpDirections"
+	              />
+        
+    </LinearLayout>
+
+    <LinearLayout
+	    android:id="@+id/linearLayout2"
+	    android:layout_width="fill_parent"
+	    android:layout_height="wrap_content">
+        
+	    <ImageView android:id="@+id/image2"
+	               android:layout_width="wrap_content"
+	               android:layout_height="wrap_content"
+	               android:layout_marginRight="10dp"
+	               android:src="@drawable/gd_action_bar_locate_myself"
+	               />
+	    <TextView android:id="@+id/text2"
+	              android:layout_width="wrap_content"
+	              android:layout_height="wrap_content"
+	              android:textColor="#FFF"
+	              android:text="@string/helpFindMe"
+	              />
+    </LinearLayout>
+    
+</LinearLayout>

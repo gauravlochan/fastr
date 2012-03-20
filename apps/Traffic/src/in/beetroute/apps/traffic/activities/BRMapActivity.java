@@ -13,6 +13,7 @@ import in.beetroute.apps.traffic.services.DirectionsService;
 
 import java.util.List;
 
+import android.app.Dialog;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.location.Location;
@@ -35,6 +36,8 @@ import com.google.android.maps.OverlayItem;
  */
 public abstract class BRMapActivity extends GDMapActivity {
     private static final String TAG = Global.COMPANY;
+    
+    public static final int HELP_DIALOG = 0;
     
     /**
      * This needs to be set in the onCreate for each subclass.
@@ -173,6 +176,20 @@ public abstract class BRMapActivity extends GDMapActivity {
         SimpleGeoPoint sgPoint = new SimpleGeoPoint(12.971669, 77.610314);
         return sgPoint.getGeoPoint();
     }
+    
+    @Override
+    protected Dialog onCreateDialog(int id) {
+        switch (id) {
+            case HELP_DIALOG:
+                Dialog dialog = new Dialog(this);
+                dialog.setContentView(R.layout.helpdialog);
+                dialog.setTitle("Help");
+
+                return dialog;
+        }
+        return super.onCreateDialog(id);
+    }
+
 
 
 }

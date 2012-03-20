@@ -1,8 +1,6 @@
 package in.beetroute.apps.findme;
 
 
-import com.flurry.android.FlurryAgent;
-
 import in.beetroute.apps.traffic.AppGlobal;
 import in.beetroute.apps.traffic.MapPoint;
 import in.beetroute.apps.traffic.R;
@@ -14,6 +12,8 @@ import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+
+import com.flurry.android.FlurryAgent;
 
 public class ConfirmPlotRoute extends Activity {
     private static final int DIALOG_ALERT=10;
@@ -41,6 +41,7 @@ public class ConfirmPlotRoute extends Activity {
    		FlurryAgent.onEndSession(this);
    	}
 		
+   	@Override
 	protected Dialog onCreateDialog(int id) {
 		String fromPhoneNumber = getIntent().getExtras().getString(AppGlobal.SMS_PHONE_NUMBER);	
 		String formatString = "Your friend " + fromPhoneNumber + 

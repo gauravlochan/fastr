@@ -11,10 +11,12 @@
     <string name="TripList">Previous Trips</string>
     <string name="ViewTrip">View Trip</string>
 
-    <string name="helpString">
-        First icon: Directions. Displays 3 routes in different colors, between a pair of points. Colors have no significance.
-        Second icon: Find me. Sends location information to the selected contact. Plots 3 routes to the address, once the SMS is received
-        SMS contents - LatLon, Address and beetroute android market URL. 
+    <string name="helpDirections">
+        Directions: Displays 3 routes in different colors, between a pair of points. Colors have no significance.
+    </string>
+    <string name="helpFindMe">
+        Find me: Sends location information to the selected contact in an SMS.
+        If the contact has BeetRoute, they can locate you on the map and plot routes to your location.
     </string>
     <string name="SourceAddressLbl">Source</string>
     <string name="DestAddressLbl">Destination</string>

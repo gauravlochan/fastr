@@ -20,8 +20,6 @@ import java.util.Date;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -169,7 +167,6 @@ public class MainActivity extends BRMapActivity {
         }
 	}
 	
-	
     @Override
     public boolean onHandleActionBarItemClick(ActionBarItem item, int position) {
 
@@ -188,27 +185,7 @@ public class MainActivity extends BRMapActivity {
             	break;
             	
             case R.id.action_bar_help:
-            	//startActivity(new Intent(this, HelpActivity.class));
-            	//TextView hu = (TextView)findViewById(R.id.textview);
-                //hu.setText("text");
-                
-                final AlertDialog.Builder builder = new AlertDialog.Builder(this);
-           
-                builder.setMessage(
-                        R.string.helpString)
-                        .setCancelable(false)
-                        .setTitle(new String("Help"))
-                        .setPositiveButton("OK",
-                                new DialogInterface.OnClickListener() {
-                                    public void onClick(
-                                            @SuppressWarnings("unused") final DialogInterface dialog,
-                                            @SuppressWarnings("unused") final int id) {
-                                    	
-                             
-                                    }
-                                });
-                final AlertDialog alert = builder.create();
-                alert.show();
+                showDialog(HELP_DIALOG);
 
             default:
                 return super.onHandleActionBarItemClick(item, position);
@@ -216,6 +193,7 @@ public class MainActivity extends BRMapActivity {
 
         return true;
     }
+    
 
     
     /**
