@@ -22,7 +22,7 @@ public class Trip {
     private static final String TAG = Global.COMPANY;
 
     // The thresholds that are used to calculate the end of the trip
-    public static final int TIME_CUTOFF = 15 * 60 * 1000; // 15 minutes
+    public static final int TIME_CUTOFF = 10 * 60 * 1000; // 10 minutes
     public static final float DIST_THRESHOLD = 0.500f; // 500 meters
     public static final float SPEED_THRESHOLD = 2.0f; // 2 m/s = 7.2 km/hr 
     

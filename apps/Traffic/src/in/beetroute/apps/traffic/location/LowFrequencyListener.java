@@ -100,7 +100,7 @@ class LowFrequencyListener implements LocationListener {
                     startHFL = true;
                     tripStartingPoint = null;
                     // User is moving.  Start HFL and stop LFL
-                    highFrequencyUpdater.startListening();
+                    highFrequencyUpdater.startListening(location);
                     locationManager.removeUpdates(this);
                     Logger.debug(TAG, "LFL: unregister LFL updates");
                 }

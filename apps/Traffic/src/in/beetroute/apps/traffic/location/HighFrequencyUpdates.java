@@ -25,7 +25,7 @@ import android.os.Handler;
 public class HighFrequencyUpdates {
     private static final String TAG = Global.COMPANY;
     final long delay = 60 * 1000; // 1 minute updates
-    final float minDistance = 100f; // 100 meters
+    final float minDistance = 0f; // 0 meters
 
     // Gps listener
     final GpsLocationListener gpsListener = new GpsLocationListener();
@@ -58,9 +58,9 @@ public class HighFrequencyUpdates {
         timer = new Timer();
     }
     
-    public void startListening() {
+    public void startListening(Location startingPoint) {
         Logger.info(TAG, "Start HighFrequencyUpdates");
-
+        lastMovingPoint = startingPoint;
         // Register for GPS provider updates
         gpsListener.start();
         
@@ -91,7 +91,7 @@ public class HighFrequencyUpdates {
     
     private void scheduleTimerTask() {
         timerTask = new NotMovingTimerTask();
-        timer.schedule(timerTask, Trip.TIME_CUTOFF); // 10 minutes
+        timer.schedule(timerTask, Trip.TIME_CUTOFF);
         Logger.debug(TAG, "Scheduled timerTask");
     }
     
