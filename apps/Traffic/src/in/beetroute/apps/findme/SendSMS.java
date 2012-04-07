@@ -256,25 +256,39 @@ public class SendSMS extends GDActivity {
 
             this.progressDialog = ProgressDialog.show(
                     SendSMS.this,
-                    "Please wait...", // title
-                    "Getting the current location", // message
+                    "Getting Location...", // title
+                    "Getting location from GPS satellites. This can take upto 2 minutes.", // message
                     true // indeterminate
                     );
         }
 
         @Override
         protected Location doInBackground(Void... params) {
+            long TEN_MINUTES = 10 * 60 * 1000;
             Logger.debug(TAG, "Starting to get a good location");
-            Location location = listener.waitForLocation();
-            if (location != null) {
-                return location;
+            Location oldLocation = LocationHelper.getLastGpsLocation(SendSMS.this);
+            
+            if (oldLocation != null) {
+                long currentTime = System.currentTimeMillis();
+                // If the last location is no more than 10 minutes old, use it
+                if (oldLocation.getTime() + TEN_MINUTES > currentTime) {
+                    return oldLocation;
+                }
             }
             
-            // In case we didn't get a fresh location update in the time limit,
-            // try and fall back to the getLastKnownLocation (which could also be null BTW)
-            return LocationHelper.getLastGpsLocation(SendSMS.this);
+            // Now wait for a location fix from the listener
+            Location newlocation = listener.waitForLocation();
+            if (newlocation != null) {
+                return newlocation;
+            }
+            
+            // In case we didn't get a fix on time, fall back to the old location 
+            // Note: This might be null
+            // TODO: Perhaps we are better off displaying a dialog
+            return oldLocation;
         }
 
+        
         @Override
         protected void onPostExecute(Location gotLocation) {
             // TODO: Temporary fix for the "View not attached to window manager" issue
