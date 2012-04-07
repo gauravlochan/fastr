@@ -60,21 +60,6 @@ public class LocationHelper {
     
     
     /**
-     * Gets the current location using the GPS provider.
-     * This is a long running operation, so never call this on the UI thread.
-     * 
-     * @param context
-     * @return
-     */
-    public static Location waitForGpsLocation(Context context) {
-        // TODO: Change the code to do the right thing.
-        LocationManager locationManager = (LocationManager) context.
-                getSystemService(Context.LOCATION_SERVICE);
-        return locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-    }
-
-    
-    /**
      * checks to see if the GPS provider is enabled
      * 
      * @param context

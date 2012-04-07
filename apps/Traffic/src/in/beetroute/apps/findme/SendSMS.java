@@ -1,12 +1,11 @@
 package in.beetroute.apps.findme;
 
-import com.flurry.android.FlurryAgent;
-
 import greendroid.app.GDActivity;
 import in.beetroute.apps.commonlib.Global;
 import in.beetroute.apps.commonlib.Logger;
 import in.beetroute.apps.traffic.R;
 import in.beetroute.apps.traffic.location.LocationHelper;
+import in.beetroute.apps.traffic.location.OneTimeGpsLocationListener;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.PendingIntent;
@@ -19,6 +18,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.database.Cursor;
 import android.location.Location;
+import android.location.LocationManager;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -26,6 +26,8 @@ import android.provider.ContactsContract;
 import android.provider.Settings;
 import android.telephony.SmsManager;
 import android.widget.Toast;
+
+import com.flurry.android.FlurryAgent;
 
 /**
  * @author pradeep Main activity class to send the GPS co-ordinates to the
@@ -244,9 +246,14 @@ public class SendSMS extends GDActivity {
      */
     class LocationLookupTask extends AsyncTask<Void, Void, Location> {
         private ProgressDialog progressDialog;
+        private OneTimeGpsLocationListener listener;
 
         @Override
         protected void onPreExecute() {
+            LocationManager locationManager = (LocationManager) SendSMS.this.
+                    getSystemService(Context.LOCATION_SERVICE);
+            listener = new OneTimeGpsLocationListener(locationManager);
+
             this.progressDialog = ProgressDialog.show(
                     SendSMS.this,
                     "Please wait...", // title
@@ -258,7 +265,14 @@ public class SendSMS extends GDActivity {
         @Override
         protected Location doInBackground(Void... params) {
             Logger.debug(TAG, "Starting to get a good location");
-            return LocationHelper.waitForGpsLocation(SendSMS.this);
+            Location location = listener.waitForLocation();
+            if (location != null) {
+                return location;
+            }
+            
+            // In case we didn't get a fresh location update in the time limit,
+            // try and fall back to the getLastKnownLocation (which could also be null BTW)
+            return LocationHelper.getLastGpsLocation(SendSMS.this);
         }
 
         @Override
@@ -272,7 +286,9 @@ public class SendSMS extends GDActivity {
             }
             
             if (gotLocation == null) {
+                //
                 // TODO: Tell the user we couldn't get a fix in time
+                //
                 SendSMS.this.finish();
             } else {
                 location = gotLocation;
